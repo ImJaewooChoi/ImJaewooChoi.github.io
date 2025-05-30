@@ -1,43 +1,43 @@
 # Site
-repository: Git repository where your resume will be hosted, only required if you are hosting on GitHub (eg. sproogen/modern-resume-theme)
+repository: ImJaewooChoi/ImJaewooChoi.github.io
 # favicon: Directory of your favicon (eg. images/favicon.ico)(optional)
 
 # Content configuration version
 version: 2
 
 # Personal info
-name: Your Name
-title: Your job title
-email: Your email (optional)
+name: Jaewoo Choi
+title: AI & Computer Vision Engineer
+email: iam.jaewoochoi@gmail.com
 # email_title: Email (Email title override)
-phone: Your phone number (optional)
+phone: +82-10-0000-0000
 # phone_title: Phone (Phone title override)
-website: Your website (eg. https://google.com)(optional)
+website: https://imjaewoochoi.github.io
 # website_title: Web (Website title override)
 
 # Dark Mode (true/false/never)
 darkmode: false
 
 # Social links
-twitter_username: jekyllrb
-github_username:  jekyll
-stackoverflow_username: "00000001"
-dribbble_username: jekyll
-facebook_username: jekyll
-flickr_username: jekyll
-instagram_username: jekyll
-linkedin_username: jekyll
-xing_username: jekyll
-pinterest_username: jekyll
-youtube_username: jekyll
-orcid_username: 0000-0000-0000-0000
-googlescholar_username: D847cGsAAAAJ
+# twitter_username: 
+github_username: ImJaewooChoi
+# stackoverflow_username: "00000001"
+# dribbble_username: 
+# facebook_username: 
+# flickr_username: 
+# instagram_username: 
+linkedin_username: jaewoo-choi
+# xing_username: 
+# pinterest_username: 
+# youtube_username: 
+# orcid_username: 0000-0000-0000-0000
+# googlescholar_username: D847cGsAAAAJ
 
 # Additional icon links
 additional_links:
-- title: Link name
-  icon: Font Awesome brand icon name (eg. fab fa-twitter) (https://fontawesome.com/icons?d=gallery&s=brands&m=free)
-  url: Link url (eg. https://google.com)
+- title: Portfolio
+  icon: fas fa-globe
+  url: https://imjaewoochoi.github.io
 # - title: another link
 #   icon: font awesome brand icon name (eg. fab fa-twitter) (https://fontawesome.com/icons?d=gallery&s=brands&m=free)
 #   url: Link url (eg. https://google.com)
@@ -50,15 +50,14 @@ additional_links:
 
 # About Section
 # about_title: About Me (Use this to override about section title)
-about_profile_image: Directory of profile image (eg. images/profile.jpg)
+# about_profile_image: images/profile.jpg
 about_content: | # this will include new lines to allow paragraphs
-  Write an awesome description about yourself here, this supports markdown, so you can add [links](http://foobar.com) and highlight things <mark>like this</mark>.
+  Hello! I'm **Jaewoo Choi**, an **Artificial Intelligence Developer** passionate about cutting-edge technologies and innovative solutions.
 
-  You can even add paragraphs by using empty lines like this and add anything else [markdown](https://www.markdownguide.org/getting-started#what-is-markdown) supports such as
-    - Lists
-    - Tables
-    - <a href="google.com">Links</a>
-    - Images ![alt text](/images/landscape-trees.jpg "Trees")
+  My main areas of interest include:
+    - **Multimodal AI**: Developing systems that can understand and process multiple types of data (text, images)
+    - **Robotics**: Creating intelligent robotic systems and autonomous agents
+
 
 content:
   - title: Projects # Title for the section
@@ -67,49 +66,97 @@ content:
       - layout: left
         border: weak  # Value of `weak` will display a weak border below this item. # Any 
                       # other value (or no value) means no border will be displayed
-        title: Project name
-        link: Link to project (eg. sproogen.github.io/modern-resume-theme)(optional)
-        link_text: Link Text
+        title: Multimodal AI Research
+        link: https://github.com/ImJaewooChoi
+        link_text: View Research
         additional_links:
-          - title:  Github page for project (eg. sproogen/modern-resume-theme)
+          - title: GitHub Repository
             icon: fab fa-github
-            url: Link to project (eg. sproogen.github.io/modern-resume-theme)(optional)
-          - title:  Github page for project (eg. sproogen/modern-resume-theme)
-            icon: fab fa-github
-            url: Link to project (eg. sproogen.github.io/modern-resume-theme)(optional)
+            url: https://github.com/ImJaewooChoi
         quote: >
-          Short overview of the project (optional)
+          Cross-modal learning and understanding systems
         description: | # this will include new lines to allow paragraphs
-          Description about the work on/with the project
+          Research and development of multimodal AI systems that can understand and process 
+          multiple types of data including text, images, audio, and video. Focus on creating 
+          unified representations for cross-modal tasks.
+          
+      - layout: left
+        title: Robotics & Computer Vision
+        additional_links:
+          - title: GitHub Repository
+            icon: fab fa-github
+            url: https://github.com/ImJaewooChoi
+        quote: >
+          Intelligent autonomous systems with advanced perception
+        description: |
+          Development of robotic systems with enhanced computer vision capabilities.
+          Projects include object detection, manipulation planning, and human-robot interaction
+          using ROS and modern deep learning frameworks.
+          
+      - layout: left
+        title: Personal Portfolio Website
+        link: https://imjaewoochoi.github.io
+        link_text: Visit Portfolio
+        additional_links:
+          - title: GitHub Repository
+            icon: fab fa-github
+            url: https://github.com/ImJaewooChoi/ImJaewooChoi.github.io
+        quote: >
+          Modern Jekyll-based portfolio website
+        description: |
+          Responsive personal portfolio website built with Jekyll and GitHub Pages.
+          Features modern design, dark mode support, and showcases AI research projects.
+
   - title: Experience
     layout: list
     content:
       - layout: right
-        title: Company name
-        sub_title: Job title
-        caption: Date Range (eg. November 2016 - present)
-        link: Link to company (optional)
+        title: AI Research & Development
+        sub_title: Artificial Intelligence Developer
+        caption: Present
         quote: >
-          Short description of the company (optional)
+          Advancing multimodal AI and robotics research
         description: | # this will include new lines to allow paragraphs
-          Description of role
+          • Research and development of multimodal AI systems combining computer vision, NLP, and robotics
+          • Implementation of state-of-the-art deep learning models for cross-modal understanding
+          • Development of robotic perception systems using ROS and modern AI frameworks
+          • Collaboration on cutting-edge projects in embodied AI and human-robot interaction
+
   - title: Education
     layout: list
     content:
       - layout: top-right
-        title: Institution name
-        sub_title: Qualifications (eg. BA Performing Arts)
-        caption: Date Range (eg. 2016 - 2019)
+        title: Seokyeong University
+        sub_title: Bachelor of Engineering (B.E.)
+        caption: March 2016 - August 2022
         quote: >
-          Short institution or course description (optional)
+          Industrial Management Systems Engineering & Big Data Business Intelligence
         description: | # this will include new lines to allow paragraphs
-          Description of qualification
-  - title: A Little More About Me
+          • **Major**: Department of Industrial Management Systems Engineering
+          • **Multidisciplinary Major**: Big Data Business Intelligence
+          • **GPA**: 3.34/4.5
+          • Comprehensive study of industrial systems, operations research, and data analytics
+          • Specialized in big data processing, business intelligence, and AI applications in industrial systems
+          • Strong foundation in systems engineering, optimization, and data-driven decision making
+
+  - title: Skills & Interests
     layout: text
     content: | # this will include new lines to allow paragraphs
-      This is where you can write a little more about yourself. You could title this section **Interests** and include some of your other interests.
+      **Technical Skills:**
+      - **Programming Languages:** Python, C++, JavaScript, Java, MATLAB
+      - **AI/ML Frameworks:** TensorFlow, PyTorch, Keras, Scikit-learn, OpenCV
+      - **Multimodal AI:** CLIP, DALL-E, GPT-4 Vision, Stable Diffusion
+      - **Robotics:** ROS (Robot Operating System), Gazebo, MoveIt
+      - **Computer Vision:** OpenCV, MediaPipe, YOLO, Detectron2
+      - **Cloud & MLOps:** AWS, Docker, Kubernetes, MLflow, Weights & Biases
+      - **Development Tools:** Git, Linux, Jupyter, VS Code
 
-      Or you could title it **Skills** and write a bit more about things that make you more desirable, like *leadership* or *teamwork*
+      **Research Interests:**
+      - **Multimodal Learning:** Cross-modal understanding and generation
+      - **Robotics & Embodied AI:** Intelligent autonomous systems
+      - **Computer Vision:** Object detection, segmentation, and tracking
+      - **Human-Robot Interaction:** Natural and intuitive robot interfaces
+      - **Edge AI:** Optimizing AI models for real-time applications
 
 # Footer
 footer_show_references: true
