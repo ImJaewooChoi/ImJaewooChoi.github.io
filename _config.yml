@@ -51,13 +51,15 @@ additional_links:
 # About Section
 # about_title: About Me (Use this to override about section title)
 # about_profile_image: images/profile.jpg
-about_content: | # this will include new lines to allow paragraphs
-  Hello! I'm **Jaewoo Choi**, an **Artificial Intelligence Developer** passionate about cutting-edge technologies and innovative solutions.
-
-  My main areas of interest include:
-    - **Multimodal AI**: Developing systems that can understand and process multiple types of data (text, images)
-    - **Robotics**: Creating intelligent robotic systems and autonomous agents
-
+# about_content: | # this will include new lines to allow paragraphs
+#   Hello! I'm **Jaewoo Choi**, an **Artificial Intelligence Developer** passionate about cutting-edge technologies and innovative solutions.
+# 
+#   My main areas of interest include:
+#     - **Multimodal AI**: Developing systems that can understand and process multiple types of data (text, images)
+#     - **Robotics**: Creating intelligent robotic systems and autonomous agents
+#     - **Computer Vision**: Advanced image processing and visual understanding
+#     - **Machine Learning**: Deep learning architectures and neural networks
+#     - **Natural Language Processing**: Language understanding and generation models
 
 content:
   - title: Projects # Title for the section
