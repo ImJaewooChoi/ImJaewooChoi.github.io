@@ -19,14 +19,14 @@ website: https://imjaewoochoi.github.io
 darkmode: false
 
 # Social links
-# twitter_username: 
+twitter_username: iam_jaewoochoi
 github_username: ImJaewooChoi
 # stackoverflow_username: "00000001"
 # dribbble_username: 
 # facebook_username: 
 # flickr_username: 
 # instagram_username: 
-linkedin_username: jaewoo-choi
+linkedin_username: jaewoo-choi-955340356
 # xing_username: 
 # pinterest_username: 
 # youtube_username: 
@@ -38,6 +38,9 @@ additional_links:
 - title: Portfolio
   icon: fas fa-globe
   url: https://imjaewoochoi.github.io
+- title: Kaggle
+  icon: fab fa-kaggle
+  url: https://www.kaggle.com/loveacaji
 # - title: another link
 #   icon: font awesome brand icon name (eg. fab fa-twitter) (https://fontawesome.com/icons?d=gallery&s=brands&m=free)
 #   url: Link url (eg. https://google.com)
@@ -48,117 +51,225 @@ additional_links:
 # gtag: "UA-00000000-0"
 # google_analytics: "UA-00000000-0"
 
-# About Section
-# about_title: About Me (Use this to override about section title)
+# About Section - COMPLETELY DISABLED
+about_title: ""
+about_content: ""
 # about_profile_image: images/profile.jpg
-# about_content: | # this will include new lines to allow paragraphs
-#   Hello! I'm **Jaewoo Choi**, an **Artificial Intelligence Developer** passionate about cutting-edge technologies and innovative solutions.
-# 
-#   My main areas of interest include:
-#     - **Multimodal AI**: Developing systems that can understand and process multiple types of data (text, images)
-#     - **Robotics**: Creating intelligent robotic systems and autonomous agents
-#     - **Computer Vision**: Advanced image processing and visual understanding
-#     - **Machine Learning**: Deep learning architectures and neural networks
-#     - **Natural Language Processing**: Language understanding and generation models
 
 content:
-  - title: Projects # Title for the section
-    layout: list # Type of content section (list/text)
-    content:
-      - layout: left
-        border: weak  # Value of `weak` will display a weak border below this item. # Any 
-                      # other value (or no value) means no border will be displayed
-        title: Multimodal AI Research
-        link: https://github.com/ImJaewooChoi
-        link_text: View Research
-        additional_links:
-          - title: GitHub Repository
-            icon: fab fa-github
-            url: https://github.com/ImJaewooChoi
-        quote: >
-          Cross-modal learning and understanding systems
-        description: | # this will include new lines to allow paragraphs
-          Research and development of multimodal AI systems that can understand and process 
-          multiple types of data including text, images, audio, and video. Focus on creating 
-          unified representations for cross-modal tasks.
-          
-      - layout: left
-        title: Robotics & Computer Vision
-        additional_links:
-          - title: GitHub Repository
-            icon: fab fa-github
-            url: https://github.com/ImJaewooChoi
-        quote: >
-          Intelligent autonomous systems with advanced perception
-        description: |
-          Development of robotic systems with enhanced computer vision capabilities.
-          Projects include object detection, manipulation planning, and human-robot interaction
-          using ROS and modern deep learning frameworks.
-          
-      - layout: left
-        title: Personal Portfolio Website
-        link: https://imjaewoochoi.github.io
-        link_text: Visit Portfolio
-        additional_links:
-          - title: GitHub Repository
-            icon: fab fa-github
-            url: https://github.com/ImJaewooChoi/ImJaewooChoi.github.io
-        quote: >
-          Modern Jekyll-based portfolio website
-        description: |
-          Responsive personal portfolio website built with Jekyll and GitHub Pages.
-          Features modern design, dark mode support, and showcases AI research projects.
-
   - title: Experience
     layout: list
     content:
-      - layout: right
-        title: AI Research & Development
-        sub_title: Artificial Intelligence Developer
-        caption: Present
-        quote: >
-          Advancing multimodal AI and robotics research
+      - layout: left
+        title: Daedong AILab
+        sub_title: AI Researcher
+        caption: May 2024 - Present · 1 yr 1 mo
         description: | # this will include new lines to allow paragraphs
-          • Research and development of multimodal AI systems combining computer vision, NLP, and robotics
-          • Implementation of state-of-the-art deep learning models for cross-modal understanding
-          • Development of robotic perception systems using ROS and modern AI frameworks
-          • Collaboration on cutting-edge projects in embodied AI and human-robot interaction
+          **Full-time · Seoul, South Korea · On-site**
+          
+          • Advanced AI research and development in agricultural and industrial automation
+          
+          • Implementation of cutting-edge machine learning algorithms for real-world applications
+          
+          • Collaboration on innovative AI solutions for industry-specific challenges
+
+      - layout: left
+        title: PLAIF
+        sub_title: Computer Vision Engineer
+        caption: Jan 2023 - Apr 2024 · 1 yr 4 mos
+        description: | # this will include new lines to allow paragraphs
+          **Full-time · South Korea · On-site**
+          
+          • Developed object detection and segmentation models using various vision sensors
+          
+          • Implemented 6D pose estimation algorithms for industrial applications
+          
+          • Designed and optimized computer vision pipelines for real-time processing
+          
+          • Integrated multi-sensor fusion systems for enhanced perception accuracy
+
+      - layout: left
+        title: FS Solution Co., Ltd.
+        sub_title: Computer Vision Engineer
+        caption: May 2022 - Dec 2022 · 8 mos
+        description: | # this will include new lines to allow paragraphs
+          **Full-time · South Korea · Hybrid**
+          
+          • Developed autolabeling tools for autonomous driving applications
+          
+          • Created automated data annotation systems for training datasets
+
+  - title: Projects
+    layout: list
+    content:
+      - layout: left
+        title: Object Tracking
+        sub_title: Advanced Object Tracking System
+        caption: Mar 2025 - May 2025
+        description: | # this will include new lines to allow paragraphs
+          **Associated with:** Daedong AILab
+          
+          • Development of advanced object tracking algorithms for real-time applications
+          
+          • Implementation of state-of-the-art tracking methods for agricultural automation
+          
+          • Integration with existing AI systems for enhanced performance
+
+      - layout: left
+        title: Harvesting Robot
+        sub_title: AI-Powered Agricultural Automation
+        caption: May 2024 - Dec 2024
+        description: | # this will include new lines to allow paragraphs
+          **Associated with:** Daedong AILab
+          
+          • Developed AI-powered harvesting robot system for agricultural applications
+          
+          • Integrated computer vision and robotic control for autonomous harvesting
+          
+          • Demonstrated at CES 2025 as part of Daedong's innovative technology showcase
+
+      - layout: left
+        title: Auto Assemble
+        sub_title: 3D Vision-Based Assembly System
+        caption: Jul 2023 - Mar 2024
+        link: https://www.youtube.com/watch?v=example_auto_assemble
+        link_text: Watch Demo Video
+        description: | # this will include new lines to allow paragraphs
+          **Associated with:** PLAIF
+          
+          • Developed Auto Assembly system leveraging 3D vision without relying on CAD models
+          
+          • Implemented precise object registration using 3D ToF camera with initial absolute pose baseline
+          
+          • Utilized RGB-D camera for object detection and image matching for relative pose estimation
+          
+          • Combined relative pose with initial absolute pose and refined using depth data
+          
+          • Achieved **92% assembly task success rate** in real robot environment
+          
+          **Key Technologies:** 3D ToF Camera, RGB-D Vision, Image Matching, Pose Estimation
+
+      - layout: left
+        title: Bin Picking
+        sub_title: Automated Object Recognition and Picking
+        caption: Feb 2023 - Jul 2023
+        link: https://www.youtube.com/watch?v=example_bin_picking
+        link_text: Watch Demo Video
+        description: | # this will include new lines to allow paragraphs
+          **Associated with:** PLAIF
+          
+          • Implemented automated bin picking system using instance segmentation on self-constructed dataset
+          
+          • Applied precise CAD model-based pose estimation for object recognition
+          
+          • Integrated computer vision algorithms with robotic control systems
+          
+          • Achieved **95% robot picking success rate** and **93% overall task completion rate**
+          
+          **Key Technologies:** Instance Segmentation, 3D ToF Camera, CAD-based Pose Estimation, Robotics Integration
+
+      - layout: left
+        title: Auto Labeling
+        sub_title: Autonomous Driving Data Annotation Tool
+        caption: Jun 2022 - Dec 2022
+        description: | # this will include new lines to allow paragraphs
+          **Associated with:** FS Solution Co., Ltd.
+          
+          • Developed auto-labeling tool for autonomous driving data annotation
+          
+          • Automated bounding box generation for objects (cars, pedestrians, traffic lights)
+          
+          • Leveraged object detection models to streamline data labeling process
+          
+          • Significantly reduced manual annotation time for training dataset preparation
+          
+          **Key Technologies:** Object Detection, Computer Vision, Data Annotation, Autonomous Driving
+  - title: Awards & Honors
+    layout: list
+    content:
+      - layout: left
+        title: Korean Patent Achievement
+        sub_title: AI-Powered Robot Pose Estimation Technology
+        caption: Patent Issued August 8, 2024
+        description: | # this will include new lines to allow paragraphs
+          **Patent Number:** KOR 1020230187604
+          
+          **Achievement:** Successfully obtained Korean patent for innovative AI-based robot pose estimation system
+          
+          **Technology:** Advanced system that converts 2D camera images into 3D data for precise robot end effector pose estimation
+          
+          **Impact:** Contributes to enhanced precision in automation and robotic control systems for industrial applications
+
+      - layout: left
+        title: Kaggle Happy Whale Competition
+        sub_title: Individual Identification of Marine Mammals
+        caption: Competition Award
+        link: https://github.com/ImJaewooChoi/kaggle_happy_whale
+        link_text: View Project
+        additional_links:
+          - title: GitHub Repository
+            icon: fab fa-github
+            url: https://github.com/ImJaewooChoi/kaggle_happy_whale
+        description: | # this will include new lines to allow paragraphs
+          **Competition:** Kaggle's Happy Whale and Dolphin Competition
+          
+          **Achievement:** Successfully participated and achieved recognition in marine mammal identification challenge
+          
+          **Technology:** Implemented deep learning models for image classification and similarity matching using computer vision techniques
+          
+          **Impact:** Contributed to marine conservation efforts through AI-powered species identification
+
+      - layout: left
+        title: Kaggle Image Matching Challenge 2022
+        sub_title: Advanced Image Correspondence Algorithms
+        caption: Competition Award
+        link: https://github.com/ImJaewooChoi/kaggle_image_matching2022
+        link_text: View Project
+        additional_links:
+          - title: GitHub Repository
+            icon: fab fa-github
+            url: https://github.com/ImJaewooChoi/kaggle_image_matching2022
+        description: |
+          **Competition:** 2022 Kaggle Image Matching Challenge
+          
+          **Achievement:** Developed sophisticated image matching algorithms for robust correspondence
+          
+          **Technology:** Advanced feature detection, descriptor matching, and geometric verification techniques
+          
+          **Impact:** Enhanced accuracy in image matching for computer vision applications
+
+      - layout: left
+        title: DACON 3D Number Classification
+        sub_title: 3D Data Processing and Classification
+        caption: Competition Award
+        link: https://github.com/ImJaewooChoi/dacon_3d_number_classification
+        link_text: View Project
+        additional_links:
+          - title: GitHub Repository
+            icon: fab fa-github
+            url: https://github.com/ImJaewooChoi/dacon_3d_number_classification
+        description: |
+          **Competition:** DACON 3D Number Classification Challenge
+          
+          **Achievement:** Successfully implemented 3D number classification system with competitive performance
+          
+          **Technology:** Advanced deep learning techniques for 3D data processing and neural network optimization
+          
+          **Impact:** Demonstrated expertise in three-dimensional data analysis and classification
 
   - title: Education
     layout: list
     content:
-      - layout: top-right
+      - layout: left
         title: Seokyeong University
         sub_title: Bachelor of Engineering (B.E.)
         caption: March 2016 - August 2022
-        quote: >
-          Industrial Management Systems Engineering & Big Data Business Intelligence
         description: | # this will include new lines to allow paragraphs
-          • **Major**: Department of Industrial Management Systems Engineering
-          • **Multidisciplinary Major**: Big Data Business Intelligence
-          • **GPA**: 3.34/4.5
-          • Comprehensive study of industrial systems, operations research, and data analytics
-          • Specialized in big data processing, business intelligence, and AI applications in industrial systems
-          • Strong foundation in systems engineering, optimization, and data-driven decision making
-
-  - title: Skills & Interests
-    layout: text
-    content: | # this will include new lines to allow paragraphs
-      **Technical Skills:**
-      - **Programming Languages:** Python, C++, JavaScript, Java, MATLAB
-      - **AI/ML Frameworks:** TensorFlow, PyTorch, Keras, Scikit-learn, OpenCV
-      - **Multimodal AI:** CLIP, DALL-E, GPT-4 Vision, Stable Diffusion
-      - **Robotics:** ROS (Robot Operating System), Gazebo, MoveIt
-      - **Computer Vision:** OpenCV, MediaPipe, YOLO, Detectron2
-      - **Cloud & MLOps:** AWS, Docker, Kubernetes, MLflow, Weights & Biases
-      - **Development Tools:** Git, Linux, Jupyter, VS Code
-
-      **Research Interests:**
-      - **Multimodal Learning:** Cross-modal understanding and generation
-      - **Robotics & Embodied AI:** Intelligent autonomous systems
-      - **Computer Vision:** Object detection, segmentation, and tracking
-      - **Human-Robot Interaction:** Natural and intuitive robot interfaces
-      - **Edge AI:** Optimizing AI models for real-time applications
+          **Major:** Department of Industrial Management Systems Engineering
+          
+          **Multidisciplinary Major:** Big Data Business Intelligence
+          
+          **GPA:** 3.34/4.5
 
 # Footer
 footer_show_references: true
