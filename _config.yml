@@ -56,6 +56,11 @@ about_title: ""
 about_content: ""
 # about_profile_image: images/profile.jpg
 
+# About Section
+about_title: "About Me"
+about_profile_image: images/profile.jpg
+about_content: "AI & Computer Vision Engineer with expertise in developing computer vision systems for robotics and industrial automation. Experienced in object detection, segmentation, pose estimation, and tracking algorithms."
+
 content:
   - title: Experience
     layout: list
@@ -105,7 +110,7 @@ content:
       - layout: left
         title: Object Tracking
         sub_title: Advanced Object Tracking System
-        caption: Mar 2025 - May 2025
+        caption: Mar 2024 - May 2024
         description: | # this will include new lines to allow paragraphs
           **Associated with:** Daedong AILab
           
@@ -118,7 +123,7 @@ content:
       - layout: left
         title: Harvesting Robot
         sub_title: AI-Powered Agricultural Automation
-        caption: May 2024 - Dec 2024
+        caption: May 2024 - Present
         description: | # this will include new lines to allow paragraphs
           **Associated with:** Daedong AILab
           
@@ -238,25 +243,6 @@ content:
           
           **Impact:** Enhanced accuracy in image matching for computer vision applications
 
-      - layout: left
-        title: DACON 3D Number Classification
-        sub_title: 3D Data Processing and Classification
-        caption: Competition Award
-        link: https://github.com/ImJaewooChoi/dacon_3d_number_classification
-        link_text: View Project
-        additional_links:
-          - title: GitHub Repository
-            icon: fab fa-github
-            url: https://github.com/ImJaewooChoi/dacon_3d_number_classification
-        description: |
-          **Competition:** DACON 3D Number Classification Challenge
-          
-          **Achievement:** Successfully implemented 3D number classification system with competitive performance
-          
-          **Technology:** Advanced deep learning techniques for 3D data processing and neural network optimization
-          
-          **Impact:** Demonstrated expertise in three-dimensional data analysis and classification
-
   - title: Education
     layout: list
     content:
@@ -270,6 +256,21 @@ content:
           **Multidisciplinary Major:** Big Data Business Intelligence
           
           **GPA:** 3.34/4.5
+
+  - title: Skills
+    layout: text
+    content: | # this will include new lines to allow paragraphs
+      **Programming Languages:** Python, C++, MATLAB
+      
+      **Computer Vision:** OpenCV, PyTorch, TensorFlow, YOLO, Mask R-CNN, PointNet, Point Cloud Library (PCL)
+      
+      **Robotics:** ROS (Robot Operating System), Motion Planning, Robot Kinematics
+      
+      **3D Vision:** Camera Calibration, Stereo Vision, 3D Reconstruction, Point Cloud Processing
+      
+      **Deep Learning:** CNN, RNN, Transformers, GANs, Object Detection, Segmentation, Pose Estimation
+      
+      **Tools & Platforms:** Git, Docker, Linux, CUDA, AWS, Kaggle
 
 # Footer
 footer_show_references: true
@@ -298,3 +299,9 @@ exclude : [
   "scripts/",
   "docker-compose.yml",
   ]
+
+# Footer
+footer_show_references: true
+
+# Footer
+footer_show_references: true
