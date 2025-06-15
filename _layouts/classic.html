@@ -17,14 +17,6 @@
   <!-- Main Content -->
   <div class="classic-content">
     
-    <!-- Objective Section -->
-    {% if site.about_content %}
-    <div class="classic-section">
-      <h2>Objective</h2>
-      <p>{{ site.about_content | strip_html }}</p>
-    </div>
-    {% endif %}
-
     <!-- Content Sections -->
     {% for section in site.content %}
       <div class="classic-section">

@@ -1,26 +1,26 @@
 /* Classic Resume CSS */
 body {
   font-family: 'Times New Roman', Times, serif;
-  font-size: 11pt;
-  line-height: 1.2;
+  font-size: 9pt;
+  line-height: 1.1;
   color: #000;
   background: #fff;
   max-width: 8.5in;
   margin: 0 auto;
-  padding: 0.75in;
+  padding: 0.5in;
 }
 
 /* Header styles */
 .classic-header {
-  margin-bottom: 25px;
+  margin-bottom: 18px;
   position: relative;
 }
 
 .classic-header h1 {
-  font-size: 28pt;
+  font-size: 22pt;
   font-weight: bold;
-  margin: 0 0 5px 0;
-  letter-spacing: 3px;
+  margin: 0 0 4px 0;
+  letter-spacing: 2px;
   text-transform: uppercase;
   text-align: left;
 }
@@ -29,73 +29,73 @@ body {
   position: absolute;
   top: 0;
   right: 0;
-  font-size: 11pt;
+  font-size: 9pt;
 }
 
 .classic-header .address {
   text-align: center;
-  font-size: 11pt;
-  margin-top: 10px;
-  padding-bottom: 15px;
+  font-size: 9pt;
+  margin-top: 6px;
+  padding-bottom: 10px;
   border-bottom: 2px solid #000;
 }
 
 /* Section headers */
 .classic-section h2 {
-  font-size: 12pt;
+  font-size: 10pt;
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin: 18px 0 8px 0;
+  margin: 12px 0 4px 0;
   border-bottom: 1px solid #000;
   padding-bottom: 2px;
 }
 
 /* Experience/Education entries */
 .classic-entry {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .classic-entry-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .classic-entry-title {
   font-weight: bold;
-  font-size: 11pt;
+  font-size: 9pt;
 }
 
 .classic-entry-location {
-  font-size: 11pt;
+  font-size: 9pt;
 }
 
 .classic-entry-subtitle {
   font-style: italic;
-  font-size: 11pt;
-  margin-bottom: 4px;
+  font-size: 9pt;
+  margin-bottom: 2px;
 }
 
 .classic-entry-description {
-  font-size: 10pt;
-  line-height: 1.3;
+  font-size: 8pt;
+  line-height: 1.2;
 }
 
 .classic-entry-description p {
-  margin: 0 0 4px 0;
+  margin: 0 0 2px 0;
   text-align: justify;
 }
 
 .classic-entry-description ul {
-  margin: 4px 0 0 20px;
+  margin: 2px 0 0 18px;
   padding: 0;
   list-style-type: disc;
 }
 
 .classic-entry-description li {
-  margin-bottom: 2px;
+  margin-bottom: 1px;
   text-align: justify;
 }
 

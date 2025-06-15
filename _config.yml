@@ -12,6 +12,7 @@ email: iam.jaewoochoi@gmail.com
 # email_title: Email (Email title override)
 website: https://imjaewoochoi.github.io
 # website_title: Web (Website title override)
+address: Seoul, South Korea
 
 # Dark Mode (true/false/never)
 darkmode: false
@@ -49,15 +50,10 @@ additional_links:
 # gtag: "UA-00000000-0"
 # google_analytics: "UA-00000000-0"
 
-# About Section - COMPLETELY DISABLED
+# About Section
 about_title: ""
 about_content: ""
-# about_profile_image: images/profile.jpg
-
-# About Section
-about_title: "About Me"
 about_profile_image: images/profile.jpg
-about_content: "To obtain a position as an AI & Computer Vision Engineer where I can apply my education and experience in developing computer vision systems for robotics and industrial automation."
 
 content:
   - title: Experience
@@ -88,46 +84,46 @@ content:
     layout: list
     content:
       - layout: left
-        title: Orchard Robotics Dataset
-        sub_title: Large-scale Agricultural Dataset Collection
+        title: "Orchard Robotics: Multi-Modal Dataset & Detection Model"
+        sub_title: Large-scale Agricultural Dataset & AI Model Development
         caption: Apr 2025 - Present
         description: | # this will include new lines to allow paragraphs
-          Led a comprehensive data collection project targeting 5TB of multi-modal agricultural data for orchard robotics applications. Established standardized data annotation protocols and labeling guidelines for fruit detection, tree structure analysis, and environmental conditions. Implemented automated data validation pipelines and quality assurance processes to ensure dataset consistency across diverse orchard environments and seasonal variations.
+          Led 5TB multi-modal agricultural data collection project for orchard robotics. Established standardized annotation protocols and automated validation pipelines. Processed captioning data for multi-modal object detection model development.
 
       - layout: left
         title: Object Tracking
         sub_title: Advanced Object Tracking System
         caption: Mar 2025 - May 2025
         description: | # this will include new lines to allow paragraphs
-          Developed object detection and tracking algorithms for deployment on mobile platforms and actuator systems. Implemented RGB-D camera-based modules utilizing depth information for Bird's Eye View (BEV) tracking to enhance robustness. Optimized model performance through TensorRT optimization for real-time operation on embedded systems in agricultural automation applications.
+          Developed RGB-D camera-based object detection and tracking algorithms for mobile platforms. Implemented BEV tracking with TensorRT optimization for real-time embedded systems operation.
 
       - layout: left
         title: Harvesting Robot
         sub_title: AI-Powered Agricultural Automation
         caption: May 2024 - Dec 2024
         description: | # this will include new lines to allow paragraphs
-          Developed an AI-based agricultural harvesting robot system. Implemented computer vision for recognition and a diffusion-based model for robot path generation, trained on a dataset of 5,000 videos for autonomous driving and harvesting. The integrated system was showcased as part of Daedong's innovative technology exhibit at CES 2025.
+          Developed AI-based agricultural harvesting robot with computer vision recognition and diffusion-based path generation. Trained on 5,000 video dataset and showcased at CES 2025.
 
       - layout: left
         title: Auto Assemble
         sub_title: 3D Vision-Based Assembly System
         caption: Jul 2023 - Mar 2024
         description: | # this will include new lines to allow paragraphs
-          Developed Auto Assembly system leveraging 3D vision without relying on CAD models. Implemented precise object registration using 3D ToF camera with initial absolute pose baseline. Utilized RGB-D camera for object detection and image matching for relative pose estimation. Combined relative pose with initial absolute pose and refined using depth data. Achieved 92% assembly task success rate in real robot environment using 3D ToF Camera, RGB-D Vision, Image Matching, and Pose Estimation.
+          Developed 3D vision-based assembly system without CAD models using ToF and RGB-D cameras. Achieved 92% assembly success rate through precise pose estimation and depth refinement.
 
       - layout: left
         title: Bin Picking
         sub_title: Automated Object Recognition and Picking
         caption: Feb 2023 - Jul 2023
         description: | # this will include new lines to allow paragraphs
-          Implemented automated bin picking system using instance segmentation on self-constructed dataset. Applied precise CAD model-based pose estimation for object recognition. Integrated computer vision algorithms with robotic control systems. Achieved 95% robot picking success rate and 93% overall task completion rate using Instance Segmentation, 3D ToF Camera, CAD-based Pose Estimation, and Robotics Integration.
+          Implemented automated bin picking system with instance segmentation and CAD-based pose estimation. Achieved 95% picking success rate and 93% task completion rate.
 
       - layout: left
         title: Auto Labeling
         sub_title: Autonomous Driving Data Annotation Tool
         caption: Jun 2022 - Dec 2022
         description: | # this will include new lines to allow paragraphs
-          Developed auto-labeling tool for autonomous driving data annotation. Automated bounding box generation for objects including cars, pedestrians, and traffic lights. Leveraged object detection models to streamline data labeling process and significantly reduced manual annotation time for training dataset preparation using Object Detection, Computer Vision, Data Annotation, and Autonomous Driving technologies.
+          Developed auto-labeling tool for autonomous driving data annotation. Automated bounding box generation for vehicles, pedestrians, and traffic lights, significantly reducing manual annotation time.
   - title: Awards & Honors
     layout: list
     content:
@@ -136,28 +132,28 @@ content:
         sub_title: AI-Powered Robot Pose Estimation Technology
         caption: Patent Issued August 8, 2024
         description: | # this will include new lines to allow paragraphs
-          Successfully obtained Korean patent (KOR 1020230187604) for innovative AI-based robot pose estimation system. Advanced system that converts 2D camera images into 3D data for precise robot end effector pose estimation, contributing to enhanced precision in automation and robotic control systems for industrial applications.
+          AI-based robot pose estimation system patent (KOR 1020230187604) for converting 2D images to 3D data for precise robotic control.
 
       - layout: left
         title: UBC Ovarian Cancer Subtype Classification and Outlier Detection (UBC-OCEAN)
         sub_title: Medical Image Analysis Competition
         caption: Bronze Medal · Oct 2023 - Jan 2024
         description: |
-          Solved cancer diagnosis classification problem by building an ensemble model based on Vision Transformer in the Kaggle UBC-OCEAN cancer diagnosis prediction competition. Efficiently learned key features by tiling high-frequency regions from Whole Slide Images (WSI), and maximized model prediction stability and generalization performance by applying 5-Fold cross-validation and TTA (Test-Time Augmentation) techniques.
+          Vision Transformer ensemble model for cancer diagnosis classification using WSI high-frequency region tiling and 5-Fold CV with TTA optimization.
 
       - layout: left
         title: Kaggle Image Matching Challenge 2022
         sub_title: Advanced Image Correspondence Algorithms
         caption: 50th Place · Apr 2022 - Jun 2022
         description: |
-          Achieved 50th place in the Kaggle Image Matching Challenge 2022 by designing a dynamic pipeline that combines deep learning-based DISK with traditional SIFT feature extraction methods. Analyzed image pair characteristics in advance to select optimal algorithms, and effectively removed false matches through sophisticated geometric filtering including MAGSAC, securing high accuracy even under challenging conditions.
+          Dynamic pipeline combining DISK and SIFT feature extraction with MAGSAC geometric filtering for robust image matching under challenging conditions.
 
       - layout: left
         title: Kaggle Happy Whale Competition
         sub_title: Individual Identification of Marine Mammals
         caption: Bronze Medal · Feb 2022 - Apr 2022
         description: | # this will include new lines to allow paragraphs
-          Achieved bronze medal in the Kaggle Happy Whale & Dolphin individual identification competition by designing a two-stage pipeline combining classification and similarity search. Applied ArcFace loss function from face recognition domain to learn high-quality feature embeddings that identify subtle differences between individual specimens. Maximized final accuracy by refining predictions through k-nearest neighbor (k-NN) search within the feature space and distinguishing new individuals.
+          Two-stage pipeline combining classification and similarity search using ArcFace loss function for high-quality embeddings and k-NN refinement.
 
   - title: Education
     layout: list
@@ -198,9 +194,3 @@ exclude : [
   "scripts/",
   "docker-compose.yml",
   ]
-
-# Footer
-footer_show_references: true
-
-# Footer
-footer_show_references: true
