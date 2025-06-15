@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ site.name | escape }} - {{ site.title | escape }}</title>
+  <link rel="stylesheet" href="{{ '/assets/classic-resume.css' | relative_url }}">
+</head>
+<body>
+  <!-- Classic Header -->
+  <div class="classic-header">
+    <div class="email">{{ site.email | escape }}</div>
+    <h1>{{ site.name | escape }}</h1>
+    <div class="address">Seoul, South Korea</div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="classic-content">
+    
+    <!-- Objective Section -->
+    {% if site.about_content %}
+    <div class="classic-section">
+      <h2>Objective</h2>
+      <p>{{ site.about_content | strip_html }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Content Sections -->
+    {% for section in site.content %}
+      <div class="classic-section">
+        <h2>{{ section.title }}</h2>
+        
+        {% if section.layout == "list" %}
+          {% for item in section.content %}
+            <div class="classic-entry">
+              <div class="classic-entry-header">
+                <div class="classic-entry-title">{{ item.title }}</div>
+                <div class="classic-entry-location">{{ item.caption }}</div>
+              </div>
+              {% if item.sub_title %}
+                <div class="classic-entry-subtitle">{{ item.sub_title }}</div>
+              {% endif %}
+              <div class="classic-entry-description">
+                {{ item.description | markdownify }}
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="classic-entry-description">
+            {{ section.content | markdownify }}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+  </div>
+</body>
+</html> 
