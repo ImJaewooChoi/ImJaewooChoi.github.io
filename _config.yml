@@ -85,72 +85,63 @@ content:
     content:
       - layout: left
         title: "Orchard Robotics: Multi-Modal Dataset & Detection Model"
-        sub_title: Large-scale Agricultural Dataset & AI Model Development
         caption: Apr 2025 - Present
         description: | # this will include new lines to allow paragraphs
           Led 5TB multi-modal agricultural data collection project for orchard robotics. Established standardized annotation protocols and automated validation pipelines. Processed captioning data for multi-modal object detection model development.
 
       - layout: left
         title: Object Tracking
-        sub_title: Advanced Object Tracking System
         caption: Mar 2025 - May 2025
         description: | # this will include new lines to allow paragraphs
           Developed RGB-D camera-based object detection and tracking algorithms for mobile platforms. Implemented BEV tracking with TensorRT optimization for real-time embedded systems operation.
 
       - layout: left
         title: Harvesting Robot
-        sub_title: AI-Powered Agricultural Automation
         caption: May 2024 - Dec 2024
         description: | # this will include new lines to allow paragraphs
           Developed AI-based agricultural harvesting robot with computer vision recognition and diffusion-based path generation. Trained on 5,000 video dataset and showcased at CES 2025.
 
       - layout: left
         title: Auto Assemble
-        sub_title: 3D Vision-Based Assembly System
         caption: Jul 2023 - Mar 2024
         description: | # this will include new lines to allow paragraphs
           Developed 3D vision-based assembly system without CAD models using ToF and RGB-D cameras. Achieved 92% assembly success rate through precise pose estimation and depth refinement.
 
       - layout: left
         title: Bin Picking
-        sub_title: Automated Object Recognition and Picking
         caption: Feb 2023 - Jul 2023
         description: | # this will include new lines to allow paragraphs
           Implemented automated bin picking system with instance segmentation and CAD-based pose estimation. Achieved 95% picking success rate and 93% task completion rate.
 
       - layout: left
         title: Auto Labeling
-        sub_title: Autonomous Driving Data Annotation Tool
         caption: Jun 2022 - Dec 2022
         description: | # this will include new lines to allow paragraphs
           Developed auto-labeling tool for autonomous driving data annotation. Automated bounding box generation for vehicles, pedestrians, and traffic lights, significantly reducing manual annotation time.
+
   - title: Awards & Honors
     layout: list
     content:
       - layout: left
         title: Korean Patent Achievement
-        sub_title: AI-Powered Robot Pose Estimation Technology
         caption: Patent Issued August 8, 2024
         description: | # this will include new lines to allow paragraphs
           AI-based robot pose estimation system patent (KOR 1020230187604) for converting 2D images to 3D data for precise robotic control.
 
       - layout: left
         title: UBC Ovarian Cancer Subtype Classification and Outlier Detection (UBC-OCEAN)
-        sub_title: Medical Image Analysis Competition
         caption: Bronze Medal · Oct 2023 - Jan 2024
         description: |
           Vision Transformer ensemble model for cancer diagnosis classification using WSI high-frequency region tiling and 5-Fold CV with TTA optimization.
 
       - layout: left
         title: Kaggle Image Matching Challenge 2022
-        sub_title: Advanced Image Correspondence Algorithms
         caption: 50th Place · Apr 2022 - Jun 2022
         description: |
           Dynamic pipeline combining DISK and SIFT feature extraction with MAGSAC geometric filtering for robust image matching under challenging conditions.
 
       - layout: left
         title: Kaggle Happy Whale Competition
-        sub_title: Individual Identification of Marine Mammals
         caption: Bronze Medal · Feb 2022 - Apr 2022
         description: | # this will include new lines to allow paragraphs
           Two-stage pipeline combining classification and similarity search using ArcFace loss function for high-quality embeddings and k-NN refinement.
