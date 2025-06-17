@@ -136,7 +136,7 @@ content:
 
       - layout: left
         title: Kaggle Image Matching Challenge 2022
-        caption: 50th Place · Apr 2022 - Jun 2022
+        caption: Silver Medal · Apr 2022 - Jun 2022
         description: |
           Dynamic pipeline combining DISK and SIFT feature extraction with MAGSAC geometric filtering for robust image matching under challenging conditions.
 
@@ -157,6 +157,12 @@ content:
           Department of Industrial Management Systems Engineering with Multidisciplinary Major in Big Data Business Intelligence.
           
           GPA: 3.34/4.5
+          
+      - layout: left
+        title: Apgujeong High School
+        caption: 2011 - 2014
+        description: | # this will include new lines to allow paragraphs
+          General high school education
 
 # Footer
 footer_show_references: true
