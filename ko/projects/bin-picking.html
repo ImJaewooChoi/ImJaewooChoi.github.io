@@ -37,9 +37,9 @@
 <main id="content" class="project">
 <p class="kicker">PLAIF, <span class="nobr">Computer Vision Engineer</span>, 2023년 1월부터 2024년 4월</p>
 <h1>CAD‑based Auto Bin Picking</h1>
-<p class="dek">RGB‑D와 CAD geometry로 picking pose를 구합니다. 사내 고정 환경에서 object type 5종을 빈 용기로 옮긴 1,000회 시험의 task success는 89%입니다.</p>
+<p class="dek">RGB‑D와 CAD geometry로 <span class="nobr">picking pose를 구합니다</span>. 사내 고정 환경에서 object type 5종을 빈 용기로 옮긴 1,000회 시험의 task success는 89%입니다.</p>
 <figure class="landscape">
-<video class="landscape" width="1280" height="720" autoplay muted loop playsinline poster="/assets/video/bin-picking.jpg" aria-label="CAD-based bin picking">
+<video class="landscape" width="1280" height="720" muted loop playsinline preload="none" poster="/assets/video/bin-picking.jpg" aria-label="CAD-based bin picking">
 <source src="/assets/video/bin-picking.mp4" type="video/mp4">
 <a href="/assets/video/bin-picking.mp4">MP4 보기</a>
 </video>
@@ -70,13 +70,27 @@
 </div>
 <script>
 (function () {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    document.querySelectorAll("video").forEach(function (v) {
-      v.removeAttribute("autoplay");
-      v.pause();
-      v.controls = true;
+  var videos = document.querySelectorAll("video");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  videos.forEach(function (v) {
+    v.removeAttribute("autoplay");
+    v.muted = true;
+    v.pause();
+    if (reduce) v.controls = true;
+  });
+  if (reduce || !("IntersectionObserver" in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      var v = entry.target;
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+        var pending = v.play();
+        if (pending && pending.catch) pending.catch(function () {});
+      } else {
+        v.pause();
+      }
     });
-  }
+  }, { threshold: [0, 0.25, 0.5, 0.75] });
+  videos.forEach(function (v) { io.observe(v); });
 })();
 </script>
 </body>

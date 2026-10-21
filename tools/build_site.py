@@ -46,7 +46,9 @@ UI = {
         "missing": "Page not found",
         "missing_body": "This address is not on the site.",
         "research": "Research interests",
-        "work": "Research and engineering projects",
+        "work": "Selected work",
+        "other": "Other projects",
+        "details": "Details",
         "experience": "Experience",
         "education": "Education",
         "patent": "Patent",
@@ -67,7 +69,9 @@ UI = {
         "missing": "페이지 없음",
         "missing_body": "이 주소는 사이트에 없습니다.",
         "research": "연구 관심사",
-        "work": "연구 및 엔지니어링 프로젝트",
+        "work": "주요 작업",
+        "other": "다른 프로젝트",
+        "details": "자세히",
         "experience": "경력",
         "education": "학력",
         "patent": "특허",
@@ -639,13 +643,27 @@ def footer(lang):
 def script():
     return """<script>
 (function () {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    document.querySelectorAll("video").forEach(function (v) {
-      v.removeAttribute("autoplay");
-      v.pause();
-      v.controls = true;
+  var videos = document.querySelectorAll("video");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  videos.forEach(function (v) {
+    v.removeAttribute("autoplay");
+    v.muted = true;
+    v.pause();
+    if (reduce) v.controls = true;
+  });
+  if (reduce || !("IntersectionObserver" in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      var v = entry.target;
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+        var pending = v.play();
+        if (pending && pending.catch) pending.catch(function () {});
+      } else {
+        v.pause();
+      }
     });
-  }
+  }, { threshold: [0, 0.25, 0.5, 0.75] });
+  videos.forEach(function (v) { io.observe(v); });
 })();
 </script>"""
 
@@ -659,19 +677,19 @@ def mast(lang, en_path, ko_path, show_name):
 </header>"""
 
 
-def video_html(key, lang):
+def video_html(key, lang, caption=True):
     v = VIDEOS[key]
     portrait = v["orient"] == "portrait"
     cls = "portrait" if portrait else "landscape"
     fig = "portrait" if portrait else "landscape"
     src = f"/assets/video/{v['file']}.mp4"
     poster = f"/assets/video/{v['file']}.jpg"
+    cap = f"\n<figcaption>{v['cap'][lang]}</figcaption>" if caption else ""
     return f"""<figure class="{fig}">
-<video class="{cls}" width="{v['w']}" height="{v['h']}" autoplay muted loop playsinline poster="{poster}" aria-label="{esc(v['label'][lang])}">
+<video class="{cls}" width="{v['w']}" height="{v['h']}" muted loop playsinline preload="none" poster="{poster}" aria-label="{esc(v['label'][lang])}">
 <source src="{src}" type="video/mp4">
 <a href="{src}">{esc(UI[lang]['watch'])}</a>
-</video>
-<figcaption>{v['cap'][lang]}</figcaption>
+</video>{cap}
 </figure>"""
 
 
@@ -695,6 +713,82 @@ def entry_html(project, lang):
 </article>"""
 
 
+FEATURED = [
+    {
+        "slug": "strawberry-cultivation",
+        "tall": True,
+        "result": {
+            "en": "Fixed lab, 1,000 trials: 93.8% transplanting, 87.5% flower thinning, 65% runner handling.",
+            "ko": "고정 실험실, 1,000회: transplanting 93.8%, flower thinning 87.5%, runner handling 65%.",
+        },
+        "did": {
+            "en": "I led the data pipeline and the policy training on UMI demonstrations. Exhibited at CES 2025.",
+            "ko": "세 작업의 data pipeline과 policy 학습을 맡았습니다. CES 2025에 전시했습니다.",
+        },
+    },
+    {
+        "slug": "cad-free-assembly",
+        "tall": False,
+        "result": {
+            "en": "93% task success across 1,000 in-house trials. Basis of Korean Patent 10-2694987.",
+            "ko": '사내 1,000회 시험, task success 93%. <span class="nobr">한국 특허 10-2694987</span>의 기반.',
+        },
+        "did": {
+            "en": "6D tool poses for assembly from a 2D camera, with no CAD model of the part.",
+            "ko": "부품 CAD 없이 2D camera로 조립용 6D tool pose를 구합니다.",
+        },
+    },
+    {
+        "slug": "bin-picking",
+        "tall": False,
+        "result": {
+            "en": "89% task success across 1,000 in-house trials. Fixed environment, five object types moved into an empty container.",
+            "ko": "사내 고정 환경, object type 5종을 빈 용기로 옮긴 1,000회. task success 89%.",
+        },
+        "did": {
+            "en": "Picking poses from RGB-D images and known CAD geometry.",
+            "ko": "RGB-D와 CAD geometry로 picking pose를 구합니다.",
+        },
+    },
+]
+
+
+def feature_html(spec, lang):
+    ui = UI[lang]
+    project = next(p for p in PROJECTS if p["slug"] == spec["slug"])
+    href = project_href(lang, project["slug"])
+    tall = " feature-tall" if spec["tall"] else ""
+    return f"""<article class="feature{tall}">
+{video_html(project["video"], lang, caption=False)}
+<div class="feature-copy">
+<h3><a href="{href}">{esc(project["title"][lang])}</a></h3>
+<p class="result">{spec["result"][lang]}</p>
+<p class="did">{spec["did"][lang]}</p>
+<p class="more"><a href="{href}">{esc(ui["details"])}</a></p>
+</div>
+</article>"""
+
+
+def roster_html(lang):
+    featured = {spec["slug"] for spec in FEATURED}
+    items = []
+    for project in PROJECTS:
+        if project["slug"] in featured:
+            continue
+        group = next(g for g in GROUPS if g["id"] == project["group"])
+        href = project_href(lang, project["slug"])
+        items.append(
+            f"""<li>
+<a href="{href}">
+<span class="roster-title">{esc(project["title"][lang])}</span>
+<span class="roster-when">{esc(group["org"])}, {esc(group["when"][lang])}</span>
+<span class="roster-sum">{esc(project["desc"][lang])}</span>
+</a>
+</li>"""
+        )
+    return '<ul class="roster">\n' + "\n".join(items) + "\n</ul>"
+
+
 def home_page(lang):
     ui = UI[lang]
     path = home_href(lang)
@@ -702,7 +796,7 @@ def home_page(lang):
     if lang == "en":
         title = "Jaewoo Choi, Senior AI Researcher"
         desc = "Senior AI Researcher at Daedong AILab. Open-vocabulary perception, 6D pose, and imitation learning for orchard and manipulation robots."
-        bio = """<p class="bio">I work on perception for orchard robots and for manipulation robots. I was a computer vision engineer at PLAIF and at FS Solution before Daedong AILab.</p>"""
+        focus = """<p class="focus">Open-vocabulary perception, 6D pose, and imitation learning for orchard and manipulation robots.</p>"""
         research = """<p class="measure">I work on perception for real robots: open-vocabulary RGB-D segmentation, point-cloud and image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. I have developed and tested this work on deployed orchard robots and on manipulation robots. I want to extend it toward vision-language-action models that connect what a robot sees with how it acts.</p>"""
         edu = """<article>
 <h3>Seokyeong University</h3>
@@ -737,7 +831,7 @@ def home_page(lang):
     else:
         title = "Jaewoo Choi, Senior AI Researcher"
         desc = "Daedong AILab Senior AI Researcher. 과수원 로봇과 manipulation 로봇의 open-vocabulary perception, 6D pose, imitation learning."
-        bio = """<p class="bio">과수원 로봇과 manipulation 로봇의 perception을 연구합니다. Daedong AILab 이전에는 PLAIF와 FS Solution에서 Computer Vision Engineer로 일했습니다.</p>"""
+        focus = """<p class="focus">과수원 로봇과 manipulation 로봇의 open-vocabulary perception, 6D pose, imitation learning을 연구합니다.</p>"""
         research = """<p class="measure">실제 로봇의 perception을 다룹니다. 주제는 open-vocabulary RGB-D segmentation, 장애물 매핑을 위한 point cloud와 image의 fusion, 6D pose estimation, manipulation을 위한 imitation learning입니다. 배치된 과수원 로봇과 manipulation 로봇에서 이 작업을 개발하고 시험했습니다. 로봇이 본 것과 행동을 잇는 vision-language-action model로 확장하고 싶습니다.</p>"""
         edu = """<article>
 <h3>Seokyeong University</h3>
@@ -770,17 +864,8 @@ def home_page(lang):
 <p><a href="{WHALE}">kaggle_happy_whale</a></p>
 </article>"""
 
-    groups_html = []
-    for group in GROUPS:
-        items = [p for p in PROJECTS if p["group"] == group["id"]]
-        blocks = "\n".join(entry_html(p, lang) for p in items)
-        groups_html.append(
-            f"""<div class="group-head">
-<h3>{esc(group['org'])}</h3>
-<p>{esc(group['role'][lang])}, {esc(group['when'][lang])}</p>
-</div>
-{blocks}"""
-        )
+    features = "\n".join(feature_html(spec, lang) for spec in FEATURED)
+    roster = roster_html(lang)
 
     exp_blocks = []
     for group in GROUPS:
@@ -814,16 +899,20 @@ def home_page(lang):
 <h1>Jaewoo Choi</h1>
 <p class="role">{esc(role)}</p>
 <p class="loc">{esc(loc)}</p>
+{focus}
 {contact_html()}
-{bio}
 </header>
+<section id="projects">
+<h2>{esc(ui['work'])}</h2>
+{features}
+</section>
+<section id="other">
+<h2>{esc(ui['other'])}</h2>
+{roster}
+</section>
 <section id="research">
 <h2>{esc(ui['research'])}</h2>
 {research}
-</section>
-<section id="projects">
-<h2>{esc(ui['work'])}</h2>
-{''.join(groups_html)}
 </section>
 <section id="experience">
 <h2>{esc(ui['experience'])}</h2>
@@ -962,10 +1051,22 @@ PHRASES = (
     "Computer Vision Engineer로",
     "computer vision engineer",
     "Computer Vision Engineer",
+    "딸기 재배 작업 로봇",
+    "6D tool pose를 구합니다",
+    "picking pose를 구합니다",
+    "학습을 맡았습니다",
+    "known CAD geometry",
+    "65% runner handling",
+    "runner handling 65%",
+    "into an empty container",
+    "five object types",
     "Daedong AILab",
     "FS Solution",
     "Jetson Nano",
     "Seokyeong University",
+    "flower thinning",
+    "runner handling",
+    "object types",
 )
 
 

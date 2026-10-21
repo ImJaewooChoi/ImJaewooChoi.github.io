@@ -37,94 +37,100 @@
 <h1>Jaewoo Choi</h1>
 <p class="role">Senior AI Researcher, <span class="nobr">Daedong AILab</span></p>
 <p class="loc">Seoul, South Korea</p>
+<p class="focus">Open‑vocabulary perception, 6D pose, and imitation learning for orchard and manipulation robots.</p>
 <ul class="contact">
 <li><a class="mail" href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
 <li class="profiles"><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
 </ul>
-<p class="bio">I work on perception for orchard robots and for manipulation robots. I was a <span class="nobr">computer vision engineer</span> at PLAIF and at <span class="nobr">FS Solution</span> before <span class="nobr">Daedong AILab</span>.</p>
 </header>
-<section id="research">
-<h2>Research interests</h2>
-<p class="measure">I work on perception for real robots: open‑vocabulary RGB‑D segmentation, point‑cloud and image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. I have developed and tested this work on deployed orchard robots and on manipulation robots. I want to extend it toward vision‑language‑action models that connect what a robot sees with how it acts.</p>
-</section>
 <section id="projects">
-<h2>Research and engineering projects</h2>
-<div class="group-head">
-<h3><span class="nobr">Daedong AILab</span></h3>
-<p>Senior AI Researcher, May 2024 to present</p>
-</div>
-<article class="entry">
-<h3><a href="/projects/language-distilled-segmentation.html">Language‑Distilled Open‑Vocabulary Instance Segmentation for Orchard Robots</a></h3>
-<p>Open‑vocabulary instance segmenter for the RT100 orchard platform. Language‑teacher supervision is used in training only, so inference cost does not go up.</p>
-<p class="tools">Open‑vocabulary segmentation, DETR, DINOv3</p>
-<!-- Media can be added later. -->
-</article>
-<article class="entry">
-<h3><a href="/projects/orchard-obstacle-mapping.html">Open‑Vocabulary 3D Obstacle Perception and Occupancy Mapping for Autonomous Orchard Robots</a></h3>
-<p>Open‑set obstacles are segmented and written into an occupancy grid. The pipeline runs on production RT100 robots with TensorRT on <span class="nobr">Jetson Nano</span>.</p>
-<p class="tools">3D perception, TensorRT, <span class="nobr">Jetson Nano</span></p>
-<!-- Media can be added later. -->
-</article>
-<article class="entry">
-<h3><a href="/projects/auto-labeling.html">Auto‑Labeling and Data Captioning System</a></h3>
-<p>Point prompts and mask corrections become tracked masks. Qwen‑series models write region‑grounded captions. Per‑image labeling cost fell from about USD 1.05 to about USD 0.036.</p>
-<p class="tools">Auto‑labeling, TensorRT, Qwen</p>
-<!-- Media can be added later. -->
-</article>
-<article class="entry has-video">
-<h3><a href="/projects/strawberry-cultivation.html">Strawberry Cultivation‑Task Robot with UMI and Diffusion Policy</a></h3>
-<p>Diffusion Policy trained on UMI demonstrations. In a fixed lab, across 1,000 trials, success was 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. Exhibited at CES 2025.</p>
-<p class="tools">Imitation learning, UMI, Diffusion Policy</p>
+<h2>Selected work</h2>
+<article class="feature feature-tall">
 <figure class="portrait">
-<video class="portrait" width="540" height="960" autoplay muted loop playsinline poster="/assets/video/strawberry-ces2025.jpg" aria-label="Flower thinning at the CES 2025 booth">
+<video class="portrait" width="540" height="960" muted loop playsinline preload="none" poster="/assets/video/strawberry-ces2025.jpg" aria-label="Flower thinning at the CES 2025 booth">
 <source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
 <a href="/assets/video/strawberry-ces2025.mp4">Watch the MP4</a>
 </video>
-<figcaption>Silent. Flower thinning at the CES 2025 booth.</figcaption>
 </figure>
-</article><div class="group-head">
-<h3>PLAIF</h3>
-<p><span class="nobr">Computer Vision Engineer</span>, Jan 2023 to Apr 2024</p>
+<div class="feature-copy">
+<h3><a href="/projects/strawberry-cultivation.html">Strawberry Cultivation‑Task Robot with UMI and Diffusion Policy</a></h3>
+<p class="result">Fixed lab, 1,000 trials: 93.8% transplanting, 87.5% <span class="nobr">flower thinning</span>, <span class="nobr">65% <span class="nobr">runner handling</span></span>.</p>
+<p class="did">I led the data pipeline and the policy training on UMI demonstrations. Exhibited at CES 2025.</p>
+<p class="more"><a href="/projects/strawberry-cultivation.html">Details</a></p>
 </div>
-<article class="entry has-video">
-<h3><a href="/projects/cad-free-assembly.html">CAD‑free Auto Assembly</a></h3>
-<p>6D tool poses for assembly from a 2D camera, with no CAD model of the part. 93% task success across 1,000 in‑house trials. Basis of Korean Patent 10‑2694987.</p>
-<p class="tools">6D pose, LightGlue, RANSAC</p>
+</article>
+<article class="feature">
 <figure class="landscape">
-<video class="landscape" width="1280" height="720" autoplay muted loop playsinline poster="/assets/video/cad-free-assembly.jpg" aria-label="CAD-free auto assembly on a UR arm">
+<video class="landscape" width="1280" height="720" muted loop playsinline preload="none" poster="/assets/video/cad-free-assembly.jpg" aria-label="CAD-free auto assembly on a UR arm">
 <source src="/assets/video/cad-free-assembly.mp4" type="video/mp4">
 <a href="/assets/video/cad-free-assembly.mp4">Watch the MP4</a>
 </video>
-<figcaption>Silent. UR arm with a gripper and wrist camera, assembling a part on a fixture.</figcaption>
 </figure>
+<div class="feature-copy">
+<h3><a href="/projects/cad-free-assembly.html">CAD‑free Auto Assembly</a></h3>
+<p class="result">93% task success across 1,000 in‑house trials. Basis of Korean Patent 10‑2694987.</p>
+<p class="did">6D tool poses for assembly from a 2D camera, with no CAD model of the part.</p>
+<p class="more"><a href="/projects/cad-free-assembly.html">Details</a></p>
+</div>
 </article>
-<article class="entry has-video">
-<h3><a href="/projects/bin-picking.html">CAD‑based Auto Bin Picking</a></h3>
-<p>Picking poses from RGB‑D images and known CAD geometry. 89% task success in 1,000 in‑house, fixed‑environment trials, moving five object types into an empty container.</p>
-<p class="tools">6D pose, bin picking, Mask R‑CNN</p>
+<article class="feature">
 <figure class="landscape">
-<video class="landscape" width="1280" height="720" autoplay muted loop playsinline poster="/assets/video/bin-picking.jpg" aria-label="CAD-based bin picking">
+<video class="landscape" width="1280" height="720" muted loop playsinline preload="none" poster="/assets/video/bin-picking.jpg" aria-label="CAD-based bin picking">
 <source src="/assets/video/bin-picking.mp4" type="video/mp4">
 <a href="/assets/video/bin-picking.mp4">Watch the MP4</a>
 </video>
-<figcaption>Silent. A ring‑scan close‑up, then a Doosan cobot picking, then a green‑bin close‑up.</figcaption>
 </figure>
-</article>
-<article class="entry">
-<h3><a href="/projects/ros-6d-vision.html">ROS 6D Vision Server and Hand‑Eye Calibration Tools</a></h3>
-<p>A ROS action server runs capture, segmentation, and pose estimation per request, and returns robot‑base and camera‑frame poses. Eye‑to‑hand calibration tools sit beside it.</p>
-<p class="tools">6D pose, ROS, hand‑eye calibration</p>
-<!-- Media can be added later. -->
-</article><div class="group-head">
-<h3><span class="nobr">FS Solution</span> Co., Ltd.</h3>
-<p><span class="nobr">Computer Vision Engineer</span>, May 2022 to Dec 2022</p>
+<div class="feature-copy">
+<h3><a href="/projects/bin-picking.html">CAD‑based Auto Bin Picking</a></h3>
+<p class="result">89% task success across 1,000 in‑house trials. Fixed environment, <span class="nobr">five <span class="nobr">object types</span></span> moved <span class="nobr">into an empty container</span>.</p>
+<p class="did">Picking poses from RGB‑D images and <span class="nobr">known CAD geometry</span>.</p>
+<p class="more"><a href="/projects/bin-picking.html">Details</a></p>
 </div>
-<article class="entry">
-<h3><a href="/projects/license-plate.html">Car License Plate Recognition</a></h3>
-<p>Object detection locates the plate. OCR reads the letters and digits.</p>
-<p class="tools">Detection, OCR</p>
-<!-- Media can be added later. -->
 </article>
+</section>
+<section id="other">
+<h2>Other projects</h2>
+<ul class="roster">
+<li>
+<a href="/projects/language-distilled-segmentation.html">
+<span class="roster-title">Language‑Distilled Open‑Vocabulary Instance Segmentation for Orchard Robots</span>
+<span class="roster-when"><span class="nobr">Daedong AILab</span>, May 2024 to present</span>
+<span class="roster-sum">Open‑vocabulary instance segmenter for the RT100 orchard platform, trained with a language teacher and no added inference cost.</span>
+</a>
+</li>
+<li>
+<a href="/projects/orchard-obstacle-mapping.html">
+<span class="roster-title">Open‑Vocabulary 3D Obstacle Perception and Occupancy Mapping for Autonomous Orchard Robots</span>
+<span class="roster-when"><span class="nobr">Daedong AILab</span>, May 2024 to present</span>
+<span class="roster-sum">Open‑set obstacle perception for orchard robots, mapped to an occupancy grid and deployed on RT100 with TensorRT on <span class="nobr">Jetson Nano</span>.</span>
+</a>
+</li>
+<li>
+<a href="/projects/auto-labeling.html">
+<span class="roster-title">Auto‑Labeling and Data Captioning System</span>
+<span class="roster-when"><span class="nobr">Daedong AILab</span>, May 2024 to present</span>
+<span class="roster-sum">Video auto‑labeling and region‑grounded captioning. Per‑image labeling cost fell from about USD 1.05 to about USD 0.036.</span>
+</a>
+</li>
+<li>
+<a href="/projects/ros-6d-vision.html">
+<span class="roster-title">ROS 6D Vision Server and Hand‑Eye Calibration Tools</span>
+<span class="roster-when">PLAIF, Jan 2023 to Apr 2024</span>
+<span class="roster-sum">ROS action server for capture, segmentation, and 6D pose, plus eye‑to‑hand calibration tools for Zivid and RealSense.</span>
+</a>
+</li>
+<li>
+<a href="/projects/license-plate.html">
+<span class="roster-title">Car License Plate Recognition</span>
+<span class="roster-when"><span class="nobr">FS Solution</span> Co., Ltd., May 2022 to Dec 2022</span>
+<span class="roster-sum">License plate pipeline: object detection locates the plate, OCR reads the letters and digits.</span>
+</a>
+</li>
+</ul>
+</section>
+<section id="research">
+<h2>Research interests</h2>
+<p class="measure">I work on perception for real robots: open‑vocabulary RGB‑D segmentation, point‑cloud and image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. I have developed and tested this work on deployed orchard robots and on manipulation robots. I want to extend it toward vision‑language‑action models that connect what a robot sees with how it acts.</p>
 </section>
 <section id="experience">
 <h2>Experience</h2>
@@ -214,13 +220,27 @@
 </div>
 <script>
 (function () {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    document.querySelectorAll("video").forEach(function (v) {
-      v.removeAttribute("autoplay");
-      v.pause();
-      v.controls = true;
+  var videos = document.querySelectorAll("video");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  videos.forEach(function (v) {
+    v.removeAttribute("autoplay");
+    v.muted = true;
+    v.pause();
+    if (reduce) v.controls = true;
+  });
+  if (reduce || !("IntersectionObserver" in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      var v = entry.target;
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+        var pending = v.play();
+        if (pending && pending.catch) pending.catch(function () {});
+      } else {
+        v.pause();
+      }
     });
-  }
+  }, { threshold: [0, 0.25, 0.5, 0.75] });
+  videos.forEach(function (v) { io.observe(v); });
 })();
 </script>
 </body>

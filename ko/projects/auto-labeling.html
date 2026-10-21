@@ -53,7 +53,7 @@
 </div>
 <nav class="pager" aria-label="인접 프로젝트">
 <a class="pager-prev" href="/ko/projects/orchard-obstacle-mapping.html"><span class="pager-label">이전</span> 자율 과수원 로봇의 Open‑Vocabulary 3D Obstacle Perception과 Occupancy Mapping</a>
-<a class="pager-next" href="/ko/projects/strawberry-cultivation.html"><span class="pager-label">다음</span> UMI와 Diffusion Policy를 쓴 딸기 재배 작업 로봇</a>
+<a class="pager-next" href="/ko/projects/strawberry-cultivation.html"><span class="pager-label">다음</span> UMI와 Diffusion Policy를 쓴 <span class="nobr">딸기 재배 작업 로봇</span></a>
 </nav>
 <p class="back"><a href="/ko/#projects">프로젝트</a></p>
 </main>
@@ -67,13 +67,27 @@
 </div>
 <script>
 (function () {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    document.querySelectorAll("video").forEach(function (v) {
-      v.removeAttribute("autoplay");
-      v.pause();
-      v.controls = true;
+  var videos = document.querySelectorAll("video");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  videos.forEach(function (v) {
+    v.removeAttribute("autoplay");
+    v.muted = true;
+    v.pause();
+    if (reduce) v.controls = true;
+  });
+  if (reduce || !("IntersectionObserver" in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      var v = entry.target;
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+        var pending = v.play();
+        if (pending && pending.catch) pending.catch(function () {});
+      } else {
+        v.pause();
+      }
     });
-  }
+  }, { threshold: [0, 0.25, 0.5, 0.75] });
+  videos.forEach(function (v) { io.observe(v); });
 })();
 </script>
 </body>

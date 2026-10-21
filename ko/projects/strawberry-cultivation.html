@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>UMI와 Diffusion Policy를 쓴 딸기 재배 작업 로봇, Jaewoo Choi</title>
+<title>UMI와 Diffusion Policy를 쓴 <span class="nobr">딸기 재배 작업 로봇</span>, Jaewoo Choi</title>
 <meta name="description" content="딸기 재배 세 작업의 UMI 시연과 Diffusion Policy. 고정 실험실 1,000회: transplanting 93.8%, flower thinning 87.5%, runner handling 65%. CES 2025 전시.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
@@ -36,22 +36,22 @@
 </header>
 <main id="content" class="project">
 <p class="kicker"><span class="nobr">Daedong AILab</span>, Senior AI Researcher, 2024년 5월부터 현재</p>
-<h1>UMI와 Diffusion Policy를 쓴 딸기 재배 작업 로봇</h1>
-<p class="dek">UMI 시연으로 Diffusion Policy를 학습했습니다. 고정 실험실, 1,000회 시험의 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%입니다. CES 2025에 전시했습니다.</p>
+<h1>UMI와 Diffusion Policy를 쓴 <span class="nobr">딸기 재배 작업 로봇</span></h1>
+<p class="dek">UMI 시연으로 Diffusion Policy를 학습했습니다. 고정 실험실, 1,000회 시험의 성공률은 transplanting 93.8%, <span class="nobr">flower thinning</span> 87.5%, <span class="nobr"><span class="nobr">runner handling</span> 65%</span>입니다. CES 2025에 전시했습니다.</p>
 <figure class="portrait">
-<video class="portrait" width="540" height="960" autoplay muted loop playsinline poster="/assets/video/strawberry-ces2025.jpg" aria-label="CES 2025 부스의 flower thinning">
+<video class="portrait" width="540" height="960" muted loop playsinline preload="none" poster="/assets/video/strawberry-ces2025.jpg" aria-label="CES 2025 부스의 flower thinning">
 <source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
 <a href="/assets/video/strawberry-ces2025.mp4">MP4 보기</a>
 </video>
-<figcaption>무음. CES 2025 부스에서 flower thinning을 합니다.</figcaption>
+<figcaption>무음. CES 2025 부스에서 <span class="nobr">flower thinning</span>을 합니다.</figcaption>
 </figure>
 <div class="prose">
 <h2>문제</h2>
-<p>사람 시연으로 딸기 재배 세 작업을 학습했습니다. Transplanting, flower thinning, runner handling입니다. 시연은 Universal Manipulation Interface(UMI)로 모았고, 세 작업 모두 data pipeline과 policy 학습을 맡았습니다.</p>
+<p>사람 시연으로 딸기 재배 세 작업을 학습했습니다. Transplanting, <span class="nobr">flower thinning</span>, <span class="nobr">runner handling</span>입니다. 시연은 Universal Manipulation Interface(UMI)로 모았고, 세 작업 모두 data pipeline과 policy <span class="nobr">학습을 맡았습니다</span>.</p>
 <h2>방법</h2>
 <p>GoPro RGB와 IMU 데이터를 수집한 뒤 camera‑IMU calibration을 했고, ORB‑SLAM3 visual‑inertial SLAM trajectory를 학습 데이터로 만들었습니다. RGB feature와 robot state를 global conditioning으로 Diffusion Policy를 학습했고, U‑Net과 ViT 구성을 비교했습니다.</p>
 <h2>결과</h2>
-<p>고정된 실험실에서 1,000회 시험했습니다. 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%입니다. CES 2025에 전시했습니다.</p>
+<p>고정된 실험실에서 1,000회 시험했습니다. 성공률은 transplanting 93.8%, <span class="nobr">flower thinning</span> 87.5%, <span class="nobr"><span class="nobr">runner handling</span> 65%</span>입니다. CES 2025에 전시했습니다.</p>
 <h2>기술</h2>
 <p class="stack">UMI, GoPro, IMU, ORB‑SLAM3, Diffusion Policy, U‑Net, ViT.</p>
 </div>
@@ -71,13 +71,27 @@
 </div>
 <script>
 (function () {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    document.querySelectorAll("video").forEach(function (v) {
-      v.removeAttribute("autoplay");
-      v.pause();
-      v.controls = true;
+  var videos = document.querySelectorAll("video");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  videos.forEach(function (v) {
+    v.removeAttribute("autoplay");
+    v.muted = true;
+    v.pause();
+    if (reduce) v.controls = true;
+  });
+  if (reduce || !("IntersectionObserver" in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      var v = entry.target;
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+        var pending = v.play();
+        if (pending && pending.catch) pending.catch(function () {});
+      } else {
+        v.pause();
+      }
     });
-  }
+  }, { threshold: [0, 0.25, 0.5, 0.75] });
+  videos.forEach(function (v) { io.observe(v); });
 })();
 </script>
 </body>
