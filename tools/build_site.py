@@ -1064,6 +1064,7 @@ PHRASES = (
     "FS Solution",
     "Jetson Nano",
     "Seokyeong University",
+    "imitation learning",
     "flower thinning",
     "runner handling",
     "object types",

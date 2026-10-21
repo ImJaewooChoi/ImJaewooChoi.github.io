@@ -350,6 +350,21 @@ a.mail {
   margin-top: 0.7rem;
 }
 
+/* Phone: the 9:16 clip stays 9:16 and shrinks from the height, so the
+   title and result still fit under it. 16:9 clips stay full width. */
+@media (max-width: 600px) {
+  .feature figure.portrait {
+    display: flex;
+    justify-content: center;
+  }
+
+  .feature video.portrait {
+    width: min(100%, calc(60svh * 9 / 16), calc((100svh - 37.5rem) * 9 / 16));
+    height: auto;
+    aspect-ratio: 540 / 960;
+  }
+}
+
 @media (min-width: 760px) {
   .feature,
   .feature-tall {
