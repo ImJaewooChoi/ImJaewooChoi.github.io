@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auto-Labeling과 Data Captioning 시스템, Jaewoo Choi</title>
+<meta name="description" content="Video auto-labeling과 region caption. 이미지당 labeling 비용이 약 USD 1.05에서 약 USD 0.036으로 줄었습니다.">
+<meta name="author" content="Jaewoo Choi">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161b1f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://imjaewoochoi.github.io/ko/projects/auto-labeling.html">
+<link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
+<link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/auto-labeling.html">
+<link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
+<meta property="og:title" content="Auto-Labeling과 Data Captioning 시스템, Jaewoo Choi">
+<meta property="og:description" content="Video auto-labeling과 region caption. 이미지당 labeling 비용이 약 USD 1.05에서 약 USD 0.036으로 줄었습니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://imjaewoochoi.github.io/ko/projects/auto-labeling.html">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://imjaewoochoi.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Jaewoo Choi, Senior AI Researcher, Daedong AILab">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Auto-Labeling과 Data Captioning 시스템, Jaewoo Choi">
+<meta name="twitter:description" content="Video auto-labeling과 region caption. 이미지당 labeling 비용이 약 USD 1.05에서 약 USD 0.036으로 줄었습니다.">
+<meta name="twitter:image" content="https://imjaewoochoi.github.io/assets/og.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#content">본문으로</a>
+<div class="wrap">
+<header class="mast">
+<a class="name" href="/ko/">Jaewoo Choi</a>
+<nav>
+<a href="/ko/#research">연구</a>
+<a href="/ko/#projects">프로젝트</a>
+<a href="/ko/#experience">경력</a>
+<a href="/ko/#education">학력</a>
+<a href="/ko/#patent">특허</a>
+<a href="/ko/#awards">수상</a>
+<!-- CV PDF는 나중에 /cv.pdf 에 넣습니다. -->
+<a href="/cv.pdf">CV</a>
+</nav>
+<p class="langs"><a href="/projects/auto-labeling.html" hreflang="en" lang="en">EN</a><span class="sep">|</span><a href="/ko/projects/auto-labeling.html" hreflang="ko" lang="ko" aria-current="page">한국어</a></p>
+</header>
+<main id="content" class="project">
+<p class="kicker">Daedong AILab, Senior AI Researcher, 2024년 5월부터 현재</p>
+<h1>Auto-Labeling과 Data Captioning 시스템</h1>
+<p class="dek">Point prompt와 mask correction을 tracked mask로 바꿉니다. Qwen 계열 모델이 region caption을 답니다. 이미지당 비용은 약 USD 1.05에서 약 USD 0.036입니다.</p>
+<!-- 미디어는 나중에 넣습니다. -->
+<div class="slot">
+<p>미디어 없음</p>
+</div>
+<div class="prose">
+<h2>문제</h2>
+<p>수작업 annotation 비용 때문에 segmentation 학습 데이터와 region-grounded vision-language 학습 데이터가 부족합니다.</p>
+<h2>방법</h2>
+<p>Video auto-labeling pipeline을 만들었습니다. Point prompt와 mask correction은 frame 사이에서 ID가 유지되는 tracked mask가 되고, image 입력과 video 입력은 TensorRT engine을 공유합니다. 같은 연산을 두 번 하지 않습니다.</p>
+<p>Qwen 계열 vision-language model이 region-grounded object description을 만들고 검증합니다. 불확실한 경우는 두 번째 검토로 보내고, 검증된 description은 instance annotation에 연결합니다.</p>
+<p>Label taxonomy와 annotation guideline을 정하고 COCO format 학습 데이터셋을 만들었습니다.</p>
+<h2>결과</h2>
+<p>이미지당 labeling 비용은 약 USD 1.05였습니다. 약 USD 0.036으로 줄었고, 감소율은 96.6%입니다.</p>
+<h2>기술</h2>
+<p>TensorRT, Qwen 계열 vision-language model, COCO.</p>
+</div>
+<p class="back"><a href="/ko/#projects">프로젝트</a></p>
+</main>
+<footer class="colophon">
+<p>2026년 10월 21일 업데이트</p>
+<ul class="contact">
+<li><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
+<li><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a></li>
+<li><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a></li>
+<li><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
+</ul>
+</footer>
+</div>
+<script>
+(function () {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.querySelectorAll("video").forEach(function (v) {
+      v.removeAttribute("autoplay");
+      v.pause();
+    });
+  }
+})();
+</script>
+</body>
+</html>

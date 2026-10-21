@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jaewoo Choi, Senior AI Researcher</title>
+<meta name="description" content="Daedong AILab Senior AI Researcher. 과수원 로봇과 manipulation 로봇의 open-vocabulary perception, 6D pose, imitation learning.">
+<meta name="author" content="Jaewoo Choi">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161b1f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://imjaewoochoi.github.io/ko/">
+<link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/">
+<link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/">
+<link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/">
+<meta property="og:title" content="Jaewoo Choi, Senior AI Researcher">
+<meta property="og:description" content="Daedong AILab Senior AI Researcher. 과수원 로봇과 manipulation 로봇의 open-vocabulary perception, 6D pose, imitation learning.">
+<meta property="og:type" content="profile">
+<meta property="og:url" content="https://imjaewoochoi.github.io/ko/">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://imjaewoochoi.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Jaewoo Choi, Senior AI Researcher, Daedong AILab">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jaewoo Choi, Senior AI Researcher">
+<meta name="twitter:description" content="Daedong AILab Senior AI Researcher. 과수원 로봇과 manipulation 로봇의 open-vocabulary perception, 6D pose, imitation learning.">
+<meta name="twitter:image" content="https://imjaewoochoi.github.io/assets/og.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#content">본문으로</a>
+<div class="wrap">
+<header class="mast">
+
+<nav>
+<a href="/ko/#research">연구</a>
+<a href="/ko/#projects">프로젝트</a>
+<a href="/ko/#experience">경력</a>
+<a href="/ko/#education">학력</a>
+<a href="/ko/#patent">특허</a>
+<a href="/ko/#awards">수상</a>
+<!-- CV PDF는 나중에 /cv.pdf 에 넣습니다. -->
+<a href="/cv.pdf">CV</a>
+</nav>
+<p class="langs"><a href="/" hreflang="en" lang="en">EN</a><span class="sep">|</span><a href="/ko/" hreflang="ko" lang="ko" aria-current="page">한국어</a></p>
+</header>
+<main id="content">
+<header class="intro">
+<h1>Jaewoo Choi</h1>
+<p class="role">Senior AI Researcher, Daedong AILab</p>
+<p class="loc">서울, 대한민국</p>
+<ul class="contact">
+<li><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
+<li><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a></li>
+<li><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a></li>
+<li><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
+</ul>
+<p class="bio">과수원 로봇과 manipulation 로봇의 perception을 연구합니다. Daedong AILab 이전에는 PLAIF와 FS Solution에서 Computer Vision Engineer로 일했습니다.</p>
+</header>
+<section id="research">
+<h2>연구 관심</h2>
+<p class="measure">실제 로봇의 perception을 다룹니다. 주제는 open-vocabulary RGB-D segmentation, 장애물 매핑을 위한 point cloud와 image의 fusion, 6D pose estimation, manipulation을 위한 imitation learning입니다. 배치된 과수원 로봇과 manipulation 로봇에서 이 작업을 개발하고 시험했습니다. 로봇이 본 것과 행동을 잇는 vision-language-action model로 확장하고 싶습니다.</p>
+</section>
+<section id="projects">
+<h2>연구 및 엔지니어링 프로젝트</h2>
+<div class="group-head">
+<h3>Daedong AILab</h3>
+<p>Senior AI Researcher, 2024년 5월부터 현재</p>
+</div>
+<article class="entry no-video">
+<!-- 미디어는 나중에 넣습니다. -->
+<div class="slot">
+<p>미디어 없음</p>
+</div>
+<div class="copy">
+<h3><a href="/ko/projects/language-distilled-segmentation.html">과수원 로봇용 Language-Distilled Open-Vocabulary Instance Segmentation</a></h3>
+<p>RT100용 open-vocabulary instance segmenter입니다. 학습에만 language-teacher supervision을 써서 추론 비용은 그대로 둡니다.</p>
+<p class="tools">Open-vocabulary segmentation, DETR, DINOv3</p>
+</div>
+</article>
+<article class="entry no-video">
+<!-- 미디어는 나중에 넣습니다. -->
+<div class="slot">
+<p>미디어 없음</p>
+</div>
+<div class="copy">
+<h3><a href="/ko/projects/orchard-obstacle-mapping.html">자율 과수원 로봇의 Open-Vocabulary 3D Obstacle Perception과 Occupancy Mapping</a></h3>
+<p>Open-set 장애물을 occupancy grid로 만듭니다. Production RT100에서 TensorRT, Jetson Nano로 돌아갑니다.</p>
+<p class="tools">3D perception, TensorRT, Jetson Nano</p>
+</div>
+</article>
+<article class="entry no-video">
+<!-- 미디어는 나중에 넣습니다. -->
+<div class="slot">
+<p>미디어 없음</p>
+</div>
+<div class="copy">
+<h3><a href="/ko/projects/auto-labeling.html">Auto-Labeling과 Data Captioning 시스템</a></h3>
+<p>Point prompt와 mask correction을 tracked mask로 바꿉니다. Qwen 계열 모델이 region caption을 답니다. 이미지당 비용은 약 USD 1.05에서 약 USD 0.036입니다.</p>
+<p class="tools">Auto-labeling, TensorRT, Qwen</p>
+</div>
+</article>
+<article class="entry has-video video-tall">
+<figure class="wide">
+<video class="portrait" width="540" height="960" autoplay muted loop playsinline poster="/assets/video/strawberry-ces2025.jpg" aria-label="CES 2025 부스의 flower thinning">
+<source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
+<a href="/assets/video/strawberry-ces2025.mp4">MP4 보기</a>
+</video>
+<figcaption>무음. CES 2025 부스에서 flower thinning을 합니다.</figcaption>
+</figure>
+<div class="copy">
+<h3><a href="/ko/projects/strawberry-cultivation.html">UMI와 Diffusion Policy를 쓴 딸기 재배 작업 로봇</a></h3>
+<p>UMI 시연으로 Diffusion Policy를 학습했습니다. 고정 실험실, 1,000회 시험의 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%입니다. CES 2025에 전시했습니다.</p>
+<p class="tools">Imitation learning, UMI, Diffusion Policy</p>
+</div>
+</article><div class="group-head">
+<h3>PLAIF</h3>
+<p>Computer Vision Engineer, 2023년 1월부터 2024년 4월</p>
+</div>
+<article class="entry has-video">
+<figure class="wide">
+<video class="landscape" width="1280" height="720" autoplay muted loop playsinline poster="/assets/video/cad-free-assembly.jpg" aria-label="UR arm의 CAD-free auto assembly">
+<source src="/assets/video/cad-free-assembly.mp4" type="video/mp4">
+<a href="/assets/video/cad-free-assembly.mp4">MP4 보기</a>
+</video>
+<figcaption>무음. Gripper와 wrist camera가 달린 UR arm이 fixture 위 부품을 조립합니다.</figcaption>
+</figure>
+<div class="copy">
+<h3><a href="/ko/projects/cad-free-assembly.html">CAD-free Auto Assembly</a></h3>
+<p>부품 CAD 없이 2D camera로 조립용 6D tool pose를 구합니다. 사내 1,000회 task success는 93%입니다. 한국 특허 10-2694987의 기반입니다.</p>
+<p class="tools">6D pose, LightGlue, RANSAC</p>
+</div>
+</article>
+<article class="entry has-video">
+<figure class="wide">
+<video class="landscape" width="1280" height="720" autoplay muted loop playsinline poster="/assets/video/bin-picking.jpg" aria-label="CAD-based bin picking">
+<source src="/assets/video/bin-picking.mp4" type="video/mp4">
+<a href="/assets/video/bin-picking.mp4">MP4 보기</a>
+</video>
+<figcaption>무음. Washer, connecting rod, shaft, bracket를 bin에서 picking합니다.</figcaption>
+</figure>
+<div class="copy">
+<h3><a href="/ko/projects/bin-picking.html">CAD-based Auto Bin Picking</a></h3>
+<p>RGB-D와 CAD geometry로 picking pose를 구합니다. 빈 용기로 object type 5종을 옮긴 사내 고정 환경 1,000회에서 task success 89%입니다.</p>
+<p class="tools">6D pose, bin picking, Mask R-CNN</p>
+</div>
+</article>
+<article class="entry no-video">
+<!-- 미디어는 나중에 넣습니다. -->
+<div class="slot">
+<p>미디어 없음</p>
+</div>
+<div class="copy">
+<h3><a href="/ko/projects/ros-6d-vision.html">ROS 6D Vision Server와 Hand-Eye Calibration 도구</a></h3>
+<p>요청마다 capture, segmentation, pose estimation을 실행하는 ROS action server입니다. Eye-to-hand calibration 도구를 같이 만들었습니다.</p>
+<p class="tools">6D pose, ROS, hand-eye calibration</p>
+</div>
+</article><div class="group-head">
+<h3>FS Solution Co., Ltd.</h3>
+<p>Computer Vision Engineer, 2022년 5월부터 2022년 12월</p>
+</div>
+<article class="entry no-video">
+<!-- 미디어는 나중에 넣습니다. -->
+<div class="slot">
+<p>미디어 없음</p>
+</div>
+<div class="copy">
+<h3><a href="/ko/projects/license-plate.html">차량 번호판 인식</a></h3>
+<p>Object detection으로 번호판 위치를 찾습니다. OCR로 문자와 숫자를 읽습니다.</p>
+<p class="tools">Detection, OCR</p>
+</div>
+</article>
+</section>
+<section id="experience">
+<h2>경력</h2>
+<div class="cv">
+<article>
+<p class="when">2024년 5월부터 현재</p>
+<div>
+<h3>Daedong AILab</h3>
+<p>Senior AI Researcher</p>
+<ul class="role-projects">
+<li><a href="/ko/projects/language-distilled-segmentation.html">과수원 로봇용 Language-Distilled Open-Vocabulary Instance Segmentation</a></li>
+<li><a href="/ko/projects/orchard-obstacle-mapping.html">자율 과수원 로봇의 Open-Vocabulary 3D Obstacle Perception과 Occupancy Mapping</a></li>
+<li><a href="/ko/projects/auto-labeling.html">Auto-Labeling과 Data Captioning 시스템</a></li>
+<li><a href="/ko/projects/strawberry-cultivation.html">UMI와 Diffusion Policy를 쓴 딸기 재배 작업 로봇</a></li>
+</ul>
+</div>
+</article><article>
+<p class="when">2023년 1월부터 2024년 4월</p>
+<div>
+<h3>PLAIF</h3>
+<p>Computer Vision Engineer</p>
+<ul class="role-projects">
+<li><a href="/ko/projects/cad-free-assembly.html">CAD-free Auto Assembly</a></li>
+<li><a href="/ko/projects/bin-picking.html">CAD-based Auto Bin Picking</a></li>
+<li><a href="/ko/projects/ros-6d-vision.html">ROS 6D Vision Server와 Hand-Eye Calibration 도구</a></li>
+</ul>
+</div>
+</article><article>
+<p class="when">2022년 5월부터 2022년 12월</p>
+<div>
+<h3>FS Solution Co., Ltd.</h3>
+<p>Computer Vision Engineer</p>
+<ul class="role-projects">
+<li><a href="/ko/projects/license-plate.html">차량 번호판 인식</a></li>
+</ul>
+</div>
+</article>
+</div>
+</section>
+<section id="education">
+<h2>학력</h2>
+<div class="cv">
+<article>
+<p class="when">2016년 3월부터 2022년 8월</p>
+<div>
+<h3>Seokyeong University</h3>
+<p>서울, 대한민국</p>
+<p>Bachelor of Engineering, Industrial Management Systems Engineering.</p>
+<p>융합전공은 Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies)입니다.</p>
+</div>
+</article>
+</div>
+</section>
+<section id="patent">
+<h2>특허</h2>
+<div class="cv">
+<article>
+<p class="when">2024년 8월 등록</p>
+<div>
+<h3>한국 특허 10-2694987</h3>
+<p>출원인은 PLAIF입니다. 공동 발명자입니다.</p>
+<p class="patent-title" lang="en">Pose estimating device and method using artificial intelligence to estimate pose of robot's end effector for object and robot control system including the same.</p>
+<p><a href="/ko/projects/cad-free-assembly.html">CAD-free auto assembly</a>가 이 특허의 기반입니다.</p>
+</div>
+</article>
+</div>
+</section>
+<section id="awards">
+<h2>수상</h2>
+<div class="cv">
+<article>
+<p class="when">2024년 1월</p>
+<div>
+<h3>Kaggle UBC-OCEAN</h3>
+<p>동메달, 팀 순위 83/1,326.</p>
+</div>
+</article>
+<article>
+<p class="when">2022년 6월</p>
+<div>
+<h3>Kaggle Image Matching Challenge 2022</h3>
+<p>은메달, 팀 순위 50/642.</p>
+<p><a href="https://github.com/ImJaewooChoi/kaggle_image_matching2022">kaggle_image_matching2022</a></p>
+</div>
+</article>
+<article>
+<p class="when">2022년 4월</p>
+<div>
+<h3>Kaggle Happywhale</h3>
+<p>Whale and Dolphin Identification. 동메달, 팀 순위 127/1,588.</p>
+<p><a href="https://github.com/ImJaewooChoi/kaggle_happy_whale">kaggle_happy_whale</a></p>
+</div>
+</article>
+</div>
+</section>
+</main>
+<footer class="colophon">
+<p>2026년 10월 21일 업데이트</p>
+<ul class="contact">
+<li><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
+<li><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a></li>
+<li><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a></li>
+<li><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
+</ul>
+</footer>
+</div>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Jaewoo Choi",
+  "jobTitle": "Senior AI Researcher",
+  "affiliation": {
+    "@type": "Organization",
+    "name": "Daedong AILab"
+  },
+  "email": "iam.jaewoochoi@gmail.com",
+  "url": "https://imjaewoochoi.github.io/ko/",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Seoul",
+    "addressCountry": "KR"
+  },
+  "alumniOf": {
+    "@type": "CollegeOrUniversity",
+    "name": "Seokyeong University"
+  },
+  "sameAs": [
+    "https://github.com/ImJaewooChoi",
+    "https://www.kaggle.com/loveacaji",
+    "https://www.linkedin.com/in/jaewoo-choi-955340356"
+  ]
+}
+</script>
+<script>
+(function () {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.querySelectorAll("video").forEach(function (v) {
+      v.removeAttribute("autoplay");
+      v.pause();
+    });
+  }
+})();
+</script>
+</body>
+</html>

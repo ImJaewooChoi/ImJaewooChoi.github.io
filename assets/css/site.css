@@ -1,0 +1,511 @@
+/* Lab gray ground, ink, muted, hairline, one teal accent.
+   IBM Plex Sans: 1.0625rem body, 3.4rem display (3.2x). */
+
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/assets/fonts/ibm-plex-sans-latin-400.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/assets/fonts/ibm-plex-sans-latin-400-italic.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/assets/fonts/ibm-plex-sans-latin-600.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  --ground: #eef1f3;
+  --ink: #1b2126;
+  --muted: #4e5962;
+  --rule: #c5ced4;
+  --accent: #0f5c6b;
+  --accent-hover: #0a3d48;
+  --slot: #e4e9ec;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #161b1f;
+    --ink: #e7ecef;
+    --muted: #b4bec6;
+    --rule: #343e46;
+    --accent: #8ec9d4;
+    --accent-hover: #c5e6ee;
+    --slot: #10151a;
+    color-scheme: dark;
+  }
+
+  ::selection {
+    background: #1e4a54;
+    color: #e7ecef;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-padding-top: 1rem;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", "Apple SD Gothic Neo", "Noto Sans KR", "Nanum Gothic", "Malgun Gothic", sans-serif;
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.55;
+  text-align: left;
+  text-wrap: pretty;
+}
+
+html[lang="ko"] {
+  word-break: keep-all;
+}
+
+::selection {
+  background: #d3e3e8;
+  color: #1b2126;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+.skip {
+  position: absolute;
+  left: 0.75rem;
+  top: -4rem;
+  background: var(--ground);
+  color: var(--ink);
+  padding: 0.35rem 0.5rem;
+}
+
+.skip:focus {
+  top: 0.5rem;
+  z-index: 2;
+}
+
+.wrap {
+  width: min(68rem, calc(100% - 2.4rem));
+  margin-inline: auto;
+}
+
+.mast {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1.15rem;
+  padding: 1rem 0 0.75rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.mast nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.9rem;
+}
+
+.mast nav a,
+a.name {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.94rem;
+}
+
+.mast nav a:hover,
+a.name:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+a.name {
+  font-weight: 600;
+}
+
+.langs {
+  margin-left: auto;
+  font-size: 0.88rem;
+}
+
+.langs a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.langs a[aria-current="page"] {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--ink);
+  text-underline-offset: 0.18em;
+}
+
+.sep {
+  color: var(--muted);
+  padding: 0 0.2rem;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: 3.4rem;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  margin: 0.15rem 0 0.4rem;
+  max-width: 16ch;
+}
+
+.role {
+  font-size: 1.2rem;
+  margin: 0;
+  max-width: 36rem;
+}
+
+.loc,
+.kicker {
+  color: var(--muted);
+  font-size: 0.94rem;
+  margin: 0.3rem 0 0;
+}
+
+.contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.95rem 0 0;
+  font-size: 0.98rem;
+}
+
+a[href^="mailto:"],
+a[href^="http://"],
+a[href^="https://"] {
+  overflow-wrap: anywhere;
+}
+
+.bio {
+  max-width: 38rem;
+  margin-top: 1.2rem;
+  font-size: 1.08rem;
+}
+
+main section {
+  margin-top: 3.15rem;
+}
+
+main section > h2 {
+  font-size: 1.55rem;
+  margin: 0 0 0.85rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--ink);
+}
+
+.measure,
+.entry .copy p,
+.prose p,
+figcaption {
+  max-width: 38rem;
+}
+
+.group-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.2rem 1.25rem;
+  margin: 1.7rem 0 0;
+}
+
+.group-head h3 {
+  font-size: 1.12rem;
+  margin: 0;
+}
+
+.group-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.entry {
+  border-top: 1px solid var(--rule);
+  padding: 1.15rem 0 1.3rem;
+}
+
+.entry h3 {
+  font-size: 1.28rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+  max-width: 40rem;
+  letter-spacing: -0.015em;
+}
+
+.entry h3 a {
+  color: var(--ink);
+  text-decoration-color: var(--rule);
+  text-underline-offset: 0.14em;
+}
+
+.entry h3 a:hover {
+  color: var(--accent);
+}
+
+.tools {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 0.45rem;
+}
+
+.slot {
+  border: 1px solid var(--rule);
+  background: var(--slot);
+  display: flex;
+  align-items: flex-end;
+  padding: 0.55rem 0.7rem;
+}
+
+.slot p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.entry .slot {
+  min-height: 4.75rem;
+  max-width: 16rem;
+  margin: 0 0 0.75rem;
+}
+
+figure {
+  margin: 0;
+}
+
+figcaption {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+}
+
+video {
+  display: block;
+  background: var(--slot);
+  object-fit: contain;
+}
+
+video.landscape {
+  width: 100%;
+  height: auto;
+}
+
+video.portrait {
+  width: min(100%, 18rem);
+  height: auto;
+}
+
+@media (min-width: 900px) {
+  .entry.has-video {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(16rem, 0.78fr);
+    gap: 0.4rem 2rem;
+    align-items: start;
+  }
+
+  .entry.video-tall {
+    grid-template-columns: 18.5rem minmax(0, 1fr);
+  }
+
+  .entry > * {
+    min-width: 0;
+  }
+
+  .entry .slot {
+    margin-bottom: 0;
+  }
+
+  .entry.no-video {
+    display: grid;
+    grid-template-columns: 16rem minmax(0, 1fr);
+    gap: 0.4rem 1.5rem;
+    align-items: start;
+  }
+}
+
+.cv article {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.15rem;
+  border-top: 1px solid var(--rule);
+  padding: 0.9rem 0 1rem;
+}
+
+.cv h3 {
+  font-size: 1.12rem;
+  margin: 0 0 0.15rem;
+}
+
+.when {
+  color: var(--muted);
+  margin: 0.15rem 0 0;
+  font-size: 0.92rem;
+}
+
+.role-projects {
+  list-style: none;
+  padding: 0;
+  margin: 0.4rem 0 0;
+}
+
+.role-projects li {
+  margin: 0.18rem 0;
+}
+
+@media (min-width: 800px) {
+  .cv article {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    column-gap: 1.75rem;
+  }
+}
+
+.project h1 {
+  font-size: clamp(1.85rem, 4vw, 2.45rem);
+  max-width: 36rem;
+  line-height: 1.15;
+}
+
+.dek {
+  max-width: 38rem;
+  font-size: 1.08rem;
+  margin: 0.7rem 0 1rem;
+}
+
+.project figure,
+.project .slot {
+  margin: 0.3rem 0 1.15rem;
+}
+
+.project .slot {
+  min-height: 11rem;
+  max-width: 38rem;
+}
+
+.project figure.wide {
+  max-width: 52rem;
+}
+
+.prose h2 {
+  font-size: 1.15rem;
+  margin: 1.45rem 0 0.35rem;
+  border-top: none;
+  padding-top: 0;
+}
+
+.back {
+  margin-top: 2rem;
+  font-size: 0.95rem;
+}
+
+.patent-title {
+  font-style: italic;
+  font-weight: 400;
+  max-width: 40rem;
+}
+
+.colophon {
+  margin-top: 3.4rem;
+  padding: 0.9rem 0 3rem;
+  border-top: 1px solid var(--ink);
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.colophon .contact {
+  margin-top: 0.45rem;
+}
+
+@media (max-width: 600px) {
+  .wrap {
+    width: min(68rem, calc(100% - 1.6rem));
+  }
+
+  h1 {
+    font-size: 3.2rem;
+  }
+
+  .langs {
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  video,
+  .slot,
+  .skip {
+    display: none;
+  }
+
+  a {
+    color: inherit;
+  }
+}
