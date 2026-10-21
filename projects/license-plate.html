@@ -6,27 +6,14 @@
 <title>Car License Plate Recognition, Jaewoo Choi</title>
 <meta name="description" content="License plate pipeline: object detection locates the plate, OCR reads the letters and digits.">
 <meta name="author" content="Jaewoo Choi">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#161b1f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#141a1e" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/license-plate.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/license-plate.html">
 <link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/license-plate.html">
 <link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/license-plate.html">
-<meta property="og:title" content="Car License Plate Recognition, Jaewoo Choi">
-<meta property="og:description" content="License plate pipeline: object detection locates the plate, OCR reads the letters and digits.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://imjaewoochoi.github.io/projects/license-plate.html">
-<meta property="og:locale" content="en_US">
-<meta property="og:locale:alternate" content="ko_KR">
-<meta property="og:image" content="https://imjaewoochoi.github.io/assets/og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Jaewoo Choi, Senior AI Researcher, Daedong AILab">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Car License Plate Recognition, Jaewoo Choi">
-<meta name="twitter:description" content="License plate pipeline: object detection locates the plate, OCR reads the letters and digits.">
-<meta name="twitter:image" content="https://imjaewoochoi.github.io/assets/og.png">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
@@ -34,45 +21,39 @@
 <body>
 <a class="skip" href="#content">Skip to content</a>
 <div class="wrap">
-<header class="mast">
+<header class="mast mast-named">
 <a class="name" href="/">Jaewoo Choi</a>
 <nav>
-<a href="/#research">Research</a>
 <a href="/#projects">Projects</a>
 <a href="/#experience">Experience</a>
-<a href="/#education">Education</a>
-<a href="/#patent">Patent</a>
-<a href="/#awards">Awards</a>
+<a href="/#patent" class="nav-wide">Patent</a>
+<a href="/#awards" class="nav-wide">Awards</a>
 <!-- CV PDF will be added later at /cv.pdf -->
 <a href="/cv.pdf">CV</a>
 </nav>
 <p class="langs"><a href="/projects/license-plate.html" hreflang="en" lang="en" aria-current="page">EN</a><span class="sep">|</span><a href="/ko/projects/license-plate.html" hreflang="ko" lang="ko">한국어</a></p>
 </header>
 <main id="content" class="project">
-<p class="kicker">FS Solution Co., Ltd., Computer Vision Engineer, May 2022 to Dec 2022</p>
+<p class="kicker"><span class="nobr">FS Solution</span> Co., Ltd., <span class="nobr">Computer Vision Engineer</span>, May 2022 to Dec 2022</p>
 <h1>Car License Plate Recognition</h1>
 <p class="dek">Object detection locates the plate. OCR reads the letters and digits.</p>
 <!-- Media can be added later. -->
-<div class="slot">
-<p>No media yet</p>
-</div>
 <div class="prose">
-<h2>Problem</h2>
-<p>Read the letters and digits on a car license plate.</p>
 <h2>Approach</h2>
-<p>I built a recognition pipeline. Object detection locates the plate. OCR reads the letters and digits.</p>
+<p>Read the letters and digits on a car license plate. I built a recognition pipeline. Object detection locates the plate. OCR reads the letters and digits.</p>
 <h2>Stack</h2>
-<p>Object detection, OCR.</p>
+<p class="stack">Object detection, OCR.</p>
 </div>
+<nav class="pager" aria-label="Adjacent projects">
+<a class="pager-prev" href="/projects/ros-6d-vision.html"><span class="pager-label">Previous</span> ROS 6D Vision Server and Hand‑Eye Calibration Tools</a>
+</nav>
 <p class="back"><a href="/#projects">Projects</a></p>
 </main>
 <footer class="colophon">
 <p>Updated 21 Oct 2026</p>
 <ul class="contact">
-<li><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
-<li><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a></li>
-<li><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a></li>
-<li><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
+<li><a class="mail" href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
+<li class="profiles"><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
 </ul>
 </footer>
 </div>
@@ -82,6 +63,7 @@
     document.querySelectorAll("video").forEach(function (v) {
       v.removeAttribute("autoplay");
       v.pause();
+      v.controls = true;
     });
   }
 })();

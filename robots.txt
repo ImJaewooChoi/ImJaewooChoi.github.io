@@ -1,4 +1,2 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://imjaewoochoi.github.io/sitemap.xml

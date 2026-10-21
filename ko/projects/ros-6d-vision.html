@@ -3,77 +3,62 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ROS 6D Vision Server와 Hand-Eye Calibration 도구, Jaewoo Choi</title>
+<title>ROS 6D Vision Server와 Hand‑Eye Calibration 도구, Jaewoo Choi</title>
 <meta name="description" content="Capture, segmentation, 6D pose용 ROS action server와 eye-to-hand calibration 도구. Camera는 Zivid, RealSense, recorded data.">
 <meta name="author" content="Jaewoo Choi">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#161b1f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#141a1e" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://imjaewoochoi.github.io/ko/projects/ros-6d-vision.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
 <link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/ros-6d-vision.html">
 <link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
-<meta property="og:title" content="ROS 6D Vision Server와 Hand-Eye Calibration 도구, Jaewoo Choi">
-<meta property="og:description" content="Capture, segmentation, 6D pose용 ROS action server와 eye-to-hand calibration 도구. Camera는 Zivid, RealSense, recorded data.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://imjaewoochoi.github.io/ko/projects/ros-6d-vision.html">
-<meta property="og:locale" content="ko_KR">
-<meta property="og:locale:alternate" content="en_US">
-<meta property="og:image" content="https://imjaewoochoi.github.io/assets/og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Jaewoo Choi, Senior AI Researcher, Daedong AILab">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ROS 6D Vision Server와 Hand-Eye Calibration 도구, Jaewoo Choi">
-<meta name="twitter:description" content="Capture, segmentation, 6D pose용 ROS action server와 eye-to-hand calibration 도구. Camera는 Zivid, RealSense, recorded data.">
-<meta name="twitter:image" content="https://imjaewoochoi.github.io/assets/og.png">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-kr-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
 </head>
 <body>
 <a class="skip" href="#content">본문으로</a>
 <div class="wrap">
-<header class="mast">
+<header class="mast mast-named">
 <a class="name" href="/ko/">Jaewoo Choi</a>
 <nav>
-<a href="/ko/#research">연구</a>
 <a href="/ko/#projects">프로젝트</a>
 <a href="/ko/#experience">경력</a>
-<a href="/ko/#education">학력</a>
-<a href="/ko/#patent">특허</a>
-<a href="/ko/#awards">수상</a>
+<a href="/ko/#patent" class="nav-wide">특허</a>
+<a href="/ko/#awards" class="nav-wide">수상</a>
 <!-- CV PDF는 나중에 /cv.pdf 에 넣습니다. -->
 <a href="/cv.pdf">CV</a>
 </nav>
 <p class="langs"><a href="/projects/ros-6d-vision.html" hreflang="en" lang="en">EN</a><span class="sep">|</span><a href="/ko/projects/ros-6d-vision.html" hreflang="ko" lang="ko" aria-current="page">한국어</a></p>
 </header>
 <main id="content" class="project">
-<p class="kicker">PLAIF, Computer Vision Engineer, 2023년 1월부터 2024년 4월</p>
-<h1>ROS 6D Vision Server와 Hand-Eye Calibration 도구</h1>
-<p class="dek">요청마다 capture, segmentation, pose estimation을 실행하는 ROS action server입니다. Eye-to-hand calibration 도구를 같이 만들었습니다.</p>
+<p class="kicker">PLAIF, <span class="nobr">Computer Vision Engineer</span>, 2023년 1월부터 2024년 4월</p>
+<h1>ROS 6D Vision Server와 Hand‑Eye Calibration 도구</h1>
+<p class="dek">요청마다 capture, segmentation, pose estimation을 실행하는 ROS action server입니다. Eye‑to‑hand calibration 도구를 같이 만들었습니다.</p>
 <!-- 미디어는 나중에 넣습니다. -->
-<div class="slot">
-<p>미디어 없음</p>
-</div>
 <div class="prose">
 <h2>문제</h2>
-<p>Robot-base frame과 camera frame의 object pose가 둘 다 필요하고, camera와 robot 사이 eye-to-hand calibration도 필요합니다.</p>
+<p>Robot‑base frame과 camera frame의 object pose가 둘 다 필요하고, camera와 robot 사이 eye‑to‑hand calibration도 필요합니다.</p>
 <h2>방법</h2>
-<p>ROS action server를 작성했습니다. 요청마다 capture, segmentation, pose estimation을 실행하고, matching score와 함께 robot-base pose와 camera-frame pose를 반환합니다. Configuration file에서 camera(Zivid, RealSense, recorded data), model, pipeline을 고릅니다.</p>
-<p>Eye-to-hand calibration은 ArUco board pose estimation과 OpenCV Park method를 씁니다. Residual error를 보고하는 batch AX = YB solver가 있고, calibration validation tool을 추가했습니다. 실행 중 parameter는 ROS dynamic_reconfigure로 바꿉니다.</p>
+<p>ROS action server를 작성했습니다. 요청마다 capture, segmentation, pose estimation을 실행하고, matching score와 함께 robot‑base pose와 camera‑frame pose를 반환합니다. Configuration file에서 camera(Zivid, RealSense, recorded data), model, pipeline을 고릅니다.</p>
+<p>Eye‑to‑hand calibration은 ArUco board pose estimation과 OpenCV Park method를 씁니다. Residual error를 보고하는 batch AX = YB solver가 있고, calibration validation tool을 추가했습니다. 실행 중 parameter는 ROS dynamic_reconfigure로 바꿉니다.</p>
 <h2>기술</h2>
-<p>ROS, Zivid, RealSense, ArUco, OpenCV, dynamic_reconfigure.</p>
+<p class="stack">ROS, Zivid, RealSense, ArUco, OpenCV, dynamic_reconfigure.</p>
 </div>
+<nav class="pager" aria-label="인접 프로젝트">
+<a class="pager-prev" href="/ko/projects/bin-picking.html"><span class="pager-label">이전</span> CAD‑based Auto Bin Picking</a>
+<a class="pager-next" href="/ko/projects/license-plate.html"><span class="pager-label">다음</span> 차량 번호판 인식</a>
+</nav>
 <p class="back"><a href="/ko/#projects">프로젝트</a></p>
 </main>
 <footer class="colophon">
 <p>2026년 10월 21일 업데이트</p>
 <ul class="contact">
-<li><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
-<li><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a></li>
-<li><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a></li>
-<li><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
+<li><a class="mail" href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
+<li class="profiles"><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
 </ul>
 </footer>
 </div>
@@ -83,6 +68,7 @@
     document.querySelectorAll("video").forEach(function (v) {
       v.removeAttribute("autoplay");
       v.pause();
+      v.controls = true;
     });
   }
 })();

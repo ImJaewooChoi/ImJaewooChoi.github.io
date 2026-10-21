@@ -2,7 +2,7 @@
 """Write the static HTML for the personal site. Facts come from the CV."""
 
 import html
-import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,22 +14,19 @@ LINKEDIN = "https://www.linkedin.com/in/jaewoo-choi-955340356"
 WHALE = "https://github.com/ImJaewooChoi/kaggle_happy_whale"
 MATCH = "https://github.com/ImJaewooChoi/kaggle_image_matching2022"
 
+# wide=True links stay on desktop and hide when the row would wrap.
 NAV = {
     "en": [
-        ("Research", "research"),
-        ("Projects", "projects"),
-        ("Experience", "experience"),
-        ("Education", "education"),
-        ("Patent", "patent"),
-        ("Awards", "awards"),
+        ("Projects", "projects", False),
+        ("Experience", "experience", False),
+        ("Patent", "patent", True),
+        ("Awards", "awards", True),
     ],
     "ko": [
-        ("연구", "research"),
-        ("프로젝트", "projects"),
-        ("경력", "experience"),
-        ("학력", "education"),
-        ("특허", "patent"),
-        ("수상", "awards"),
+        ("프로젝트", "projects", False),
+        ("경력", "experience", False),
+        ("특허", "patent", True),
+        ("수상", "awards", True),
     ],
 }
 
@@ -43,6 +40,11 @@ UI = {
         "media_comment": "Media can be added later.",
         "cv_comment": "CV PDF will be added later at /cv.pdf",
         "watch": "Watch the MP4",
+        "prev": "Previous",
+        "next": "Next",
+        "pager": "Adjacent projects",
+        "missing": "Page not found",
+        "missing_body": "This address is not on the site.",
         "research": "Research interests",
         "work": "Research and engineering projects",
         "experience": "Experience",
@@ -59,7 +61,12 @@ UI = {
         "media_comment": "미디어는 나중에 넣습니다.",
         "cv_comment": "CV PDF는 나중에 /cv.pdf 에 넣습니다.",
         "watch": "MP4 보기",
-        "research": "연구 관심",
+        "prev": "이전",
+        "next": "다음",
+        "pager": "인접 프로젝트",
+        "missing": "페이지 없음",
+        "missing_body": "이 주소는 사이트에 없습니다.",
+        "research": "연구 관심사",
         "work": "연구 및 엔지니어링 프로젝트",
         "experience": "경력",
         "education": "학력",
@@ -178,7 +185,7 @@ PROJECTS = [
             ],
             "ko": [
                 ("문제", P(
-                    "RT100 자율 과수원 플랫폼용 open-vocabulary instance segmenter입니다. 학습은 language-teacher supervision이고, 추론 비용은 늘리지 않습니다.",
+                    "RT100 자율 과수원 플랫폼은 고정된 label set 밖의 물체에도 instance mask가 필요합니다. 학습 중에는 language teacher를 쓸 수 있고, 배포 모델의 추론 비용은 늘리지 않습니다.",
                 )),
                 ("방법", P(
                     "구조는 DETR 기반입니다. Backbone은 frozen DINOv3이고, lightweight text encoder는 학습합니다. Multi-scale feature projector 뒤에 three-layer decoder가 있고, decoder는 query와 refined spatial feature의 dot product로 mask를 예측합니다.",
@@ -203,7 +210,7 @@ PROJECTS = [
         },
         "line": {
             "en": "Open-set obstacles are segmented and written into an occupancy grid. The pipeline runs on production RT100 robots with TensorRT on Jetson Nano.",
-            "ko": "Open-set 장애물을 occupancy grid로 만듭니다. Production RT100에서 TensorRT, Jetson Nano로 돌아갑니다.",
+            "ko": "과수원 로봇은 open-set 장애물을 인식해 occupancy grid로 만들고, production RT100에서 TensorRT와 Jetson Nano로 돌립니다.",
         },
         "tools": {
             "en": "3D perception, TensorRT, Jetson Nano",
@@ -232,14 +239,10 @@ PROJECTS = [
             ],
             "ko": [
                 ("문제", P(
-                    "과수원 로봇은 open-set 장애물을 인식하고, embedded compute 한계 안에서 주행에 쓸 지도로 바꿔야 합니다.",
+                    "과수원 로봇은 open-set 장애물을 인식하고, embedded compute 한계 안에서 주행에 쓸 지도로 바꿔야 합니다. Frozen DINOv2와 SigLIP2 encoder 위에 adapter, neck, segmentation head를 여러 데이터셋으로 pre-train했습니다. Instance segmentation과 semantic segmentation에 region-text alignment를 썼습니다. Text-prompt inference와 fixed-vocabulary conversion이 있고, 과수원 도메인에 맞췄습니다.",
                 )),
                 ("방법", P(
-                    "Frozen DINOv2와 SigLIP2 encoder 위에 adapter, neck, segmentation head를 여러 데이터셋으로 pre-train했습니다. Instance segmentation과 semantic segmentation에 region-text alignment를 썼습니다. Text-prompt inference와 fixed-vocabulary conversion이 있고, 과수원 도메인에 맞췄습니다.",
-                    "Point cloud voxel center를 이미지에 projection해서 instance mask와 연결합니다. 유효한 anchor depth로 virtual voxel을 더한 뒤, 장애물은 decay, hysteresis, cost inflation이 있는 occupancy grid에 기록합니다.",
-                )),
-                ("결과", P(
-                    "전체 pipeline은 production RT100에 올라가 있습니다. Jetson Nano에서 TensorRT로 최적화했습니다.",
+                    "Point cloud voxel center를 이미지에 projection해서 instance mask와 연결합니다. 유효한 anchor depth로 virtual voxel을 더한 뒤, 장애물은 decay, hysteresis, cost inflation이 있는 occupancy grid에 기록합니다. 전체 pipeline은 production RT100에 올라가 있습니다. Jetson Nano에서 TensorRT로 최적화했습니다.",
                 )),
                 ("기술", P(
                     "DINOv2, SigLIP2, TensorRT, Jetson Nano.",
@@ -270,12 +273,10 @@ PROJECTS = [
         "sections": {
             "en": [
                 ("Problem", P(
-                    "Manual annotation cost limits the supply of segmentation and region-grounded vision-language training data.",
+                    "Manual annotation cost limits the supply of segmentation and region-grounded vision-language training data. I built a video auto-labeling pipeline. Point prompts and mask corrections become tracked masks with consistent IDs across frames. Image and video inputs share TensorRT engines, so the same computation is not duplicated.",
                 )),
                 ("Approach", P(
-                    "I built a video auto-labeling pipeline. Point prompts and mask corrections become tracked masks with consistent IDs across frames. Image and video inputs share TensorRT engines. That drops a second copy of the same computation.",
-                    "Qwen-series vision-language models generate region-grounded object descriptions and check them. Uncertain cases go to a second review. Verified descriptions are linked to the instance annotations.",
-                    "I set the label taxonomy and the annotation guidelines, and built COCO-format training datasets.",
+                    "Qwen-series vision-language models generate region-grounded object descriptions and check them. Uncertain cases go to a second review. Verified descriptions are linked to the instance annotations. I set the label taxonomy and the annotation guidelines, and built COCO-format training datasets.",
                 )),
                 ("Results", P(
                     "Per-image labeling cost was about USD 1.05. It fell to about USD 0.036, a 96.6% reduction.",
@@ -341,11 +342,10 @@ PROJECTS = [
             ],
             "ko": [
                 ("문제", P(
-                    "사람 시연으로 딸기 재배 세 작업을 학습했습니다. Transplanting, flower thinning, runner handling입니다.",
+                    "사람 시연으로 딸기 재배 세 작업을 학습했습니다. Transplanting, flower thinning, runner handling입니다. 시연은 Universal Manipulation Interface(UMI)로 모았고, 세 작업 모두 data pipeline과 policy 학습을 맡았습니다.",
                 )),
                 ("방법", P(
-                    "시연은 Universal Manipulation Interface(UMI)로 모았고, 세 작업 모두 data pipeline과 policy 학습을 맡았습니다. GoPro RGB와 IMU 데이터를 수집한 뒤 camera-IMU calibration을 했고, ORB-SLAM3 visual-inertial SLAM trajectory를 학습 데이터로 만들었습니다.",
-                    "RGB feature와 robot state를 global conditioning으로 Diffusion Policy를 학습했고, U-Net과 ViT 구성을 비교했습니다.",
+                    "GoPro RGB와 IMU 데이터를 수집한 뒤 camera-IMU calibration을 했고, ORB-SLAM3 visual-inertial SLAM trajectory를 학습 데이터로 만들었습니다. RGB feature와 robot state를 global conditioning으로 Diffusion Policy를 학습했고, U-Net과 ViT 구성을 비교했습니다.",
                 )),
                 ("결과", P(
                     "고정된 실험실에서 1,000회 시험했습니다. 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%입니다. CES 2025에 전시했습니다.",
@@ -366,7 +366,7 @@ PROJECTS = [
         },
         "line": {
             "en": "6D tool poses for assembly from a 2D camera, with no CAD model of the part. 93% task success across 1,000 in-house trials. Basis of Korean Patent 10-2694987.",
-            "ko": "부품 CAD 없이 2D camera로 조립용 6D tool pose를 구합니다. 사내 1,000회 task success는 93%입니다. 한국 특허 10-2694987의 기반입니다.",
+            "ko": "부품 CAD 없이 2D camera로 조립용 6D tool pose를 구합니다. 사내 1,000회 시험의 task success는 93%입니다. 한국 특허 10-2694987의 기반입니다.",
         },
         "tools": {
             "en": "6D pose, LightGlue, RANSAC",
@@ -384,10 +384,7 @@ PROJECTS = [
                 ("Approach", P(
                     "I prototyped a two-view RGB baseline first: learned feature matching between a reference image and a target image, USAC essential-matrix estimation, relative pose recovery, and triangulation.",
                     "In the final pipeline, LightGlue matches the live 2D image to a stored reference RGB-D capture, so each match carries depth. Matches with no depth are removed.",
-                    "solvePnP and RANSAC estimate the camera pose from the 3D-2D matches. That pose is chained with the hand-eye calibration and the stored reference pose. The result is the target 6D tool pose.",
-                )),
-                ("Results", P(
-                    'Task success was 93% across 1,000 in-house trials. This work is the basis of <a href="/#patent">Korean Patent 10-2694987</a>.',
+                    'solvePnP and RANSAC estimate the camera pose from the 3D-2D matches. That pose is chained with the hand-eye calibration and the stored reference pose. The result is the target 6D tool pose. Task success was 93% across 1,000 in-house trials. This work is the basis of <a href="/#patent">Korean Patent 10-2694987</a>.',
                 )),
                 ("Stack", P(
                     "LightGlue, USAC, solvePnP, RANSAC, hand-eye calibration.",
@@ -399,10 +396,7 @@ PROJECTS = [
                 )),
                 ("방법", P(
                     "먼저 two-view RGB baseline을 만들었습니다. Reference 이미지와 target 이미지 사이에서 learned feature matching, USAC essential-matrix estimation, relative pose recovery, triangulation을 썼습니다.",
-                    "최종 pipeline은 LightGlue로 live 2D image와 저장된 reference RGB-D capture를 맞춥니다. Match마다 depth가 붙고, depth가 없는 match는 제거합니다. 3D-2D match에 solvePnP와 RANSAC으로 camera pose를 구한 뒤, hand-eye calibration과 저장된 reference pose를 이어 target 6D tool pose를 얻습니다.",
-                )),
-                ("결과", P(
-                    '사내 시험 1,000회에서 task success 93%를 기록했습니다. 이 작업이 <a href="/ko/#patent">한국 특허 10-2694987</a>의 기반입니다.',
+                    '최종 pipeline은 LightGlue로 live 2D image와 저장된 reference RGB-D capture를 맞춥니다. Match마다 depth가 붙고, depth가 없는 match는 제거합니다. 3D-2D match에 solvePnP와 RANSAC으로 camera pose를 구한 뒤, hand-eye calibration과 저장된 reference pose를 이어 target 6D tool pose를 얻습니다. 사내 시험 1,000회에서 task success 93%를 기록했습니다. 이 작업이 <a href="/ko/#patent">한국 특허 10-2694987</a>의 기반입니다.',
                 )),
                 ("기술", P(
                     "LightGlue, USAC, solvePnP, RANSAC, hand-eye calibration.",
@@ -420,7 +414,7 @@ PROJECTS = [
         },
         "line": {
             "en": "Picking poses from RGB-D images and known CAD geometry. 89% task success in 1,000 in-house, fixed-environment trials, moving five object types into an empty container.",
-            "ko": "RGB-D와 CAD geometry로 picking pose를 구합니다. 빈 용기로 object type 5종을 옮긴 사내 고정 환경 1,000회에서 task success 89%입니다.",
+            "ko": "RGB-D와 CAD geometry로 picking pose를 구합니다. 사내 고정 환경에서 object type 5종을 빈 용기로 옮긴 1,000회 시험의 task success는 89%입니다.",
         },
         "tools": {
             "en": "6D pose, bin picking, Mask R-CNN",
@@ -453,10 +447,7 @@ PROJECTS = [
                 )),
                 ("방법", P(
                     'Mask R-CNN(ResNet-101)을 class "unoccluded"와 "hole"로 나눠 학습했습니다. Object mask에서 hole mask를 빼고, 남은 instance mask로 point cloud를 나눕니다.',
-                    "각 pick pose의 visible-surface CAD template은 hidden-point removal로 만들고, PCA initialization 다음 point-to-point ICP로 segmented point에 맞춥니다. Fit은 model-to-scene과 scene-to-model 양쪽을 보고, registration fitness, inlier RMSE, combined score로 pose를 거릅니다. Candidate를 순위화한 뒤 camera extrinsic으로 pose를 robot base에 옮깁니다.",
-                )),
-                ("결과", P(
-                    "빈 용기로 object type 5종을 옮기는 사내 고정 환경 시험 1,000회에서 task success 89%를 기록했습니다.",
+                    "각 pick pose의 visible-surface CAD template은 hidden-point removal로 만들고, PCA initialization 다음 point-to-point ICP로 segmented point에 맞춥니다. Fit은 model-to-scene과 scene-to-model 양쪽을 보고, registration fitness, inlier RMSE, combined score로 pose를 거릅니다. Candidate를 순위화한 뒤 camera extrinsic으로 pose를 robot base에 옮깁니다. 빈 용기로 object type 5종을 옮기는 사내 고정 환경 시험 1,000회에서 task success 89%를 기록했습니다.",
                 )),
                 ("기술", P(
                     "Mask R-CNN, ResNet-101, PCA, point-to-point ICP.",
@@ -533,22 +524,16 @@ PROJECTS = [
         },
         "sections": {
             "en": [
-                ("Problem", P(
-                    "Read the letters and digits on a car license plate.",
-                )),
                 ("Approach", P(
-                    "I built a recognition pipeline. Object detection locates the plate. OCR reads the letters and digits.",
+                    "Read the letters and digits on a car license plate. I built a recognition pipeline. Object detection locates the plate. OCR reads the letters and digits.",
                 )),
                 ("Stack", P(
                     "Object detection, OCR.",
                 )),
             ],
             "ko": [
-                ("문제", P(
-                    "차량 번호판의 문자와 숫자를 읽습니다.",
-                )),
                 ("방법", P(
-                    "인식 pipeline을 만들었습니다. Object detection으로 번호판 위치를 찾고, OCR로 문자와 숫자를 인식합니다.",
+                    "차량 번호판의 문자와 숫자를 읽습니다. 인식 pipeline을 만들었습니다. Object detection으로 번호판 위치를 찾고, OCR로 문자와 숫자를 인식합니다.",
                 )),
                 ("기술", P(
                     "Object detection, OCR.",
@@ -579,17 +564,20 @@ def abs_url(path):
 
 
 def contact_html():
-    items = [
-        (f"mailto:{EMAIL}", EMAIL, None),
-        (GITHUB, "GitHub", "me"),
-        (KAGGLE, "Kaggle", "me"),
-        (LINKEDIN, "LinkedIn", "me"),
-    ]
-    lis = []
-    for href, label, rel in items:
-        rel_attr = f' rel="{rel}"' if rel else ""
-        lis.append(f'<li><a href="{esc(href)}"{rel_attr}>{esc(label)}</a></li>')
-    return '<ul class="contact">\n' + "\n".join(lis) + "\n</ul>"
+    profiles = "".join(
+        f'<a href="{esc(href)}" rel="me">{esc(label)}</a>'
+        for href, label in (
+            (GITHUB, "GitHub"),
+            (KAGGLE, "Kaggle"),
+            (LINKEDIN, "LinkedIn"),
+        )
+    )
+    return (
+        '<ul class="contact">\n'
+        f'<li><a class="mail" href="mailto:{esc(EMAIL)}">{esc(EMAIL)}</a></li>\n'
+        f'<li class="profiles">{profiles}</li>\n'
+        "</ul>"
+    )
 
 
 def langs_html(lang, en_path, ko_path):
@@ -606,46 +594,37 @@ def langs_html(lang, en_path, ko_path):
 
 def nav_html(lang):
     base = home_href(lang)
-    links = [f'<a href="{base}#{anchor}">{esc(label)}</a>' for label, anchor in NAV[lang]]
+    links = []
+    for label, anchor, wide in NAV[lang]:
+        cls = ' class="nav-wide"' if wide else ""
+        links.append(f'<a href="{base}#{anchor}"{cls}>{esc(label)}</a>')
     ui = UI[lang]
     links.append(f'<!-- {ui["cv_comment"]} -->\n<a href="/cv.pdf">{esc(ui["cv"])}</a>')
     return "<nav>\n" + "\n".join(links) + "\n</nav>"
 
 
-def head(lang, title, desc, path, en_path, ko_path, og_image, og_w, og_h, og_alt, og_type):
-    ui_locale = "en_US" if lang == "en" else "ko_KR"
-    alt_locale = "ko_KR" if lang == "en" else "en_US"
+def head(lang, title, desc, path, en_path, ko_path):
     canonical = abs_url(path)
+    kr = ""
+    if lang == "ko":
+        kr = '<link rel="preload" href="/assets/fonts/ibm-plex-sans-kr-400.woff2" as="font" type="font/woff2" crossorigin>\n'
     return f"""<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
 <meta name="author" content="Jaewoo Choi">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#161b1f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#141a1e" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="{esc(canonical)}">
 <link rel="alternate" hreflang="en" href="{esc(abs_url(en_path))}">
 <link rel="alternate" hreflang="ko" href="{esc(abs_url(ko_path))}">
 <link rel="alternate" hreflang="x-default" href="{esc(abs_url(en_path))}">
-<meta property="og:title" content="{esc(title)}">
-<meta property="og:description" content="{esc(desc)}">
-<meta property="og:type" content="{esc(og_type)}">
-<meta property="og:url" content="{esc(canonical)}">
-<meta property="og:locale" content="{ui_locale}">
-<meta property="og:locale:alternate" content="{alt_locale}">
-<meta property="og:image" content="{esc(SITE + og_image)}">
-<meta property="og:image:width" content="{og_w}">
-<meta property="og:image:height" content="{og_h}">
-<meta property="og:image:alt" content="{esc(og_alt)}">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{esc(title)}">
-<meta name="twitter:description" content="{esc(desc)}">
-<meta name="twitter:image" content="{esc(SITE + og_image)}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css">
+{kr}<link rel="stylesheet" href="/assets/css/site.css">
 </head>"""
 
 
@@ -664,6 +643,7 @@ def script():
     document.querySelectorAll("video").forEach(function (v) {
       v.removeAttribute("autoplay");
       v.pause();
+      v.controls = true;
     });
   }
 })();
@@ -671,20 +651,22 @@ def script():
 
 
 def mast(lang, en_path, ko_path, show_name):
-    name = f'<a class="name" href="{home_href(lang)}">Jaewoo Choi</a>' if show_name else ""
-    return f"""<header class="mast">
-{name}
-{nav_html(lang)}
+    name = f'<a class="name" href="{home_href(lang)}">Jaewoo Choi</a>\n' if show_name else ""
+    klass = "mast mast-named" if show_name else "mast"
+    return f"""<header class="{klass}">
+{name}{nav_html(lang)}
 {langs_html(lang, en_path, ko_path)}
 </header>"""
 
 
 def video_html(key, lang):
     v = VIDEOS[key]
-    cls = "portrait" if v["orient"] == "portrait" else "landscape"
+    portrait = v["orient"] == "portrait"
+    cls = "portrait" if portrait else "landscape"
+    fig = "portrait" if portrait else "landscape"
     src = f"/assets/video/{v['file']}.mp4"
     poster = f"/assets/video/{v['file']}.jpg"
-    return f"""<figure class="wide">
+    return f"""<figure class="{fig}">
 <video class="{cls}" width="{v['w']}" height="{v['h']}" autoplay muted loop playsinline poster="{poster}" aria-label="{esc(v['label'][lang])}">
 <source src="{src}" type="video/mp4">
 <a href="{src}">{esc(UI[lang]['watch'])}</a>
@@ -693,52 +675,23 @@ def video_html(key, lang):
 </figure>"""
 
 
-def slot_html(lang, detail):
-    ui = UI[lang]
-    return f"""<!-- {ui['media_comment']} -->
-<div class="slot">
-<p>{esc(ui['no_media'])}</p>
-</div>"""
-
-
-def json_ld(lang):
-    url = SITE + "/" if lang == "en" else SITE + "/ko/"
-    data = {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Jaewoo Choi",
-        "jobTitle": "Senior AI Researcher",
-        "affiliation": {"@type": "Organization", "name": "Daedong AILab"},
-        "email": EMAIL,
-        "url": url,
-        "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Seoul",
-            "addressCountry": "KR",
-        },
-        "alumniOf": {"@type": "CollegeOrUniversity", "name": "Seokyeong University"},
-        "sameAs": [GITHUB, KAGGLE, LINKEDIN],
-    }
-    return '<script type="application/ld+json">\n' + json.dumps(data, ensure_ascii=False, indent=2) + "\n</script>"
+def slot_html(lang):
+    return f"<!-- {UI[lang]['media_comment']} -->"
 
 
 def entry_html(project, lang):
     href = project_href(lang, project["slug"])
-    title = project["title"][lang]
+    title = esc(project["title"][lang])
     if project["video"]:
-        orient = VIDEOS[project["video"]]["orient"]
-        klass = "entry has-video video-tall" if orient == "portrait" else "entry has-video"
-        media = video_html(project["video"], lang)
+        klass = "entry has-video"
+        media = "\n" + video_html(project["video"], lang)
     else:
-        klass = "entry no-video"
-        media = slot_html(lang, False)
+        klass = "entry"
+        media = "\n" + slot_html(lang)
     return f"""<article class="{klass}">
-{media}
-<div class="copy">
 <h3><a href="{href}">{title}</a></h3>
 <p>{project['line'][lang]}</p>
-<p class="tools">{project['tools'][lang]}</p>
-</div>
+<p class="tools">{project['tools'][lang]}</p>{media}
 </article>"""
 
 
@@ -749,48 +702,37 @@ def home_page(lang):
     if lang == "en":
         title = "Jaewoo Choi, Senior AI Researcher"
         desc = "Senior AI Researcher at Daedong AILab. Open-vocabulary perception, 6D pose, and imitation learning for orchard and manipulation robots."
-        bio = """<p class="bio">I work on perception for orchard robots and for manipulation robots. Before Daedong AILab I was a computer vision engineer at PLAIF and at FS Solution.</p>"""
+        bio = """<p class="bio">I work on perception for orchard robots and for manipulation robots. I was a computer vision engineer at PLAIF and at FS Solution before Daedong AILab.</p>"""
         research = """<p class="measure">I work on perception for real robots: open-vocabulary RGB-D segmentation, point-cloud and image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. I have developed and tested this work on deployed orchard robots and on manipulation robots. I want to extend it toward vision-language-action models that connect what a robot sees with how it acts.</p>"""
         edu = """<article>
-<p class="when">Mar 2016 to Aug 2022</p>
-<div>
 <h3>Seokyeong University</h3>
+<p class="when">Mar 2016 to Aug 2022</p>
 <p>Seoul, South Korea</p>
-<p>Bachelor of Engineering, Industrial Management Systems Engineering.</p>
-<p>Multidisciplinary major: Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies).</p>
-</div>
+<p>Bachelor of Engineering, Industrial Management Systems Engineering. Multidisciplinary major: Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies).</p>
 </article>"""
         patent = f"""<article>
-<p class="when">Registered Aug 2024</p>
-<div>
 <h3>Korean Patent 10-2694987</h3>
+<p class="when">Registered Aug 2024</p>
 <p>Applicant: PLAIF. Co-inventor.</p>
 <p class="patent-title">Pose estimating device and method using artificial intelligence to estimate pose of robot's end effector for object and robot control system including the same.</p>
 <p>The <a href="{project_href('en', 'cad-free-assembly')}">CAD-free auto assembly</a> work is the basis of this patent.</p>
-</div>
 </article>"""
         awards = f"""<article>
-<p class="when">Jan 2024</p>
-<div>
 <h3>Kaggle UBC-OCEAN</h3>
+<p class="when">Jan 2024</p>
 <p>Bronze medal, team rank 83/1,326.</p>
-</div>
 </article>
 <article>
-<p class="when">Jun 2022</p>
-<div>
 <h3>Kaggle Image Matching Challenge 2022</h3>
+<p class="when">Jun 2022</p>
 <p>Silver medal, team rank 50/642.</p>
 <p><a href="{MATCH}">kaggle_image_matching2022</a></p>
-</div>
 </article>
 <article>
-<p class="when">Apr 2022</p>
-<div>
 <h3>Kaggle Happywhale</h3>
+<p class="when">Apr 2022</p>
 <p>Whale and Dolphin Identification. Bronze medal, team rank 127/1,588.</p>
 <p><a href="{WHALE}">kaggle_happy_whale</a></p>
-</div>
 </article>"""
     else:
         title = "Jaewoo Choi, Senior AI Researcher"
@@ -798,45 +740,34 @@ def home_page(lang):
         bio = """<p class="bio">과수원 로봇과 manipulation 로봇의 perception을 연구합니다. Daedong AILab 이전에는 PLAIF와 FS Solution에서 Computer Vision Engineer로 일했습니다.</p>"""
         research = """<p class="measure">실제 로봇의 perception을 다룹니다. 주제는 open-vocabulary RGB-D segmentation, 장애물 매핑을 위한 point cloud와 image의 fusion, 6D pose estimation, manipulation을 위한 imitation learning입니다. 배치된 과수원 로봇과 manipulation 로봇에서 이 작업을 개발하고 시험했습니다. 로봇이 본 것과 행동을 잇는 vision-language-action model로 확장하고 싶습니다.</p>"""
         edu = """<article>
-<p class="when">2016년 3월부터 2022년 8월</p>
-<div>
 <h3>Seokyeong University</h3>
+<p class="when">2016년 3월부터 2022년 8월</p>
 <p>서울, 대한민국</p>
-<p>Bachelor of Engineering, Industrial Management Systems Engineering.</p>
-<p>융합전공은 Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies)입니다.</p>
-</div>
+<p>Bachelor of Engineering, Industrial Management Systems Engineering. 융합전공은 Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies)입니다.</p>
 </article>"""
         patent = f"""<article>
-<p class="when">2024년 8월 등록</p>
-<div>
 <h3>한국 특허 10-2694987</h3>
+<p class="when">2024년 8월 등록</p>
 <p>출원인은 PLAIF입니다. 공동 발명자입니다.</p>
 <p class="patent-title" lang="en">Pose estimating device and method using artificial intelligence to estimate pose of robot's end effector for object and robot control system including the same.</p>
 <p><a href="{project_href('ko', 'cad-free-assembly')}">CAD-free auto assembly</a>가 이 특허의 기반입니다.</p>
-</div>
 </article>"""
         awards = f"""<article>
-<p class="when">2024년 1월</p>
-<div>
 <h3>Kaggle UBC-OCEAN</h3>
+<p class="when">2024년 1월</p>
 <p>동메달, 팀 순위 83/1,326.</p>
-</div>
 </article>
 <article>
-<p class="when">2022년 6월</p>
-<div>
 <h3>Kaggle Image Matching Challenge 2022</h3>
+<p class="when">2022년 6월</p>
 <p>은메달, 팀 순위 50/642.</p>
 <p><a href="{MATCH}">kaggle_image_matching2022</a></p>
-</div>
 </article>
 <article>
-<p class="when">2022년 4월</p>
-<div>
 <h3>Kaggle Happywhale</h3>
+<p class="when">2022년 4월</p>
 <p>Whale and Dolphin Identification. 동메달, 팀 순위 127/1,588.</p>
 <p><a href="{WHALE}">kaggle_happy_whale</a></p>
-</div>
 </article>"""
 
     groups_html = []
@@ -855,28 +786,25 @@ def home_page(lang):
     for group in GROUPS:
         items = [p for p in PROJECTS if p["group"] == group["id"]]
         lis = "\n".join(
-            f'<li><a href="{project_href(lang, p["slug"])}">{p["title"][lang]}</a></li>'
+            f'<li><a href="{project_href(lang, p["slug"])}">{esc(p["title"][lang])}</a></li>'
             for p in items
         )
         exp_blocks.append(
             f"""<article>
-<p class="when">{esc(group['when'][lang])}</p>
-<div>
 <h3>{esc(group['org'])}</h3>
+<p class="when">{esc(group['when'][lang])}</p>
 <p>{esc(group['role'][lang])}</p>
 <ul class="role-projects">
 {lis}
 </ul>
-</div>
 </article>"""
         )
 
     role = "Senior AI Researcher, Daedong AILab"
     loc = "Seoul, South Korea" if lang == "en" else "서울, 대한민국"
-    og_alt = "Jaewoo Choi, Senior AI Researcher, Daedong AILab"
     doc = f"""<!DOCTYPE html>
 <html lang="{lang}">
-{head(lang, title, desc, path, en_path, ko_path, "/assets/og.png", "1200", "630", og_alt, "profile")}
+{head(lang, title, desc, path, en_path, ko_path)}
 <body>
 <a class="skip" href="#content">{esc(ui['skip'])}</a>
 <div class="wrap">
@@ -924,12 +852,45 @@ def home_page(lang):
 </main>
 {footer(lang)}
 </div>
-{json_ld(lang)}
 {script()}
 </body>
 </html>
 """
     return doc
+
+
+def sections_html(pairs):
+    parts = []
+    for heading, body in pairs:
+        if heading in ("Stack", "기술"):
+            body = body.replace("<p>", '<p class="stack">')
+        parts.append(f"<h2>{esc(heading)}</h2>\n{body}")
+    return "\n".join(parts)
+
+
+def pager_html(project, lang):
+    ui = UI[lang]
+    idx = next(i for i, item in enumerate(PROJECTS) if item["slug"] == project["slug"])
+    links = []
+    if idx > 0:
+        prev = PROJECTS[idx - 1]
+        links.append(
+            f'<a class="pager-prev" href="{project_href(lang, prev["slug"])}">'
+            f'<span class="pager-label">{esc(ui["prev"])}</span> {esc(prev["title"][lang])}</a>'
+        )
+    if idx + 1 < len(PROJECTS):
+        nxt = PROJECTS[idx + 1]
+        links.append(
+            f'<a class="pager-next" href="{project_href(lang, nxt["slug"])}">'
+            f'<span class="pager-label">{esc(ui["next"])}</span> {esc(nxt["title"][lang])}</a>'
+        )
+    if not links:
+        return ""
+    return (
+        f'<nav class="pager" aria-label="{esc(ui["pager"])}">\n'
+        + "\n".join(links)
+        + "\n</nav>"
+    )
 
 
 def project_page(project, lang):
@@ -941,34 +902,27 @@ def project_page(project, lang):
     desc = project["desc"][lang]
     group = next(g for g in GROUPS if g["id"] == project["group"])
     if project["video"]:
-        v = VIDEOS[project["video"]]
         media = video_html(project["video"], lang)
-        og_image = f"/assets/video/{v['file']}.jpg"
-        og_w, og_h = str(v["w"]), str(v["h"])
-        og_alt = v["label"][lang]
     else:
-        media = slot_html(lang, True)
-        og_image, og_w, og_h = "/assets/og.png", "1200", "630"
-        og_alt = "Jaewoo Choi, Senior AI Researcher, Daedong AILab"
-    sections = "\n".join(
-        f"<h2>{esc(h)}</h2>\n{body}" for h, body in project["sections"][lang]
-    )
+        media = slot_html(lang)
+    sections = sections_html(project["sections"][lang])
     back = home_href(lang) + "#projects"
     doc = f"""<!DOCTYPE html>
 <html lang="{lang}">
-{head(lang, title, desc, path, en_path, ko_path, og_image, og_w, og_h, og_alt, "website")}
+{head(lang, title, desc, path, en_path, ko_path)}
 <body>
 <a class="skip" href="#content">{esc(ui['skip'])}</a>
 <div class="wrap">
 {mast(lang, en_path, ko_path, True)}
 <main id="content" class="project">
 <p class="kicker">{esc(group['org'])}, {esc(group['role'][lang])}, {esc(group['when'][lang])}</p>
-<h1>{project['title'][lang]}</h1>
+<h1>{esc(project['title'][lang])}</h1>
 <p class="dek">{project['line'][lang]}</p>
 {media}
 <div class="prose">
 {sections}
 </div>
+{pager_html(project, lang)}
 <p class="back"><a href="{back}">{esc(ui['projects_back'])}</a></p>
 </main>
 {footer(lang)}
@@ -980,41 +934,85 @@ def project_page(project, lang):
     return doc
 
 
-def sitemap(paths):
-    lines = [
-        '<?xml version="1.0" encoding="UTF-8"?>',
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ]
-    for path in paths:
-        lines.append("  <url>")
-        lines.append(f"    <loc>{abs_url(path)}</loc>")
-        lines.append("  </url>")
-    lines.append("</urlset>")
-    return "\n".join(lines) + "\n"
+def not_found_page():
+    ui = UI["en"]
+    ui_ko = UI["ko"]
+    return f"""<!DOCTYPE html>
+<html lang="en">
+{head("en", ui["missing"], ui["missing_body"], "/404.html", "/", "/ko/")}
+<body>
+<a class="skip" href="#content">{esc(ui['skip'])}</a>
+<div class="wrap">
+{mast("en", "/", "/ko/", True)}
+<main id="content">
+<h1>{esc(ui['missing'])}</h1>
+<p>{esc(ui['missing_body'])}</p>
+<p><a href="/">Jaewoo Choi</a></p>
+<p lang="ko">{esc(ui_ko['missing_body'])} <a href="/ko/" hreflang="ko" lang="ko">한국어</a></p>
+</main>
+{footer("en")}
+</div>
+</body>
+</html>
+"""
+
+
+NBH = "\u2011"
+PHRASES = (
+    "Computer Vision Engineer로",
+    "computer vision engineer",
+    "Computer Vision Engineer",
+    "Daedong AILab",
+    "FS Solution",
+    "Jetson Nano",
+    "Seokyeong University",
+)
+
+
+def harden_text(text):
+    text = re.sub(r"(?<=[A-Za-z0-9])-(?=[A-Za-z0-9])", NBH, text)
+    for phrase in PHRASES:
+        text = text.replace(phrase, f'<span class="nobr">{phrase}</span>')
+    return text
+
+
+def harden_html(doc):
+    parts = re.split(r"(<[^>]*>)", doc)
+    out = []
+    skip = False
+    for part in parts:
+        if part.startswith("<"):
+            low = part.lower()
+            if low.startswith("<script") and not low.startswith("</"):
+                skip = True
+            elif low.startswith("<style") and not low.startswith("</"):
+                skip = True
+            out.append(part)
+            if low.startswith("</script") or low.startswith("</style"):
+                skip = False
+            continue
+        out.append(part if skip else harden_text(part))
+    return "".join(out)
 
 
 def main():
-    pages = {}
-    pages["index.html"] = home_page("en")
-    pages["ko/index.html"] = home_page("ko")
+    pages = {
+        "index.html": home_page("en"),
+        "ko/index.html": home_page("ko"),
+        "404.html": not_found_page(),
+    }
     for project in PROJECTS:
         pages[f"projects/{project['slug']}.html"] = project_page(project, "en")
         pages[f"ko/projects/{project['slug']}.html"] = project_page(project, "ko")
     for rel, text in pages.items():
         path = ROOT / rel
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text, encoding="utf-8")
+        path.write_text(harden_html(text), encoding="utf-8")
         print("wrote", rel)
-    url_paths = []
-    for rel in pages:
-        if rel == "index.html":
-            url_paths.append("/")
-        elif rel == "ko/index.html":
-            url_paths.append("/ko/")
-        else:
-            url_paths.append("/" + rel)
-    (ROOT / "sitemap.xml").write_text(sitemap(url_paths), encoding="utf-8")
-    print("wrote sitemap.xml")
+    sitemap = ROOT / "sitemap.xml"
+    if sitemap.exists():
+        sitemap.unlink()
+        print("removed sitemap.xml")
 
 
 if __name__ == "__main__":

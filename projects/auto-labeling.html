@@ -3,30 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Auto-Labeling and Data Captioning System, Jaewoo Choi</title>
+<title>Auto‑Labeling and Data Captioning System, Jaewoo Choi</title>
 <meta name="description" content="Video auto-labeling and region-grounded captioning. Per-image labeling cost fell from about USD 1.05 to about USD 0.036.">
 <meta name="author" content="Jaewoo Choi">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#161b1f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#141a1e" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
 <link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/auto-labeling.html">
 <link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
-<meta property="og:title" content="Auto-Labeling and Data Captioning System, Jaewoo Choi">
-<meta property="og:description" content="Video auto-labeling and region-grounded captioning. Per-image labeling cost fell from about USD 1.05 to about USD 0.036.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://imjaewoochoi.github.io/projects/auto-labeling.html">
-<meta property="og:locale" content="en_US">
-<meta property="og:locale:alternate" content="ko_KR">
-<meta property="og:image" content="https://imjaewoochoi.github.io/assets/og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Jaewoo Choi, Senior AI Researcher, Daedong AILab">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Auto-Labeling and Data Captioning System, Jaewoo Choi">
-<meta name="twitter:description" content="Video auto-labeling and region-grounded captioning. Per-image labeling cost fell from about USD 1.05 to about USD 0.036.">
-<meta name="twitter:image" content="https://imjaewoochoi.github.io/assets/og.png">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
@@ -34,49 +21,44 @@
 <body>
 <a class="skip" href="#content">Skip to content</a>
 <div class="wrap">
-<header class="mast">
+<header class="mast mast-named">
 <a class="name" href="/">Jaewoo Choi</a>
 <nav>
-<a href="/#research">Research</a>
 <a href="/#projects">Projects</a>
 <a href="/#experience">Experience</a>
-<a href="/#education">Education</a>
-<a href="/#patent">Patent</a>
-<a href="/#awards">Awards</a>
+<a href="/#patent" class="nav-wide">Patent</a>
+<a href="/#awards" class="nav-wide">Awards</a>
 <!-- CV PDF will be added later at /cv.pdf -->
 <a href="/cv.pdf">CV</a>
 </nav>
 <p class="langs"><a href="/projects/auto-labeling.html" hreflang="en" lang="en" aria-current="page">EN</a><span class="sep">|</span><a href="/ko/projects/auto-labeling.html" hreflang="ko" lang="ko">한국어</a></p>
 </header>
 <main id="content" class="project">
-<p class="kicker">Daedong AILab, Senior AI Researcher, May 2024 to present</p>
-<h1>Auto-Labeling and Data Captioning System</h1>
-<p class="dek">Point prompts and mask corrections become tracked masks. Qwen-series models write region-grounded captions. Per-image labeling cost fell from about USD 1.05 to about USD 0.036.</p>
+<p class="kicker"><span class="nobr">Daedong AILab</span>, Senior AI Researcher, May 2024 to present</p>
+<h1>Auto‑Labeling and Data Captioning System</h1>
+<p class="dek">Point prompts and mask corrections become tracked masks. Qwen‑series models write region‑grounded captions. Per‑image labeling cost fell from about USD 1.05 to about USD 0.036.</p>
 <!-- Media can be added later. -->
-<div class="slot">
-<p>No media yet</p>
-</div>
 <div class="prose">
 <h2>Problem</h2>
-<p>Manual annotation cost limits the supply of segmentation and region-grounded vision-language training data.</p>
+<p>Manual annotation cost limits the supply of segmentation and region‑grounded vision‑language training data. I built a video auto‑labeling pipeline. Point prompts and mask corrections become tracked masks with consistent IDs across frames. Image and video inputs share TensorRT engines, so the same computation is not duplicated.</p>
 <h2>Approach</h2>
-<p>I built a video auto-labeling pipeline. Point prompts and mask corrections become tracked masks with consistent IDs across frames. Image and video inputs share TensorRT engines. That drops a second copy of the same computation.</p>
-<p>Qwen-series vision-language models generate region-grounded object descriptions and check them. Uncertain cases go to a second review. Verified descriptions are linked to the instance annotations.</p>
-<p>I set the label taxonomy and the annotation guidelines, and built COCO-format training datasets.</p>
+<p>Qwen‑series vision‑language models generate region‑grounded object descriptions and check them. Uncertain cases go to a second review. Verified descriptions are linked to the instance annotations. I set the label taxonomy and the annotation guidelines, and built COCO‑format training datasets.</p>
 <h2>Results</h2>
-<p>Per-image labeling cost was about USD 1.05. It fell to about USD 0.036, a 96.6% reduction.</p>
+<p>Per‑image labeling cost was about USD 1.05. It fell to about USD 0.036, a 96.6% reduction.</p>
 <h2>Stack</h2>
-<p>TensorRT, Qwen-series vision-language models, COCO.</p>
+<p class="stack">TensorRT, Qwen‑series vision‑language models, COCO.</p>
 </div>
+<nav class="pager" aria-label="Adjacent projects">
+<a class="pager-prev" href="/projects/orchard-obstacle-mapping.html"><span class="pager-label">Previous</span> Open‑Vocabulary 3D Obstacle Perception and Occupancy Mapping for Autonomous Orchard Robots</a>
+<a class="pager-next" href="/projects/strawberry-cultivation.html"><span class="pager-label">Next</span> Strawberry Cultivation‑Task Robot with UMI and Diffusion Policy</a>
+</nav>
 <p class="back"><a href="/#projects">Projects</a></p>
 </main>
 <footer class="colophon">
 <p>Updated 21 Oct 2026</p>
 <ul class="contact">
-<li><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
-<li><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a></li>
-<li><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a></li>
-<li><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
+<li><a class="mail" href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
+<li class="profiles"><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
 </ul>
 </footer>
 </div>
@@ -86,6 +68,7 @@
     document.querySelectorAll("video").forEach(function (v) {
       v.removeAttribute("autoplay");
       v.pause();
+      v.controls = true;
     });
   }
 })();

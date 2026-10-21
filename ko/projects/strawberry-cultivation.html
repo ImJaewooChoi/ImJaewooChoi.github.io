@@ -6,53 +6,39 @@
 <title>UMI와 Diffusion Policy를 쓴 딸기 재배 작업 로봇, Jaewoo Choi</title>
 <meta name="description" content="딸기 재배 세 작업의 UMI 시연과 Diffusion Policy. 고정 실험실 1,000회: transplanting 93.8%, flower thinning 87.5%, runner handling 65%. CES 2025 전시.">
 <meta name="author" content="Jaewoo Choi">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#161b1f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#141a1e" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://imjaewoochoi.github.io/ko/projects/strawberry-cultivation.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/strawberry-cultivation.html">
 <link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/strawberry-cultivation.html">
 <link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/strawberry-cultivation.html">
-<meta property="og:title" content="UMI와 Diffusion Policy를 쓴 딸기 재배 작업 로봇, Jaewoo Choi">
-<meta property="og:description" content="딸기 재배 세 작업의 UMI 시연과 Diffusion Policy. 고정 실험실 1,000회: transplanting 93.8%, flower thinning 87.5%, runner handling 65%. CES 2025 전시.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://imjaewoochoi.github.io/ko/projects/strawberry-cultivation.html">
-<meta property="og:locale" content="ko_KR">
-<meta property="og:locale:alternate" content="en_US">
-<meta property="og:image" content="https://imjaewoochoi.github.io/assets/video/strawberry-ces2025.jpg">
-<meta property="og:image:width" content="540">
-<meta property="og:image:height" content="960">
-<meta property="og:image:alt" content="CES 2025 부스의 flower thinning">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="UMI와 Diffusion Policy를 쓴 딸기 재배 작업 로봇, Jaewoo Choi">
-<meta name="twitter:description" content="딸기 재배 세 작업의 UMI 시연과 Diffusion Policy. 고정 실험실 1,000회: transplanting 93.8%, flower thinning 87.5%, runner handling 65%. CES 2025 전시.">
-<meta name="twitter:image" content="https://imjaewoochoi.github.io/assets/video/strawberry-ces2025.jpg">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-kr-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
 </head>
 <body>
 <a class="skip" href="#content">본문으로</a>
 <div class="wrap">
-<header class="mast">
+<header class="mast mast-named">
 <a class="name" href="/ko/">Jaewoo Choi</a>
 <nav>
-<a href="/ko/#research">연구</a>
 <a href="/ko/#projects">프로젝트</a>
 <a href="/ko/#experience">경력</a>
-<a href="/ko/#education">학력</a>
-<a href="/ko/#patent">특허</a>
-<a href="/ko/#awards">수상</a>
+<a href="/ko/#patent" class="nav-wide">특허</a>
+<a href="/ko/#awards" class="nav-wide">수상</a>
 <!-- CV PDF는 나중에 /cv.pdf 에 넣습니다. -->
 <a href="/cv.pdf">CV</a>
 </nav>
 <p class="langs"><a href="/projects/strawberry-cultivation.html" hreflang="en" lang="en">EN</a><span class="sep">|</span><a href="/ko/projects/strawberry-cultivation.html" hreflang="ko" lang="ko" aria-current="page">한국어</a></p>
 </header>
 <main id="content" class="project">
-<p class="kicker">Daedong AILab, Senior AI Researcher, 2024년 5월부터 현재</p>
+<p class="kicker"><span class="nobr">Daedong AILab</span>, Senior AI Researcher, 2024년 5월부터 현재</p>
 <h1>UMI와 Diffusion Policy를 쓴 딸기 재배 작업 로봇</h1>
 <p class="dek">UMI 시연으로 Diffusion Policy를 학습했습니다. 고정 실험실, 1,000회 시험의 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%입니다. CES 2025에 전시했습니다.</p>
-<figure class="wide">
+<figure class="portrait">
 <video class="portrait" width="540" height="960" autoplay muted loop playsinline poster="/assets/video/strawberry-ces2025.jpg" aria-label="CES 2025 부스의 flower thinning">
 <source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
 <a href="/assets/video/strawberry-ces2025.mp4">MP4 보기</a>
@@ -61,24 +47,25 @@
 </figure>
 <div class="prose">
 <h2>문제</h2>
-<p>사람 시연으로 딸기 재배 세 작업을 학습했습니다. Transplanting, flower thinning, runner handling입니다.</p>
+<p>사람 시연으로 딸기 재배 세 작업을 학습했습니다. Transplanting, flower thinning, runner handling입니다. 시연은 Universal Manipulation Interface(UMI)로 모았고, 세 작업 모두 data pipeline과 policy 학습을 맡았습니다.</p>
 <h2>방법</h2>
-<p>시연은 Universal Manipulation Interface(UMI)로 모았고, 세 작업 모두 data pipeline과 policy 학습을 맡았습니다. GoPro RGB와 IMU 데이터를 수집한 뒤 camera-IMU calibration을 했고, ORB-SLAM3 visual-inertial SLAM trajectory를 학습 데이터로 만들었습니다.</p>
-<p>RGB feature와 robot state를 global conditioning으로 Diffusion Policy를 학습했고, U-Net과 ViT 구성을 비교했습니다.</p>
+<p>GoPro RGB와 IMU 데이터를 수집한 뒤 camera‑IMU calibration을 했고, ORB‑SLAM3 visual‑inertial SLAM trajectory를 학습 데이터로 만들었습니다. RGB feature와 robot state를 global conditioning으로 Diffusion Policy를 학습했고, U‑Net과 ViT 구성을 비교했습니다.</p>
 <h2>결과</h2>
 <p>고정된 실험실에서 1,000회 시험했습니다. 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%입니다. CES 2025에 전시했습니다.</p>
 <h2>기술</h2>
-<p>UMI, GoPro, IMU, ORB-SLAM3, Diffusion Policy, U-Net, ViT.</p>
+<p class="stack">UMI, GoPro, IMU, ORB‑SLAM3, Diffusion Policy, U‑Net, ViT.</p>
 </div>
+<nav class="pager" aria-label="인접 프로젝트">
+<a class="pager-prev" href="/ko/projects/auto-labeling.html"><span class="pager-label">이전</span> Auto‑Labeling과 Data Captioning 시스템</a>
+<a class="pager-next" href="/ko/projects/cad-free-assembly.html"><span class="pager-label">다음</span> CAD‑free Auto Assembly</a>
+</nav>
 <p class="back"><a href="/ko/#projects">프로젝트</a></p>
 </main>
 <footer class="colophon">
 <p>2026년 10월 21일 업데이트</p>
 <ul class="contact">
-<li><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
-<li><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a></li>
-<li><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a></li>
-<li><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
+<li><a class="mail" href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
+<li class="profiles"><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
 </ul>
 </footer>
 </div>
@@ -88,6 +75,7 @@
     document.querySelectorAll("video").forEach(function (v) {
       v.removeAttribute("autoplay");
       v.pause();
+      v.controls = true;
     });
   }
 })();

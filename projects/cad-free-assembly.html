@@ -3,30 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CAD-free Auto Assembly, Jaewoo Choi</title>
+<title>CAD‑free Auto Assembly, Jaewoo Choi</title>
 <meta name="description" content="6D tool poses for assembly without a part CAD model, from a 2D camera. 93% task success across 1,000 in-house trials. Basis of Korean Patent 10-2694987.">
 <meta name="author" content="Jaewoo Choi">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#161b1f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#141a1e" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
 <link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/cad-free-assembly.html">
 <link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
-<meta property="og:title" content="CAD-free Auto Assembly, Jaewoo Choi">
-<meta property="og:description" content="6D tool poses for assembly without a part CAD model, from a 2D camera. 93% task success across 1,000 in-house trials. Basis of Korean Patent 10-2694987.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
-<meta property="og:locale" content="en_US">
-<meta property="og:locale:alternate" content="ko_KR">
-<meta property="og:image" content="https://imjaewoochoi.github.io/assets/video/cad-free-assembly.jpg">
-<meta property="og:image:width" content="1280">
-<meta property="og:image:height" content="720">
-<meta property="og:image:alt" content="CAD-free auto assembly on a UR arm">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="CAD-free Auto Assembly, Jaewoo Choi">
-<meta name="twitter:description" content="6D tool poses for assembly without a part CAD model, from a 2D camera. 93% task success across 1,000 in-house trials. Basis of Korean Patent 10-2694987.">
-<meta name="twitter:image" content="https://imjaewoochoi.github.io/assets/video/cad-free-assembly.jpg">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
@@ -34,25 +21,23 @@
 <body>
 <a class="skip" href="#content">Skip to content</a>
 <div class="wrap">
-<header class="mast">
+<header class="mast mast-named">
 <a class="name" href="/">Jaewoo Choi</a>
 <nav>
-<a href="/#research">Research</a>
 <a href="/#projects">Projects</a>
 <a href="/#experience">Experience</a>
-<a href="/#education">Education</a>
-<a href="/#patent">Patent</a>
-<a href="/#awards">Awards</a>
+<a href="/#patent" class="nav-wide">Patent</a>
+<a href="/#awards" class="nav-wide">Awards</a>
 <!-- CV PDF will be added later at /cv.pdf -->
 <a href="/cv.pdf">CV</a>
 </nav>
 <p class="langs"><a href="/projects/cad-free-assembly.html" hreflang="en" lang="en" aria-current="page">EN</a><span class="sep">|</span><a href="/ko/projects/cad-free-assembly.html" hreflang="ko" lang="ko">한국어</a></p>
 </header>
 <main id="content" class="project">
-<p class="kicker">PLAIF, Computer Vision Engineer, Jan 2023 to Apr 2024</p>
-<h1>CAD-free Auto Assembly</h1>
-<p class="dek">6D tool poses for assembly from a 2D camera, with no CAD model of the part. 93% task success across 1,000 in-house trials. Basis of Korean Patent 10-2694987.</p>
-<figure class="wide">
+<p class="kicker">PLAIF, <span class="nobr">Computer Vision Engineer</span>, Jan 2023 to Apr 2024</p>
+<h1>CAD‑free Auto Assembly</h1>
+<p class="dek">6D tool poses for assembly from a 2D camera, with no CAD model of the part. 93% task success across 1,000 in‑house trials. Basis of Korean Patent 10‑2694987.</p>
+<figure class="landscape">
 <video class="landscape" width="1280" height="720" autoplay muted loop playsinline poster="/assets/video/cad-free-assembly.jpg" aria-label="CAD-free auto assembly on a UR arm">
 <source src="/assets/video/cad-free-assembly.mp4" type="video/mp4">
 <a href="/assets/video/cad-free-assembly.mp4">Watch the MP4</a>
@@ -63,23 +48,23 @@
 <h2>Problem</h2>
 <p>Assembly needs a target 6D tool pose when the part has no CAD model. At run time the sensor is a 2D camera, not a 3D camera.</p>
 <h2>Approach</h2>
-<p>I prototyped a two-view RGB baseline first: learned feature matching between a reference image and a target image, USAC essential-matrix estimation, relative pose recovery, and triangulation.</p>
-<p>In the final pipeline, LightGlue matches the live 2D image to a stored reference RGB-D capture, so each match carries depth. Matches with no depth are removed.</p>
-<p>solvePnP and RANSAC estimate the camera pose from the 3D-2D matches. That pose is chained with the hand-eye calibration and the stored reference pose. The result is the target 6D tool pose.</p>
-<h2>Results</h2>
-<p>Task success was 93% across 1,000 in-house trials. This work is the basis of <a href="/#patent">Korean Patent 10-2694987</a>.</p>
+<p>I prototyped a two‑view RGB baseline first: learned feature matching between a reference image and a target image, USAC essential‑matrix estimation, relative pose recovery, and triangulation.</p>
+<p>In the final pipeline, LightGlue matches the live 2D image to a stored reference RGB‑D capture, so each match carries depth. Matches with no depth are removed.</p>
+<p>solvePnP and RANSAC estimate the camera pose from the 3D‑2D matches. That pose is chained with the hand‑eye calibration and the stored reference pose. The result is the target 6D tool pose. Task success was 93% across 1,000 in‑house trials. This work is the basis of <a href="/#patent">Korean Patent 10‑2694987</a>.</p>
 <h2>Stack</h2>
-<p>LightGlue, USAC, solvePnP, RANSAC, hand-eye calibration.</p>
+<p class="stack">LightGlue, USAC, solvePnP, RANSAC, hand‑eye calibration.</p>
 </div>
+<nav class="pager" aria-label="Adjacent projects">
+<a class="pager-prev" href="/projects/strawberry-cultivation.html"><span class="pager-label">Previous</span> Strawberry Cultivation‑Task Robot with UMI and Diffusion Policy</a>
+<a class="pager-next" href="/projects/bin-picking.html"><span class="pager-label">Next</span> CAD‑based Auto Bin Picking</a>
+</nav>
 <p class="back"><a href="/#projects">Projects</a></p>
 </main>
 <footer class="colophon">
 <p>Updated 21 Oct 2026</p>
 <ul class="contact">
-<li><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
-<li><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a></li>
-<li><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a></li>
-<li><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
+<li><a class="mail" href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
+<li class="profiles"><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
 </ul>
 </footer>
 </div>
@@ -89,6 +74,7 @@
     document.querySelectorAll("video").forEach(function (v) {
       v.removeAttribute("autoplay");
       v.pause();
+      v.controls = true;
     });
   }
 })();

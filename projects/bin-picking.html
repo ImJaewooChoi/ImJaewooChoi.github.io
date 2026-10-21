@@ -3,30 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CAD-based Auto Bin Picking, Jaewoo Choi</title>
+<title>CAD‑based Auto Bin Picking, Jaewoo Choi</title>
 <meta name="description" content="Picking poses from RGB-D and CAD geometry. 89% task success in 1,000 in-house, fixed-environment trials on five object types.">
 <meta name="author" content="Jaewoo Choi">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#161b1f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#141a1e" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/bin-picking.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/bin-picking.html">
 <link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/bin-picking.html">
 <link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/bin-picking.html">
-<meta property="og:title" content="CAD-based Auto Bin Picking, Jaewoo Choi">
-<meta property="og:description" content="Picking poses from RGB-D and CAD geometry. 89% task success in 1,000 in-house, fixed-environment trials on five object types.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://imjaewoochoi.github.io/projects/bin-picking.html">
-<meta property="og:locale" content="en_US">
-<meta property="og:locale:alternate" content="ko_KR">
-<meta property="og:image" content="https://imjaewoochoi.github.io/assets/video/bin-picking.jpg">
-<meta property="og:image:width" content="1280">
-<meta property="og:image:height" content="720">
-<meta property="og:image:alt" content="CAD-based bin picking">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="CAD-based Auto Bin Picking, Jaewoo Choi">
-<meta name="twitter:description" content="Picking poses from RGB-D and CAD geometry. 89% task success in 1,000 in-house, fixed-environment trials on five object types.">
-<meta name="twitter:image" content="https://imjaewoochoi.github.io/assets/video/bin-picking.jpg">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
@@ -34,25 +21,23 @@
 <body>
 <a class="skip" href="#content">Skip to content</a>
 <div class="wrap">
-<header class="mast">
+<header class="mast mast-named">
 <a class="name" href="/">Jaewoo Choi</a>
 <nav>
-<a href="/#research">Research</a>
 <a href="/#projects">Projects</a>
 <a href="/#experience">Experience</a>
-<a href="/#education">Education</a>
-<a href="/#patent">Patent</a>
-<a href="/#awards">Awards</a>
+<a href="/#patent" class="nav-wide">Patent</a>
+<a href="/#awards" class="nav-wide">Awards</a>
 <!-- CV PDF will be added later at /cv.pdf -->
 <a href="/cv.pdf">CV</a>
 </nav>
 <p class="langs"><a href="/projects/bin-picking.html" hreflang="en" lang="en" aria-current="page">EN</a><span class="sep">|</span><a href="/ko/projects/bin-picking.html" hreflang="ko" lang="ko">한국어</a></p>
 </header>
 <main id="content" class="project">
-<p class="kicker">PLAIF, Computer Vision Engineer, Jan 2023 to Apr 2024</p>
-<h1>CAD-based Auto Bin Picking</h1>
-<p class="dek">Picking poses from RGB-D images and known CAD geometry. 89% task success in 1,000 in-house, fixed-environment trials, moving five object types into an empty container.</p>
-<figure class="wide">
+<p class="kicker">PLAIF, <span class="nobr">Computer Vision Engineer</span>, Jan 2023 to Apr 2024</p>
+<h1>CAD‑based Auto Bin Picking</h1>
+<p class="dek">Picking poses from RGB‑D images and known CAD geometry. 89% task success in 1,000 in‑house, fixed‑environment trials, moving five object types into an empty container.</p>
+<figure class="landscape">
 <video class="landscape" width="1280" height="720" autoplay muted loop playsinline poster="/assets/video/bin-picking.jpg" aria-label="CAD-based bin picking">
 <source src="/assets/video/bin-picking.mp4" type="video/mp4">
 <a href="/assets/video/bin-picking.mp4">Watch the MP4</a>
@@ -61,25 +46,27 @@
 </figure>
 <div class="prose">
 <h2>Problem</h2>
-<p>Estimate picking poses from RGB-D images of a bin for objects with known CAD geometry.</p>
+<p>Estimate picking poses from RGB‑D images of a bin for objects with known CAD geometry.</p>
 <h2>Approach</h2>
-<p>I trained Mask R-CNN (ResNet-101) with separate "unoccluded" and "hole" classes. Hole masks are subtracted from object masks. The remaining instance masks segment the point cloud.</p>
-<p>Visible-surface CAD templates for each pick pose are built by hidden-point removal, then fit to the segmented points with PCA initialization and point-to-point ICP.</p>
-<p>Each fit is checked model-to-scene and scene-to-model. Poses are filtered by registration fitness, inlier RMSE, and a combined score. Candidates are ranked. Poses are transformed into the robot base with the camera extrinsics.</p>
+<p>I trained Mask R‑CNN (ResNet‑101) with separate "unoccluded" and "hole" classes. Hole masks are subtracted from object masks. The remaining instance masks segment the point cloud.</p>
+<p>Visible‑surface CAD templates for each pick pose are built by hidden‑point removal, then fit to the segmented points with PCA initialization and point‑to‑point ICP.</p>
+<p>Each fit is checked model‑to‑scene and scene‑to‑model. Poses are filtered by registration fitness, inlier RMSE, and a combined score. Candidates are ranked. Poses are transformed into the robot base with the camera extrinsics.</p>
 <h2>Results</h2>
-<p>Task success was 89% in 1,000 in-house, fixed-environment trials, moving five object types into an empty container.</p>
+<p>Task success was 89% in 1,000 in‑house, fixed‑environment trials, moving five object types into an empty container.</p>
 <h2>Stack</h2>
-<p>Mask R-CNN, ResNet-101, PCA, point-to-point ICP.</p>
+<p class="stack">Mask R‑CNN, ResNet‑101, PCA, point‑to‑point ICP.</p>
 </div>
+<nav class="pager" aria-label="Adjacent projects">
+<a class="pager-prev" href="/projects/cad-free-assembly.html"><span class="pager-label">Previous</span> CAD‑free Auto Assembly</a>
+<a class="pager-next" href="/projects/ros-6d-vision.html"><span class="pager-label">Next</span> ROS 6D Vision Server and Hand‑Eye Calibration Tools</a>
+</nav>
 <p class="back"><a href="/#projects">Projects</a></p>
 </main>
 <footer class="colophon">
 <p>Updated 21 Oct 2026</p>
 <ul class="contact">
-<li><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
-<li><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a></li>
-<li><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a></li>
-<li><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
+<li><a class="mail" href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
+<li class="profiles"><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
 </ul>
 </footer>
 </div>
@@ -89,6 +76,7 @@
     document.querySelectorAll("video").forEach(function (v) {
       v.removeAttribute("autoplay");
       v.pause();
+      v.controls = true;
     });
   }
 })();

@@ -3,30 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ROS 6D Vision Server and Hand-Eye Calibration Tools, Jaewoo Choi</title>
+<title>ROS 6D Vision Server and Hand‑Eye Calibration Tools, Jaewoo Choi</title>
 <meta name="description" content="ROS action server for capture, segmentation, and 6D pose, plus eye-to-hand calibration tools for Zivid and RealSense.">
 <meta name="author" content="Jaewoo Choi">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#161b1f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#141a1e" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
 <link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/ros-6d-vision.html">
 <link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
-<meta property="og:title" content="ROS 6D Vision Server and Hand-Eye Calibration Tools, Jaewoo Choi">
-<meta property="og:description" content="ROS action server for capture, segmentation, and 6D pose, plus eye-to-hand calibration tools for Zivid and RealSense.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
-<meta property="og:locale" content="en_US">
-<meta property="og:locale:alternate" content="ko_KR">
-<meta property="og:image" content="https://imjaewoochoi.github.io/assets/og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Jaewoo Choi, Senior AI Researcher, Daedong AILab">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ROS 6D Vision Server and Hand-Eye Calibration Tools, Jaewoo Choi">
-<meta name="twitter:description" content="ROS action server for capture, segmentation, and 6D pose, plus eye-to-hand calibration tools for Zivid and RealSense.">
-<meta name="twitter:image" content="https://imjaewoochoi.github.io/assets/og.png">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
@@ -34,46 +21,43 @@
 <body>
 <a class="skip" href="#content">Skip to content</a>
 <div class="wrap">
-<header class="mast">
+<header class="mast mast-named">
 <a class="name" href="/">Jaewoo Choi</a>
 <nav>
-<a href="/#research">Research</a>
 <a href="/#projects">Projects</a>
 <a href="/#experience">Experience</a>
-<a href="/#education">Education</a>
-<a href="/#patent">Patent</a>
-<a href="/#awards">Awards</a>
+<a href="/#patent" class="nav-wide">Patent</a>
+<a href="/#awards" class="nav-wide">Awards</a>
 <!-- CV PDF will be added later at /cv.pdf -->
 <a href="/cv.pdf">CV</a>
 </nav>
 <p class="langs"><a href="/projects/ros-6d-vision.html" hreflang="en" lang="en" aria-current="page">EN</a><span class="sep">|</span><a href="/ko/projects/ros-6d-vision.html" hreflang="ko" lang="ko">한국어</a></p>
 </header>
 <main id="content" class="project">
-<p class="kicker">PLAIF, Computer Vision Engineer, Jan 2023 to Apr 2024</p>
-<h1>ROS 6D Vision Server and Hand-Eye Calibration Tools</h1>
-<p class="dek">A ROS action server runs capture, segmentation, and pose estimation per request, and returns robot-base and camera-frame poses. Eye-to-hand calibration tools sit beside it.</p>
+<p class="kicker">PLAIF, <span class="nobr">Computer Vision Engineer</span>, Jan 2023 to Apr 2024</p>
+<h1>ROS 6D Vision Server and Hand‑Eye Calibration Tools</h1>
+<p class="dek">A ROS action server runs capture, segmentation, and pose estimation per request, and returns robot‑base and camera‑frame poses. Eye‑to‑hand calibration tools sit beside it.</p>
 <!-- Media can be added later. -->
-<div class="slot">
-<p>No media yet</p>
-</div>
 <div class="prose">
 <h2>Problem</h2>
 <p>A caller needs the object pose in the robot base frame and in the camera frame. The camera also has to be calibrated to the robot.</p>
 <h2>Approach</h2>
-<p>I wrote a ROS action server that runs capture, segmentation, and pose estimation per request. It returns robot-base and camera-frame poses with matching scores. A configuration file selects the camera (Zivid, RealSense, or recorded data), the model, and the pipeline.</p>
-<p>Eye-to-hand calibration uses ArUco board pose estimation, the OpenCV Park method, and a batch AX = YB solver that reports residual error. I added a calibration validation tool. Runtime parameters use ROS dynamic_reconfigure.</p>
+<p>I wrote a ROS action server that runs capture, segmentation, and pose estimation per request. It returns robot‑base and camera‑frame poses with matching scores. A configuration file selects the camera (Zivid, RealSense, or recorded data), the model, and the pipeline.</p>
+<p>Eye‑to‑hand calibration uses ArUco board pose estimation, the OpenCV Park method, and a batch AX = YB solver that reports residual error. I added a calibration validation tool. Runtime parameters use ROS dynamic_reconfigure.</p>
 <h2>Stack</h2>
-<p>ROS, Zivid, RealSense, ArUco, OpenCV, dynamic_reconfigure.</p>
+<p class="stack">ROS, Zivid, RealSense, ArUco, OpenCV, dynamic_reconfigure.</p>
 </div>
+<nav class="pager" aria-label="Adjacent projects">
+<a class="pager-prev" href="/projects/bin-picking.html"><span class="pager-label">Previous</span> CAD‑based Auto Bin Picking</a>
+<a class="pager-next" href="/projects/license-plate.html"><span class="pager-label">Next</span> Car License Plate Recognition</a>
+</nav>
 <p class="back"><a href="/#projects">Projects</a></p>
 </main>
 <footer class="colophon">
 <p>Updated 21 Oct 2026</p>
 <ul class="contact">
-<li><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
-<li><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a></li>
-<li><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a></li>
-<li><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
+<li><a class="mail" href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
+<li class="profiles"><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
 </ul>
 </footer>
 </div>
@@ -83,6 +67,7 @@
     document.querySelectorAll("video").forEach(function (v) {
       v.removeAttribute("autoplay");
       v.pause();
+      v.controls = true;
     });
   }
 })();
