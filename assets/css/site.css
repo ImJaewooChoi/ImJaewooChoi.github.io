@@ -390,6 +390,7 @@ video {
 video.landscape {
   width: 100%;
   height: auto;
+  aspect-ratio: 1280 / 720;
 }
 
 figure.portrait {
@@ -400,6 +401,7 @@ figure.portrait {
 video.portrait {
   width: 100%;
   height: auto;
+  aspect-ratio: 540 / 960;
 }
 
 .cv article {

@@ -121,8 +121,8 @@ VIDEOS = {
             "ko": "CAD-based bin picking",
         },
         "cap": {
-            "en": "Silent. Washers, connecting rods, shafts, and brackets picked from bins.",
-            "ko": "무음. Washer, connecting rod, shaft, bracket를 bin에서 picking합니다.",
+            "en": "Silent. A ring-scan close-up, then a Doosan cobot picking, then a green-bin close-up.",
+            "ko": "무음. 세 장면입니다. Ring-scan close-up, Doosan cobot picking, green-bin close-up.",
         },
     },
     "strawberry": {
