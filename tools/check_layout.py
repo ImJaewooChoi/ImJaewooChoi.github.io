@@ -9,7 +9,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "http://127.0.0.1:8765"
-WIDTHS = [360, 390, 768, 1024, 1440]
+WIDTHS = [360, 390, 768, 1024, 1280, 1440, 1920]
 HYPHEN_END = ("-", "‐", "‑")  # hyphen-minus, hyphen, non-breaking hyphen
 
 PROSE_JS = r"""

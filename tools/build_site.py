@@ -678,13 +678,49 @@ def script():
 </script>"""
 
 
-def mast(lang, en_path, ko_path, show_name):
-    name = f'<a class="name" href="{home_href(lang)}">Jaewoo Choi</a>\n' if show_name else ""
-    klass = "mast mast-named" if show_name else "mast"
-    return f"""<header class="{klass}">
-{name}{nav_html(lang)}
+def focus_html(lang):
+    if lang == "en":
+        return """<p class="focus">Open-vocabulary perception, 6D pose, and imitation learning for orchard and manipulation robots.</p>"""
+    return """<p class="focus">과수원 로봇과 manipulation 로봇의 open-vocabulary perception, 6D pose, imitation learning을 연구합니다.</p>"""
+
+
+def rail_html(lang, en_path, ko_path, as_home):
+    role = "Senior AI Researcher, Daedong AILab"
+    loc = "Seoul, South Korea" if lang == "en" else "서울, 대한민국"
+    if as_home:
+        name = "<h1>Jaewoo Choi</h1>"
+        mobile = ""
+        klass = "rail rail-home"
+        intro = "intro"
+    else:
+        name = f'<p class="rail-name"><a href="{home_href(lang)}">Jaewoo Choi</a></p>'
+        mobile = f'<a class="name" href="{home_href(lang)}">Jaewoo Choi</a>\n'
+        klass = "rail"
+        intro = "intro sub"
+    return f"""<div class="{klass}">
+{mobile}{nav_html(lang)}
 {langs_html(lang, en_path, ko_path)}
-</header>"""
+<div class="{intro}">
+{name}
+<p class="role">{esc(role)}</p>
+<p class="loc">{esc(loc)}</p>
+{focus_html(lang)}
+{contact_html()}
+</div>
+</div>"""
+
+
+def shell(lang, en_path, ko_path, sheet, as_home, project=False):
+    sheet_cls = "sheet project" if project else "sheet"
+    return f"""<div class="wrap">
+<main id="content">
+{rail_html(lang, en_path, ko_path, as_home)}
+<div class="{sheet_cls}">
+{sheet}
+{footer(lang)}
+</div>
+</main>
+</div>"""
 
 
 def video_html(key, lang, caption=True):
@@ -806,7 +842,6 @@ def home_page(lang):
     if lang == "en":
         title = "Jaewoo Choi, Senior AI Researcher"
         desc = "Senior AI Researcher at Daedong AILab. Open-vocabulary perception, 6D pose, and imitation learning for orchard and manipulation robots."
-        focus = """<p class="focus">Open-vocabulary perception, 6D pose, and imitation learning for orchard and manipulation robots.</p>"""
         research = """<p class="measure">I work on perception for real robots: open-vocabulary RGB-D segmentation, point-cloud and image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. I have developed and tested this work on deployed orchard robots and on manipulation robots. I want to extend it toward vision-language-action models that connect what a robot sees with how it acts.</p>"""
         edu = """<article>
 <h3>Seokyeong University</h3>
@@ -841,7 +876,6 @@ def home_page(lang):
     else:
         title = "Jaewoo Choi, Senior AI Researcher"
         desc = "Daedong AILab Senior AI Researcher. 과수원 로봇과 manipulation 로봇의 open-vocabulary perception, 6D pose, imitation learning."
-        focus = """<p class="focus">과수원 로봇과 manipulation 로봇의 open-vocabulary perception, 6D pose, imitation learning을 연구합니다.</p>"""
         research = """<p class="measure">실제 로봇의 perception을 다룹니다. 주제는 open-vocabulary RGB-D segmentation, 장애물 매핑을 위한 point cloud와 image의 fusion, 6D pose estimation, manipulation을 위한 imitation learning입니다. 배치된 과수원 로봇과 manipulation 로봇에서 이 작업을 개발하고 시험했습니다. 로봇이 본 것과 행동을 잇는 vision-language-action model로 확장하고 싶습니다.</p>"""
         edu = """<article>
 <h3>Seokyeong University</h3>
@@ -895,24 +929,7 @@ def home_page(lang):
 </article>"""
         )
 
-    role = "Senior AI Researcher, Daedong AILab"
-    loc = "Seoul, South Korea" if lang == "en" else "서울, 대한민국"
-    doc = f"""<!DOCTYPE html>
-<html lang="{lang}">
-{head(lang, title, desc, path, en_path, ko_path)}
-<body>
-<a class="skip" href="#content">{esc(ui['skip'])}</a>
-<div class="wrap">
-{mast(lang, en_path, ko_path, False)}
-<main id="content">
-<header class="intro">
-<h1>Jaewoo Choi</h1>
-<p class="role">{esc(role)}</p>
-<p class="loc">{esc(loc)}</p>
-{focus}
-{contact_html()}
-</header>
-<section id="projects">
+    sheet = f"""<section id="projects">
 <h2>{esc(ui['work'])}</h2>
 {features}
 </section>
@@ -947,10 +964,13 @@ def home_page(lang):
 <div class="cv">
 {awards}
 </div>
-</section>
-</main>
-{footer(lang)}
-</div>
+</section>"""
+    doc = f"""<!DOCTYPE html>
+<html lang="{lang}">
+{head(lang, title, desc, path, en_path, ko_path)}
+<body>
+<a class="skip" href="#content">{esc(ui['skip'])}</a>
+{shell(lang, en_path, ko_path, sheet, True)}
 {script()}
 </body>
 </html>
@@ -1006,15 +1026,7 @@ def project_page(project, lang):
         media = slot_html(lang)
     sections = sections_html(project["sections"][lang])
     back = home_href(lang) + "#projects"
-    doc = f"""<!DOCTYPE html>
-<html lang="{lang}">
-{head(lang, title, desc, path, en_path, ko_path)}
-<body>
-<a class="skip" href="#content">{esc(ui['skip'])}</a>
-<div class="wrap">
-{mast(lang, en_path, ko_path, True)}
-<main id="content" class="project">
-<p class="kicker">{esc(group['org'])}, {esc(group['role'][lang])}, {esc(group['when'][lang])}</p>
+    sheet = f"""<p class="kicker">{esc(group['org'])}, {esc(group['role'][lang])}, {esc(group['when'][lang])}</p>
 <h1>{esc(project['title'][lang])}</h1>
 <p class="dek">{project['line'][lang]}</p>
 {media}
@@ -1022,10 +1034,13 @@ def project_page(project, lang):
 {sections}
 </div>
 {pager_html(project, lang)}
-<p class="back"><a href="{back}">{esc(ui['projects_back'])}</a></p>
-</main>
-{footer(lang)}
-</div>
+<p class="back"><a href="{back}">{esc(ui['projects_back'])}</a></p>"""
+    doc = f"""<!DOCTYPE html>
+<html lang="{lang}">
+{head(lang, title, desc, path, en_path, ko_path)}
+<body>
+<a class="skip" href="#content">{esc(ui['skip'])}</a>
+{shell(lang, en_path, ko_path, sheet, False, project=True)}
 {script()}
 </body>
 </html>
@@ -1039,20 +1054,16 @@ def not_found_page():
     if PUBLISH_KO:
         ui_ko = UI["ko"]
         ko_note = f'<p lang="ko">{esc(ui_ko["missing_body"])} <a href="/ko/" hreflang="ko" lang="ko">한국어</a></p>\n'
+    sheet = f"""<h1>{esc(ui['missing'])}</h1>
+<p>{esc(ui['missing_body'])}</p>
+<p><a href="/">Jaewoo Choi</a></p>
+{ko_note}"""
     return f"""<!DOCTYPE html>
 <html lang="en">
 {head("en", ui["missing"], ui["missing_body"], "/404.html", "/", "/ko/")}
 <body>
 <a class="skip" href="#content">{esc(ui['skip'])}</a>
-<div class="wrap">
-{mast("en", "/", "/ko/", True)}
-<main id="content">
-<h1>{esc(ui['missing'])}</h1>
-<p>{esc(ui['missing_body'])}</p>
-<p><a href="/">Jaewoo Choi</a></p>
-{ko_note}</main>
-{footer("en")}
-</div>
+{shell("en", "/", "/ko/", sheet, False)}
 </body>
 </html>
 """
@@ -1077,6 +1088,7 @@ PHRASES = (
     "Jetson Nano",
     "Seokyeong University",
     "imitation learning",
+    "6D pose",
     "flower thinning",
     "runner handling",
     "object types",
