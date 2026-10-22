@@ -188,14 +188,22 @@ a:hover {
   grid-row: 2;
 }
 
-.mast nav {
+.mast nav,
+.rail > nav {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.15rem 0.9rem;
 }
 
+.rail > nav {
+  padding: 0.85rem 0 0.7rem;
+  margin-bottom: 1.15rem;
+  border-bottom: 1px solid var(--rule);
+}
+
 .mast nav a,
+.rail > nav a,
 a.name {
   color: var(--ink);
   text-decoration: none;
@@ -203,6 +211,7 @@ a.name {
 }
 
 .mast nav a:hover,
+.rail > nav a:hover,
 a.name:hover {
   color: var(--accent);
   text-decoration: underline;
@@ -293,11 +302,33 @@ a.mail {
   margin: 0.7rem 0 0;
 }
 
+.intro.sub {
+  display: none;
+}
+
+.rail-name {
+  font-weight: 600;
+  font-size: clamp(2.6rem, 11vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0.1rem 0 0.45rem;
+}
+
+.rail-name a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.rail-name a:hover {
+  color: var(--accent);
+}
+
 .intro .contact {
   margin-top: 0.75rem;
 }
 
-.intro + section {
+.intro + section,
+.sheet > section:first-child {
   margin-top: 1.35rem;
 }
 
@@ -389,6 +420,161 @@ a.mail {
   }
 }
 
+@media (max-width: 1023px) {
+  .rail:not(.rail-home) {
+    padding: 0.85rem 0 0.7rem;
+    margin-bottom: 1.15rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .rail:not(.rail-home) > nav {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding: 0.35rem 0 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .wrap {
+    width: min(78rem, calc(100% - 2.5rem));
+    /* Same inset the sticky rail uses, so the name and the
+       right column start on one line. */
+    padding-top: 1.25rem;
+  }
+
+  main {
+    display: grid;
+    grid-template-columns: 16.25rem minmax(0, 1fr);
+    column-gap: clamp(1.5rem, 2.2vw, 3.25rem);
+    align-items: start;
+  }
+
+  .rail {
+    position: sticky;
+    top: 1.25rem;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rail .intro {
+    order: 1;
+  }
+
+  .rail h1,
+  .rail-name {
+    font-size: 2.35rem;
+    white-space: nowrap;
+    margin-top: 0;
+  }
+
+  .intro.sub {
+    display: block;
+  }
+
+  .rail .name {
+    display: none;
+  }
+
+  .rail > nav {
+    order: 2;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    margin: 1.35rem 0 0;
+    padding: 0;
+    border-bottom: none;
+  }
+
+  .rail .contact {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .rail .profiles {
+    flex-wrap: wrap;
+    gap: 0.35rem 0.9rem;
+  }
+
+  .sheet {
+    min-width: 0;
+  }
+
+  .sheet > section:first-child,
+  #projects {
+    margin-top: 0;
+  }
+
+  .feature {
+    display: block;
+  }
+
+  .feature figure.landscape,
+  .feature video.landscape {
+    width: 100%;
+  }
+
+  .feature-copy {
+    max-width: 70ch;
+    margin-top: 0.85rem;
+  }
+
+  .feature-tall {
+    display: grid;
+    /* max-content keeps the video column from swallowing free
+       space; an auto track was leaving a wide hole beside the clip. */
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: clamp(2rem, 2.5vw, 3rem);
+    row-gap: 0.5rem;
+    align-items: start;
+    justify-items: start;
+    margin-top: 0;
+  }
+
+  .feature-tall .feature-copy {
+    margin-top: 0;
+  }
+
+  .feature-tall figure.portrait {
+    width: calc(min(72vh, 40rem) * 9 / 16);
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .feature-tall video.portrait {
+    width: 100%;
+    height: auto;
+  }
+
+  .project figure.portrait {
+    width: auto;
+    max-width: 100%;
+  }
+
+  .project video.portrait {
+    width: min(100%, calc(min(72vh, 40rem) * 9 / 16));
+    height: auto;
+  }
+
+  .project figure.landscape,
+  .project video.landscape {
+    width: 100%;
+  }
+}
+
+/* Wide enough for "Senior AI Researcher, Daedong AILab" on one line.
+   At 1024 the sheet has to stay ~70ch, so the role breaks after the comma. */
+@media (min-width: 1280px) {
+  main {
+    grid-template-columns: 20rem minmax(0, 1fr);
+  }
+
+  .role {
+    white-space: nowrap;
+  }
+}
+
 .roster {
   list-style: none;
   padding: 0;
@@ -430,7 +616,7 @@ a.mail {
 .dek,
 .entry p,
 .prose p {
-  max-width: none;
+  max-width: 70ch;
 }
 
 main section {
@@ -657,7 +843,8 @@ video.portrait {
     display: none;
   }
 
-  .mast nav {
+  .mast nav,
+  .rail > nav {
     flex-wrap: nowrap;
     gap: 0.7rem;
   }
