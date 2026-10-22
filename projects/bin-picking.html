@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CAD‑based Auto Bin Picking, Jaewoo Choi</title>
+<meta name="description" content="Picking poses from RGB-D and CAD geometry. 89% task success in 1,000 in-house, fixed-environment trials on five object types.">
+<meta name="author" content="Jaewoo Choi">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141a1e" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://imjaewoochoi.github.io/projects/bin-picking.html">
+<link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/bin-picking.html">
+<link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/bin-picking.html">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<div class="wrap">
+<header class="mast mast-named">
+<a class="name" href="/">Jaewoo Choi</a>
+<nav>
+<a href="/#projects">Projects</a>
+<a href="/#experience">Experience</a>
+<a href="/#patent" class="nav-wide">Patent</a>
+<a href="/#awards" class="nav-wide">Awards</a>
+<!-- CV PDF will be added later at /cv.pdf -->
+<a href="/cv.pdf">CV</a>
+</nav>
+
+</header>
+<main id="content" class="project">
+<p class="kicker">PLAIF, <span class="nobr">Computer Vision Engineer</span>, Jan 2023 to Apr 2024</p>
+<h1>CAD‑based Auto Bin Picking</h1>
+<p class="dek">Picking poses from RGB‑D images and <span class="nobr">known CAD geometry</span>. 89% task success in 1,000 in‑house, fixed‑environment trials, moving <span class="nobr">five <span class="nobr">object types</span></span> <span class="nobr">into an empty container</span>.</p>
+<figure class="landscape">
+<video class="landscape" width="1280" height="720" muted loop playsinline preload="none" poster="/assets/video/bin-picking.jpg" aria-label="CAD-based bin picking">
+<source src="/assets/video/bin-picking.mp4" type="video/mp4">
+<a href="/assets/video/bin-picking.mp4">Watch the MP4</a>
+</video>
+<figcaption>Silent. A ring‑scan close‑up, then a Doosan cobot picking, then a green‑bin close‑up.</figcaption>
+</figure>
+<div class="prose">
+<h2>Problem</h2>
+<p>Estimate picking poses from RGB‑D images of a bin for objects with <span class="nobr">known CAD geometry</span>.</p>
+<h2>Approach</h2>
+<p>I trained Mask R‑CNN (ResNet‑101) with separate "unoccluded" and "hole" classes. Hole masks are subtracted from object masks. The remaining instance masks segment the point cloud.</p>
+<p>Visible‑surface CAD templates for each pick pose are built by hidden‑point removal, then fit to the segmented points with PCA initialization and point‑to‑point ICP.</p>
+<p>Each fit is checked model‑to‑scene and scene‑to‑model. Poses are filtered by registration fitness, inlier RMSE, and a combined score. Candidates are ranked. Poses are transformed into the robot base with the camera extrinsics.</p>
+<h2>Results</h2>
+<p>Task success was 89% in 1,000 in‑house, fixed‑environment trials, moving <span class="nobr">five <span class="nobr">object types</span></span> <span class="nobr">into an empty container</span>.</p>
+<h2>Stack</h2>
+<p class="stack">Mask R‑CNN, ResNet‑101, PCA, point‑to‑point ICP.</p>
+</div>
+<nav class="pager" aria-label="Adjacent projects">
+<a class="pager-prev" href="/projects/cad-free-assembly.html"><span class="pager-label">Previous</span> CAD‑free Auto Assembly</a>
+<a class="pager-next" href="/projects/ros-6d-vision.html"><span class="pager-label">Next</span> ROS 6D Vision Server and Hand‑Eye Calibration Tools</a>
+</nav>
+<p class="back"><a href="/#projects">Projects</a></p>
+</main>
+<footer class="colophon">
+<p>Updated 21 Oct 2026</p>
+<ul class="contact">
+<li><a class="mail" href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
+<li class="profiles"><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
+</ul>
+</footer>
+</div>
+<script>
+(function () {
+  var videos = document.querySelectorAll("video");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  videos.forEach(function (v) {
+    v.removeAttribute("autoplay");
+    v.muted = true;
+    v.pause();
+    if (reduce) v.controls = true;
+  });
+  if (reduce || !("IntersectionObserver" in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      var v = entry.target;
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+        var pending = v.play();
+        if (pending && pending.catch) pending.catch(function () {});
+      } else {
+        v.pause();
+      }
+    });
+  }, { threshold: [0, 0.25, 0.5, 0.75] });
+  videos.forEach(function (v) { io.observe(v); });
+})();
+</script>
+</body>
+</html>
