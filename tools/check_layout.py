@@ -148,9 +148,16 @@ def contrast(a, b):
     return (hi + 0.05) / (lo + 0.05)
 
 
+def is_published(path):
+    rel = path.relative_to(ROOT)
+    return not any(part.startswith(("_", ".")) for part in rel.parts)
+
+
 def pages():
     found = []
     for path in sorted(ROOT.rglob("*.html")):
+        if not is_published(path):
+            continue
         rel = path.relative_to(ROOT).as_posix()
         if rel == "index.html":
             found.append("/")
@@ -171,8 +178,12 @@ def static_checks():
     if (ROOT / "sitemap.xml").exists():
         errors.append("sitemap.xml exists")
     for path in ROOT.rglob("*.html"):
+        if not is_published(path):
+            continue
         text = path.read_text(encoding="utf-8")
         rel = path.relative_to(ROOT).as_posix()
+        if 'hreflang="ko"' in text or "/ko/" in text or 'href="/ko"' in text:
+            errors.append(f"{rel} still points at a Korean page")
         if 'name="robots" content="noindex, nofollow, noarchive"' not in text:
             errors.append(f"{rel} missing robots noindex meta")
         if "og:" in text or "twitter:" in text:

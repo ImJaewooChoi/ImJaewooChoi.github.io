@@ -3,9 +3,15 @@
 
 import html
 import re
+import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+# Korean copy stays in this file. While this is false the build does not
+# write ko/. .nojekyll makes GitHub Pages publish every committed path, so
+# a side folder would still be served. Set this true and rebuild to restore
+# /ko/ and the language switch.
+PUBLISH_KO = False
 SITE = "https://imjaewoochoi.github.io"
 EMAIL = "iam.jaewoochoi@gmail.com"
 GITHUB = "https://github.com/ImJaewooChoi"
@@ -585,6 +591,8 @@ def contact_html():
 
 
 def langs_html(lang, en_path, ko_path):
+    if not PUBLISH_KO:
+        return ""
     en_cur = ' aria-current="page"' if lang == "en" else ""
     ko_cur = ' aria-current="page"' if lang == "ko" else ""
     return (
@@ -612,6 +620,9 @@ def head(lang, title, desc, path, en_path, ko_path):
     kr = ""
     if lang == "ko":
         kr = '<link rel="preload" href="/assets/fonts/ibm-plex-sans-kr-400.woff2" as="font" type="font/woff2" crossorigin>\n'
+    ko_alt = ""
+    if PUBLISH_KO:
+        ko_alt = f'<link rel="alternate" hreflang="ko" href="{esc(abs_url(ko_path))}">\n'
     return f"""<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -624,8 +635,7 @@ def head(lang, title, desc, path, en_path, ko_path):
 <meta name="theme-color" content="#141a1e" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="{esc(canonical)}">
 <link rel="alternate" hreflang="en" href="{esc(abs_url(en_path))}">
-<link rel="alternate" hreflang="ko" href="{esc(abs_url(ko_path))}">
-<link rel="alternate" hreflang="x-default" href="{esc(abs_url(en_path))}">
+{ko_alt}<link rel="alternate" hreflang="x-default" href="{esc(abs_url(en_path))}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 {kr}<link rel="stylesheet" href="/assets/css/site.css">
@@ -1025,7 +1035,10 @@ def project_page(project, lang):
 
 def not_found_page():
     ui = UI["en"]
-    ui_ko = UI["ko"]
+    ko_note = ""
+    if PUBLISH_KO:
+        ui_ko = UI["ko"]
+        ko_note = f'<p lang="ko">{esc(ui_ko["missing_body"])} <a href="/ko/" hreflang="ko" lang="ko">한국어</a></p>\n'
     return f"""<!DOCTYPE html>
 <html lang="en">
 {head("en", ui["missing"], ui["missing_body"], "/404.html", "/", "/ko/")}
@@ -1037,8 +1050,7 @@ def not_found_page():
 <h1>{esc(ui['missing'])}</h1>
 <p>{esc(ui['missing_body'])}</p>
 <p><a href="/">Jaewoo Choi</a></p>
-<p lang="ko">{esc(ui_ko['missing_body'])} <a href="/ko/" hreflang="ko" lang="ko">한국어</a></p>
-</main>
+{ko_note}</main>
 {footer("en")}
 </div>
 </body>
@@ -1100,12 +1112,18 @@ def harden_html(doc):
 def main():
     pages = {
         "index.html": home_page("en"),
-        "ko/index.html": home_page("ko"),
         "404.html": not_found_page(),
     }
     for project in PROJECTS:
         pages[f"projects/{project['slug']}.html"] = project_page(project, "en")
-        pages[f"ko/projects/{project['slug']}.html"] = project_page(project, "ko")
+    ko_dir = ROOT / "ko"
+    if PUBLISH_KO:
+        pages["ko/index.html"] = home_page("ko")
+        for project in PROJECTS:
+            pages[f"ko/projects/{project['slug']}.html"] = project_page(project, "ko")
+    elif ko_dir.exists():
+        shutil.rmtree(ko_dir)
+        print("removed ko/")
     for rel, text in pages.items():
         path = ROOT / rel
         path.parent.mkdir(parents=True, exist_ok=True)
