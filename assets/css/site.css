@@ -437,6 +437,9 @@ a.mail {
 @media (min-width: 1024px) {
   .wrap {
     width: min(78rem, calc(100% - 2.5rem));
+    /* Same inset the sticky rail uses, so the name and the
+       right column start on one line. */
+    padding-top: 1.25rem;
   }
 
   main {
@@ -462,6 +465,7 @@ a.mail {
   .rail-name {
     font-size: 2.35rem;
     white-space: nowrap;
+    margin-top: 0;
   }
 
   .intro.sub {
@@ -518,9 +522,13 @@ a.mail {
 
   .feature-tall {
     display: grid;
-    grid-template-columns: auto minmax(18rem, 1fr);
-    gap: 0.5rem 1.75rem;
-    align-items: center;
+    /* max-content keeps the video column from swallowing free
+       space; an auto track was leaving a wide hole beside the clip. */
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: clamp(2rem, 2.5vw, 3rem);
+    row-gap: 0.5rem;
+    align-items: start;
+    justify-items: start;
     margin-top: 0;
   }
 
@@ -529,12 +537,13 @@ a.mail {
   }
 
   .feature-tall figure.portrait {
-    width: auto;
+    width: calc(min(72vh, 40rem) * 9 / 16);
     max-width: 100%;
+    margin: 0;
   }
 
   .feature-tall video.portrait {
-    width: min(100%, calc(min(72vh, 40rem) * 9 / 16));
+    width: 100%;
     height: auto;
   }
 
@@ -551,6 +560,18 @@ a.mail {
   .project figure.landscape,
   .project video.landscape {
     width: 100%;
+  }
+}
+
+/* Wide enough for "Senior AI Researcher, Daedong AILab" on one line.
+   At 1024 the sheet has to stay ~70ch, so the role breaks after the comma. */
+@media (min-width: 1280px) {
+  main {
+    grid-template-columns: 20rem minmax(0, 1fr);
+  }
+
+  .role {
+    white-space: nowrap;
   }
 }
 
