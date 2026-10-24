@@ -4,223 +4,215 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Jaewoo Choi, Senior AI Researcher</title>
-<meta name="description" content="Senior AI Researcher at Daedong AILab. Open-vocabulary perception, 6D pose, and imitation learning for orchard and manipulation robots.">
+<meta name="description" content="I build perception for robots that work outside the lab, on orchard platforms and factory arms.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141a1e" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f5f5f7">
 <link rel="canonical" href="https://imjaewoochoi.github.io/">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/">
 <link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
-<div class="wrap">
-<main id="content">
-<div class="rail rail-home">
-<nav>
-<a href="/#projects">Projects</a>
+<header class="nav">
+<div class="nav-glass">
+<div class="nav-bar">
+<a class="wordmark" href="/">Jaewoo Choi</a>
+<button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><span class="nav-toggle-icon"></span></button>
+</div>
+</div>
+<nav class="nav-links" id="site-nav">
+<a href="/#work">Work</a>
+<a href="/#patent">Patent</a>
+<a href="/#code">Code</a>
 <a href="/#experience">Experience</a>
-<a href="/#patent" class="nav-wide">Patent</a>
-<a href="/#awards" class="nav-wide">Awards</a>
-<!-- CV PDF will be added later at /cv.pdf -->
-<a href="/cv.pdf">CV</a>
+<a href="/#awards">Awards</a>
 </nav>
-
-<div class="intro">
-<h1>Jaewoo Choi</h1>
-<p class="role">Senior AI Researcher, <span class="nobr">Daedong AILab</span></p>
-<p class="loc">Seoul, South Korea</p>
-<p class="focus">Open‑vocabulary perception, <span class="nobr">6D pose</span>, and <span class="nobr">imitation learning</span> for orchard and manipulation robots.</p>
-<ul class="contact">
-<li><a class="mail" href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
-<li class="profiles"><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
-</ul>
+</header>
+<main id="content">
+<div class="page">
+<section class="hero" id="work">
+<h1>Jaewoo Choi</h1>
+<div class="lede-wrap">
+<p class="lede">I build perception for robots that work outside the lab, on orchard platforms and factory arms.</p>
+<p class="lede">Next, I want to connect what a robot sees with how it acts.</p>
+<p class="contact-row"><a href="mailto:iam.jaewoochoi@gmail.com">Email</a><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></p>
 </div>
-</div>
-<div class="sheet">
-<section id="projects">
-<h2>Selected work</h2>
-<article class="feature feature-tall">
+<h2><a href="/projects/strawberry-cultivation.html" aria-label="Strawberry Cultivation-Task Robot with UMI and Diffusion Policy">Teaching a robot three strawberry tasks.</a></h2>
 <figure class="portrait">
-<video class="portrait" width="540" height="960" muted loop playsinline preload="none" poster="/assets/video/strawberry-ces2025.jpg" aria-label="Flower thinning at the CES 2025 booth">
+<video class="portrait" width="540" height="960" muted loop playsinline preload="none" poster="/assets/video/strawberry-ces2025.jpg" aria-label="Silent. Flower thinning at the CES 2025 booth">
 <source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
 <a href="/assets/video/strawberry-ces2025.mp4">Watch the MP4</a>
 </video>
+<figcaption>Flower thinning at the CES 2025 booth.</figcaption>
 </figure>
-<div class="feature-copy">
-<h3><a href="/projects/strawberry-cultivation.html">Strawberry Cultivation‑Task Robot with UMI and Diffusion Policy</a></h3>
-<p class="result">Fixed lab, 1,000 trials: 93.8% transplanting, 87.5% <span class="nobr">flower thinning</span>, <span class="nobr">65% <span class="nobr">runner handling</span></span>.</p>
-<p class="did">I led the data pipeline and the policy training on UMI demonstrations. Exhibited at CES 2025.</p>
-<p class="more"><a href="/projects/strawberry-cultivation.html">Details</a></p>
+<p class="links"><a class="pill" href="/assets/video/strawberry-ces2025.mp4">Watch the demo</a></p>
+</section>
+<section class="band band-white" id="strawberry-notes">
+<div class="copy">
+<p>I built the data pipeline and trained Diffusion Policy for three tasks from UMI demonstrations: transplanting, flower thinning, and runner handling.</p>
+<p>I built everything except the robot‑side post‑processing.</p>
 </div>
-</article>
-<article class="feature">
+<table class="spec">
+<tr><th scope="row">Trials</th><td>1,000, fixed lab</td></tr>
+<tr><th scope="row">Transplanting</th><td>93.8%</td></tr>
+<tr><th scope="row">Flower thinning</th><td>87.5%</td></tr>
+<tr><th scope="row">Runner handling</th><td>65%</td></tr>
+<tr><th scope="row">Shown</th><td>CES 2025</td></tr>
+</table>
+</section>
+<section class="section section-paper" id="record">
+<h2 class="section-title">Patent, Kaggle, and code</h2>
+<table class="spec spec-wide">
+<tr id="patent"><th scope="row">Patent</th><td>Korean Patent 10‑2694987. Registered Aug 2024. Applicant PLAIF. Co‑inventor. Basis: <a href="/projects/cad-free-assembly.html">CAD‑free auto assembly</a>.</td></tr>
+<tr><th scope="row">UBC‑OCEAN</th><td>Bronze, team rank 83/1,326. Jan 2024.</td></tr>
+<tr><th scope="row">Image Matching Challenge 2022</th><td>Silver, team rank 50/642. Jun 2022. <a href="https://github.com/ImJaewooChoi/kaggle_image_matching2022">kaggle_image_matching2022</a>.</td></tr>
+<tr><th scope="row">Happywhale</th><td>Whale and Dolphin Identification. Bronze, team rank 127/1,588. Apr 2022. <a href="https://github.com/ImJaewooChoi/kaggle_happy_whale">kaggle_happy_whale</a>.</td></tr>
+<tr id="code"><th scope="row">Code</th><td><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a>, <a href="https://github.com/ImJaewooChoi/kaggle_image_matching2022">kaggle_image_matching2022</a>, <a href="https://github.com/ImJaewooChoi/kaggle_happy_whale">kaggle_happy_whale</a>.</td></tr>
+</table>
+</section>
+<section class="band band-ink">
+<h2><a href="/projects/cad-free-assembly.html" aria-label="CAD-free Auto Assembly">Estimating 6D tool poses for assembly, at 93% task success.</a></h2>
 <figure class="landscape">
-<video class="landscape" width="1280" height="720" muted loop playsinline preload="none" poster="/assets/video/cad-free-assembly.jpg" aria-label="CAD-free auto assembly on a UR arm">
+<video class="landscape" width="1280" height="720" muted loop playsinline preload="none" poster="/assets/video/cad-free-assembly.jpg" aria-label="Silent. CAD-free auto assembly on a UR arm">
 <source src="/assets/video/cad-free-assembly.mp4" type="video/mp4">
 <a href="/assets/video/cad-free-assembly.mp4">Watch the MP4</a>
 </video>
+<figcaption>UR arm with a gripper and wrist camera, assembling a part on a fixture.</figcaption>
 </figure>
-<div class="feature-copy">
-<h3><a href="/projects/cad-free-assembly.html">CAD‑free Auto Assembly</a></h3>
-<p class="result">93% task success across 1,000 in‑house trials. Basis of Korean Patent 10‑2694987.</p>
-<p class="did">6D tool poses for assembly from a 2D camera, with no CAD model of the part.</p>
-<p class="more"><a href="/projects/cad-free-assembly.html">Details</a></p>
+<div class="copy">
+<p>I matched a live 2D image to a stored RGB‑D reference. There is no CAD model of the part.</p>
+<p>Across 1,000 in‑house trials, task success was 93%. This work is the basis of Korean Patent 10‑2694987.</p>
 </div>
-</article>
-<article class="feature">
+<p class="links"><a class="pill" href="/assets/video/cad-free-assembly.mp4">Watch the demo</a><a class="pill pill-ghost" href="/projects/cad-free-assembly.html" aria-label="CAD-free Auto Assembly">CAD‑free assembly</a></p>
+</section><section class="band band-white">
+<h2><a href="/projects/bin-picking.html" aria-label="CAD-based Auto Bin Picking">Estimating picking poses from RGB‑D, at 89% task success.</a></h2>
 <figure class="landscape">
-<video class="landscape" width="1280" height="720" muted loop playsinline preload="none" poster="/assets/video/bin-picking.jpg" aria-label="CAD-based bin picking">
+<video class="landscape" width="1280" height="720" muted loop playsinline preload="none" poster="/assets/video/bin-picking.jpg" aria-label="Silent. CAD-based bin picking">
 <source src="/assets/video/bin-picking.mp4" type="video/mp4">
 <a href="/assets/video/bin-picking.mp4">Watch the MP4</a>
 </video>
+<figcaption>A ring‑scan close‑up, then a Doosan cobot picking, then a green‑bin close‑up.</figcaption>
 </figure>
-<div class="feature-copy">
-<h3><a href="/projects/bin-picking.html">CAD‑based Auto Bin Picking</a></h3>
-<p class="result">89% task success across 1,000 in‑house trials. Fixed environment, <span class="nobr">five <span class="nobr">object types</span></span> moved <span class="nobr">into an empty container</span>.</p>
-<p class="did">Picking poses from RGB‑D images and <span class="nobr">known CAD geometry</span>.</p>
-<p class="more"><a href="/projects/bin-picking.html">Details</a></p>
+<div class="copy">
+<p>I fit visible‑surface CAD templates to segmented points.</p>
+<p>Task success was 89% in 1,000 in‑house trials, in a fixed environment, moving five object types into an empty container.</p>
 </div>
+<p class="links"><a class="pill" href="/assets/video/bin-picking.mp4">Watch the demo</a><a class="pill pill-ghost" href="/projects/bin-picking.html" aria-label="CAD-based Auto Bin Picking">Bin picking</a></p>
+</section>
+<section class="tile-grid" aria-label="Other projects">
+<article class="tile">
+<h3><a href="/projects/language-distilled-segmentation.html" aria-label="Language-Distilled Open-Vocabulary Instance Segmentation for Orchard Robots">Segmenting orchard objects on RT100 without extra inference cost.</a></h3>
+<div class="copy"><p>I adapted a DETR segmenter for the RT100 orchard platform. The language teacher is training‑only, so inference cost does not go up.</p></div>
+<p class="quiet">Daedong AILab, May 2024 – present</p>
+</article><article class="tile tile-ink">
+<h3><a href="/projects/orchard-obstacle-mapping.html" aria-label="Open-Vocabulary 3D Obstacle Perception and Occupancy Mapping for Autonomous Orchard Robots">Mapping open‑set obstacles on RT100 with TensorRT on Jetson Nano.</a></h3>
+<div class="copy"><p>Open‑set obstacles go into an occupancy grid. The pipeline runs on production RT100, with TensorRT on Jetson Nano.</p></div>
+<p class="quiet">Daedong AILab, May 2024 – present</p>
+</article><article class="tile">
+<h3><a href="/projects/auto-labeling.html" aria-label="Auto-Labeling and Data Captioning System">Cutting labeling cost from about USD 1.05 to about USD 0.036.</a></h3>
+<div class="copy"><p>Point prompts become tracked masks. Per‑image cost fell from about USD 1.05 to about USD 0.036, a 96.6% reduction.</p></div>
+<p class="quiet">Daedong AILab, May 2024 – present</p>
+</article><article class="tile tile-ink">
+<h3><a href="/projects/ros-6d-vision.html" aria-label="ROS 6D Vision Server and Hand-Eye Calibration Tools">Serving 6D poses over ROS, with eye‑to‑hand calibration tools.</a></h3>
+<div class="copy"><p>A ROS action server runs capture, segmentation, and pose estimation per request. I also wrote eye‑to‑hand calibration tools.</p></div>
+<p class="quiet">PLAIF, Jan 2023 – Apr 2024</p>
+</article><article class="tile">
+<h3><a href="/projects/license-plate.html" aria-label="Car License Plate Recognition">Locating a plate with detection and reading it with OCR.</a></h3>
+<div class="copy"><p>Object detection locates the plate. OCR reads the letters and digits.</p></div>
+<p class="quiet">FS Solution Co., Ltd., May 2022 – Dec 2022</p>
 </article>
 </section>
-<section id="other">
-<h2>Other projects</h2>
-<ul class="roster">
-<li>
-<a href="/projects/language-distilled-segmentation.html">
-<span class="roster-title">Language‑Distilled Open‑Vocabulary Instance Segmentation for Orchard Robots</span>
-<span class="roster-when"><span class="nobr">Daedong AILab</span>, May 2024 to present</span>
-<span class="roster-sum">Open‑vocabulary instance segmenter for the RT100 orchard platform, trained with a language teacher and no added inference cost.</span>
-</a>
-</li>
-<li>
-<a href="/projects/orchard-obstacle-mapping.html">
-<span class="roster-title">Open‑Vocabulary 3D Obstacle Perception and Occupancy Mapping for Autonomous Orchard Robots</span>
-<span class="roster-when"><span class="nobr">Daedong AILab</span>, May 2024 to present</span>
-<span class="roster-sum">Open‑set obstacle perception for orchard robots, mapped to an occupancy grid and deployed on RT100 with TensorRT on <span class="nobr">Jetson Nano</span>.</span>
-</a>
-</li>
-<li>
-<a href="/projects/auto-labeling.html">
-<span class="roster-title">Auto‑Labeling and Data Captioning System</span>
-<span class="roster-when"><span class="nobr">Daedong AILab</span>, May 2024 to present</span>
-<span class="roster-sum">Video auto‑labeling and region‑grounded captioning. Per‑image labeling cost fell from about USD 1.05 to about USD 0.036.</span>
-</a>
-</li>
-<li>
-<a href="/projects/ros-6d-vision.html">
-<span class="roster-title">ROS 6D Vision Server and Hand‑Eye Calibration Tools</span>
-<span class="roster-when">PLAIF, Jan 2023 to Apr 2024</span>
-<span class="roster-sum">ROS action server for capture, segmentation, and <span class="nobr">6D pose</span>, plus eye‑to‑hand calibration tools for Zivid and RealSense.</span>
-</a>
-</li>
-<li>
-<a href="/projects/license-plate.html">
-<span class="roster-title">Car License Plate Recognition</span>
-<span class="roster-when"><span class="nobr">FS Solution</span> Co., Ltd., May 2022 to Dec 2022</span>
-<span class="roster-sum">License plate pipeline: object detection locates the plate, OCR reads the letters and digits.</span>
-</a>
-</li>
-</ul>
+<section class="section section-paper" id="research">
+<h2 class="section-title">Research interests</h2>
+<div class="measure-wrap">
+<p class="measure">I work on open‑vocabulary RGB‑D segmentation, point‑cloud and image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation.</p>
+<p class="measure">I tested this on deployed orchard robots.</p>
+<p class="measure">I also tested it on manipulation robots.</p>
+</div>
 </section>
-<section id="research">
-<h2>Research interests</h2>
-<p class="measure">I work on perception for real robots: open‑vocabulary RGB‑D segmentation, point‑cloud and image fusion for obstacle mapping, <span class="nobr">6D pose</span> estimation, and <span class="nobr">imitation learning</span> for manipulation. I have developed and tested this work on deployed orchard robots and on manipulation robots. I want to extend it toward vision‑language‑action models that connect what a robot sees with how it acts.</p>
-</section>
-<section id="experience">
-<h2>Experience</h2>
-<div class="cv">
-<article>
-<h3><span class="nobr">Daedong AILab</span></h3>
-<p class="when">May 2024 to present</p>
-<p>Senior AI Researcher</p>
-<ul class="role-projects">
-<li><a href="/projects/language-distilled-segmentation.html">Language‑Distilled Open‑Vocabulary Instance Segmentation for Orchard Robots</a></li>
-<li><a href="/projects/orchard-obstacle-mapping.html">Open‑Vocabulary 3D Obstacle Perception and Occupancy Mapping for Autonomous Orchard Robots</a></li>
-<li><a href="/projects/auto-labeling.html">Auto‑Labeling and Data Captioning System</a></li>
-<li><a href="/projects/strawberry-cultivation.html">Strawberry Cultivation‑Task Robot with UMI and Diffusion Policy</a></li>
+<section class="section" id="experience">
+<h2 class="section-title">Experience</h2>
+<div class="exp">
+<article class="exp-row">
+<div><h3>Daedong AILab</h3></div>
+<div><p>Senior AI Researcher</p><p class="quiet">May 2024 – present</p></div>
+<ul>
+<li><a href="/projects/language-distilled-segmentation.html" aria-label="Language-Distilled Open-Vocabulary Instance Segmentation for Orchard Robots">Segmenting orchard objects on RT100 without extra inference cost.</a></li>
+<li><a href="/projects/orchard-obstacle-mapping.html" aria-label="Open-Vocabulary 3D Obstacle Perception and Occupancy Mapping for Autonomous Orchard Robots">Mapping open‑set obstacles on RT100 with TensorRT on Jetson Nano.</a></li>
+<li><a href="/projects/auto-labeling.html" aria-label="Auto-Labeling and Data Captioning System">Cutting labeling cost from about USD 1.05 to about USD 0.036.</a></li>
+<li><a href="/projects/strawberry-cultivation.html" aria-label="Strawberry Cultivation-Task Robot with UMI and Diffusion Policy">Teaching a robot three strawberry tasks.</a></li>
 </ul>
-</article><article>
-<h3>PLAIF</h3>
-<p class="when">Jan 2023 to Apr 2024</p>
-<p><span class="nobr">Computer Vision Engineer</span></p>
-<ul class="role-projects">
-<li><a href="/projects/cad-free-assembly.html">CAD‑free Auto Assembly</a></li>
-<li><a href="/projects/bin-picking.html">CAD‑based Auto Bin Picking</a></li>
-<li><a href="/projects/ros-6d-vision.html">ROS 6D Vision Server and Hand‑Eye Calibration Tools</a></li>
+</article><article class="exp-row">
+<div><h3>PLAIF</h3></div>
+<div><p>Computer Vision Engineer</p><p class="quiet">Jan 2023 – Apr 2024</p></div>
+<ul>
+<li><a href="/projects/cad-free-assembly.html" aria-label="CAD-free Auto Assembly">Estimating 6D tool poses for assembly, at 93% task success.</a></li>
+<li><a href="/projects/bin-picking.html" aria-label="CAD-based Auto Bin Picking">Estimating picking poses from RGB‑D, at 89% task success.</a></li>
+<li><a href="/projects/ros-6d-vision.html" aria-label="ROS 6D Vision Server and Hand-Eye Calibration Tools">Serving 6D poses over ROS, with eye‑to‑hand calibration tools.</a></li>
 </ul>
-</article><article>
-<h3><span class="nobr">FS Solution</span> Co., Ltd.</h3>
-<p class="when">May 2022 to Dec 2022</p>
-<p><span class="nobr">Computer Vision Engineer</span></p>
-<ul class="role-projects">
-<li><a href="/projects/license-plate.html">Car License Plate Recognition</a></li>
+</article><article class="exp-row">
+<div><h3>FS Solution Co., Ltd.</h3></div>
+<div><p>Computer Vision Engineer</p><p class="quiet">May 2022 – Dec 2022</p></div>
+<ul>
+<li><a href="/projects/license-plate.html" aria-label="Car License Plate Recognition">Locating a plate with detection and reading it with OCR.</a></li>
 </ul>
 </article>
 </div>
 </section>
-<section id="education">
-<h2>Education</h2>
-<div class="cv">
-<article>
-<h3><span class="nobr">Seokyeong University</span></h3>
-<p class="when">Mar 2016 to Aug 2022</p>
-<p>Seoul, South Korea</p>
-<p>Bachelor of Engineering, Industrial Management Systems Engineering. Multidisciplinary major: Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies).</p>
-</article>
-</div>
+<section class="section section-paper" id="education">
+<h2 class="section-title">Education and patent</h2>
+<table class="spec spec-wide">
+<tr><th scope="row">School</th><td>Seokyeong University</td></tr>
+<tr><th scope="row">Dates</th><td>Mar 2016 – Aug 2022</td></tr>
+<tr><th scope="row">Place</th><td>Seoul, South Korea</td></tr>
+<tr><th scope="row">Degree</th><td>Bachelor of Engineering, Industrial Management Systems Engineering. Multidisciplinary major: Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies).</td></tr>
+<tr><th scope="row">Patent</th><td>Korean Patent 10‑2694987. Registered Aug 2024. Applicant PLAIF. Co‑inventor.</td></tr>
+<tr><th scope="row">Title</th><td>Pose estimating device and method using artificial intelligence to estimate pose of robot&#x27;s end effector for object and robot control system including the same.</td></tr>
+<tr><th scope="row">Basis</th><td><a href="/projects/cad-free-assembly.html">CAD‑free auto assembly</a></td></tr>
+</table>
 </section>
-<section id="patent">
-<h2>Patent</h2>
-<div class="cv">
-<article>
-<h3>Korean Patent 10‑2694987</h3>
-<p class="when">Registered Aug 2024</p>
-<p>Applicant: PLAIF. Co‑inventor.</p>
-<p class="patent-title">Pose estimating device and method using artificial intelligence to estimate pose of robot's end effector for object and robot control system including the same.</p>
-<p>The <a href="/projects/cad-free-assembly.html">CAD‑free auto assembly</a> work is the basis of this patent.</p>
-</article>
-</div>
+<section class="section" id="awards">
+<h2 class="section-title">Awards</h2>
+<table class="spec spec-wide">
+<tr><th scope="row">UBC‑OCEAN</th><td>Bronze, team rank 83/1,326. Jan 2024.</td></tr>
+<tr><th scope="row">Image Matching Challenge 2022</th><td>Silver, team rank 50/642. Jun 2022. <a href="https://github.com/ImJaewooChoi/kaggle_image_matching2022">kaggle_image_matching2022</a>.</td></tr>
+<tr><th scope="row">Happywhale</th><td>Whale and Dolphin Identification. Bronze, team rank 127/1,588. Apr 2022. <a href="https://github.com/ImJaewooChoi/kaggle_happy_whale">kaggle_happy_whale</a>.</td></tr>
+</table>
 </section>
-<section id="awards">
-<h2>Awards</h2>
-<div class="cv">
-<article>
-<h3>Kaggle UBC‑OCEAN</h3>
-<p class="when">Jan 2024</p>
-<p>Bronze medal, team rank 83/1,326.</p>
-</article>
-<article>
-<h3>Kaggle Image Matching Challenge 2022</h3>
-<p class="when">Jun 2022</p>
-<p>Silver medal, team rank 50/642.</p>
-<p><a href="https://github.com/ImJaewooChoi/kaggle_image_matching2022">kaggle_image_matching2022</a></p>
-</article>
-<article>
-<h3>Kaggle Happywhale</h3>
-<p class="when">Apr 2022</p>
-<p>Whale and Dolphin Identification. Bronze medal, team rank 127/1,588.</p>
-<p><a href="https://github.com/ImJaewooChoi/kaggle_happy_whale">kaggle_happy_whale</a></p>
-</article>
-</div>
-</section>
-<footer class="colophon">
-<p>Updated 21 Oct 2026</p>
-<ul class="contact">
-<li><a class="mail" href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
-<li class="profiles"><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
-</ul>
-</footer>
 </div>
 </main>
+<footer class="colophon">
+<div class="colophon-inner">
+<nav class="dir" aria-label="Directory"><a href="/#work">Work</a><a href="/#experience">Experience</a><a href="/#patent">Patent</a><a href="/#awards">Awards</a></nav>
+<nav class="dir" aria-label="Contact"><a href="mailto:iam.jaewoochoi@gmail.com">Email</a><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></nav>
+<hr class="dir-rule">
+<p>© Jaewoo Choi</p>
 </div>
+</footer>
 <script>
 (function () {
+  var header = document.querySelector(".nav");
+  var btn = document.querySelector(".nav-toggle");
+  if (header && btn) {
+    btn.addEventListener("click", function () {
+      var open = header.classList.toggle("is-open");
+      document.body.classList.toggle("nav-open", open);
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.setAttribute("aria-label", open ? "Close" : "Menu");
+    });
+    header.querySelectorAll(".nav-links a").forEach(function (a) {
+      a.addEventListener("click", function () {
+        header.classList.remove("is-open");
+        document.body.classList.remove("nav-open");
+        btn.setAttribute("aria-expanded", "false");
+        btn.setAttribute("aria-label", "Menu");
+      });
+    });
+  }
   var videos = document.querySelectorAll("video");
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   videos.forEach(function (v) {
