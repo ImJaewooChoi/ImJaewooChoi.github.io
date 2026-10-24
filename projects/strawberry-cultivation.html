@@ -3,84 +3,71 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Strawberry Cultivation‑Task Robot with UMI and Diffusion Policy, Jaewoo Choi</title>
+<title>Strawberry Cultivation‑Task Robot with UMI and <span class="nobr">Diffusion Policy</span>, Jaewoo Choi</title>
 <meta name="description" content="UMI demonstrations and Diffusion Policy for three strawberry tasks. Fixed lab, 1,000 trials: 93.8% transplanting, 87.5% flower thinning, 65% runner handling. Exhibited at CES 2025.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141a1e" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f5f5f7">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/strawberry-cultivation.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/strawberry-cultivation.html">
 <link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/strawberry-cultivation.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
-<div class="wrap">
-<main id="content">
-<div class="rail">
-<a class="name" href="/">Jaewoo Choi</a>
+<header class="nav">
+<div class="nav-bar">
+<a class="wordmark" href="/">Jaewoo Choi</a>
 <nav>
-<a href="/#projects">Projects</a>
+<a href="/#work">Work</a>
 <a href="/#experience">Experience</a>
-<a href="/#patent" class="nav-wide">Patent</a>
-<a href="/#awards" class="nav-wide">Awards</a>
-<!-- CV PDF will be added later at /cv.pdf -->
-<a href="/cv.pdf">CV</a>
+<a href="/#patent">Patent</a>
+<a href="/#awards">Awards</a>
 </nav>
-
-<div class="intro sub">
-<p class="rail-name"><a href="/">Jaewoo Choi</a></p>
-<p class="role">Senior AI Researcher, <span class="nobr">Daedong AILab</span></p>
-<p class="loc">Seoul, South Korea</p>
-<p class="focus">Open‑vocabulary perception, <span class="nobr">6D pose</span>, and <span class="nobr">imitation learning</span> for orchard and manipulation robots.</p>
-<ul class="contact">
-<li><a class="mail" href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
-<li class="profiles"><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
-</ul>
 </div>
-</div>
-<div class="sheet project">
-<p class="kicker"><span class="nobr">Daedong AILab</span>, Senior AI Researcher, May 2024 to present</p>
-<h1>Strawberry Cultivation‑Task Robot with UMI and Diffusion Policy</h1>
-<p class="dek">Diffusion Policy trained on UMI demonstrations. In a fixed lab, across 1,000 trials, success was 93.8% for transplanting, 87.5% for <span class="nobr">flower thinning</span>, and 65% for <span class="nobr">runner handling</span>. Exhibited at CES 2025.</p>
+</header>
+<main id="content">
+<header class="band band-white project-top">
+<p class="kicker"><span class="nobr">Daedong AILab</span> · Senior AI Researcher · May 2024 to present</p>
+<h1>Strawberry Cultivation‑Task Robot with UMI and <span class="nobr">Diffusion Policy</span></h1>
+<p class="dek"><span class="nobr">Diffusion Policy</span> trained on <span class="nobr">UMI demonstrations</span>.</p><p class="dek">Fixed lab, 1,000 trials.</p><p class="dek"><span class="nobr">93.8% transplanting</span>, <span class="nobr">87.5% <span class="nobr">flower thinning</span></span>, <span class="nobr">65% <span class="nobr">runner handling</span></span>.</p><p class="dek"><span class="nobr">Exhibited at <span class="nobr">CES 2025</span></span>.</p>
+<p class="links"><a class="cta" href="/assets/video/strawberry-ces2025.mp4">Watch the demo</a></p>
+</header>
+<div class="project-media">
 <figure class="portrait">
 <video class="portrait" width="540" height="960" muted loop playsinline preload="none" poster="/assets/video/strawberry-ces2025.jpg" aria-label="Flower thinning at the CES 2025 booth">
 <source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
 <a href="/assets/video/strawberry-ces2025.mp4">Watch the MP4</a>
 </video>
-<figcaption>Silent. Flower thinning at the CES 2025 booth.</figcaption>
+<figcaption>Silent. Flower thinning at the <span class="nobr">CES 2025</span> booth.</figcaption>
 </figure>
+</div>
+<div class="section section-paper">
 <div class="prose">
 <h2>Problem</h2>
 <p>Three strawberry cultivation tasks were learned from human demonstrations: transplanting, <span class="nobr">flower thinning</span>, and <span class="nobr">runner handling</span>.</p>
 <h2>Approach</h2>
 <p>Demonstrations were collected with a Universal Manipulation Interface (UMI). I led the data pipeline and the policy training for all three tasks.</p>
 <p>I collected GoPro RGB and IMU data, calibrated the camera to the IMU, and turned ORB‑SLAM3 visual‑inertial SLAM trajectories into training sets.</p>
-<p>Diffusion Policy was trained with RGB features and robot state as global conditioning. I compared U‑Net and ViT configurations.</p>
+<p><span class="nobr">Diffusion Policy</span> was trained with RGB features and robot state as global conditioning. I compared U‑Net and ViT configurations.</p>
 <h2>Results</h2>
-<p>In a fixed lab environment, across 1,000 trials, success was 93.8% for transplanting, 87.5% for <span class="nobr">flower thinning</span>, and 65% for <span class="nobr">runner handling</span>. The robot was exhibited at CES 2025.</p>
+<p>In a fixed lab environment, across 1,000 trials, success was 93.8% for transplanting, 87.5% for <span class="nobr">flower thinning</span>, and <span class="nobr">65% for <span class="nobr">runner handling</span></span>. The robot was exhibited at <span class="nobr">CES 2025</span>.</p>
 <h2>Stack</h2>
-<p class="stack">UMI, GoPro, IMU, ORB‑SLAM3, Diffusion Policy, U‑Net, ViT.</p>
+<p class="stack">UMI, GoPro, IMU, ORB‑SLAM3, <span class="nobr">Diffusion Policy</span>, U‑Net, ViT.</p>
 </div>
 <nav class="pager" aria-label="Adjacent projects">
-<a class="pager-prev" href="/projects/auto-labeling.html"><span class="pager-label">Previous</span> Auto‑Labeling and Data Captioning System</a>
-<a class="pager-next" href="/projects/cad-free-assembly.html"><span class="pager-label">Next</span> CAD‑free Auto Assembly</a>
+<a class="pager-prev" href="/projects/auto-labeling.html"><span class="pager-label">Previous</span><span class="pager-name">Auto‑Labeling and <span class="nobr soft">Data Captioning System</span></span></a>
+<a class="pager-next" href="/projects/cad-free-assembly.html"><span class="pager-label">Next</span><span class="pager-name">CAD‑free Auto Assembly</span></a>
 </nav>
-<p class="back"><a href="/#projects">Projects</a></p>
-<footer class="colophon">
-<p>Updated 21 Oct 2026</p>
-<ul class="contact">
-<li><a class="mail" href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></li>
-<li class="profiles"><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></li>
-</ul>
-</footer>
+<p class="back"><a class="cta" href="/#work">Selected work</a></p>
 </div>
 </main>
-</div>
+<footer class="colophon">
+<p class="quiet">Jaewoo Choi</p>
+<p class="links"><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></p>
+</footer>
 <script>
 (function () {
   var videos = document.querySelectorAll("video");

@@ -289,7 +289,9 @@ PROJECTS = [
                     "Qwen-series vision-language models generate region-grounded object descriptions and check them. Uncertain cases go to a second review. Verified descriptions are linked to the instance annotations. I set the label taxonomy and the annotation guidelines, and built COCO-format training datasets.",
                 )),
                 ("Results", P(
-                    "Per-image labeling cost was about USD 1.05. It fell to about USD 0.036, a 96.6% reduction.",
+                    "Cost per image was about USD 1.05.",
+                    "It fell to about USD 0.036.",
+                    "That is a 96.6% reduction.",
                 )),
                 ("Stack", P(
                     "TensorRT, Qwen-series vision-language models, COCO.",
@@ -322,7 +324,7 @@ PROJECTS = [
             "ko": "UMI와 Diffusion Policy를 쓴 딸기 재배 작업 로봇",
         },
         "line": {
-            "en": "Diffusion Policy trained on UMI demonstrations. In a fixed lab, across 1,000 trials, success was 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. Exhibited at CES 2025.",
+            "en": "Diffusion Policy trained on UMI demonstrations.||Fixed lab, 1,000 trials.||93.8% transplanting, 87.5% flower thinning, 65% runner handling.||Exhibited at CES 2025.",
             "ko": "UMI 시연으로 Diffusion Policy를 학습했습니다. 고정 실험실, 1,000회 시험의 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%입니다. CES 2025에 전시했습니다.",
         },
         "tools": {
@@ -437,7 +439,9 @@ PROJECTS = [
         "sections": {
             "en": [
                 ("Problem", P(
-                    "Estimate picking poses from RGB-D images of a bin for objects with known CAD geometry.",
+                    "Estimate the picking poses.",
+                    "Using RGB-D images of a bin.",
+                    "The objects have known CAD geometry.",
                 )),
                 ("Approach", P(
                     'I trained Mask R-CNN (ResNet-101) with separate "unoccluded" and "hole" classes. Hole masks are subtracted from object masks. The remaining instance masks segment the point cloud.',
@@ -604,25 +608,101 @@ def langs_html(lang, en_path, ko_path):
     )
 
 
+NAV_LINKS = {
+    "en": [
+        ("Work", "work"),
+        ("Experience", "experience"),
+        ("Patent", "patent"),
+        ("Awards", "awards"),
+    ],
+    "ko": [
+        ("작업", "work"),
+        ("경력", "experience"),
+        ("특허", "patent"),
+        ("수상", "awards"),
+    ],
+}
+
+READ = {"en": "Read more", "ko": "더 읽기"}
+WATCH = {"en": "Watch the demo", "ko": "데모 보기"}
+EMAIL_LABEL = {"en": "Email", "ko": "이메일"}
+
+HEADLINE = {
+    "strawberry-cultivation": {"en": "Strawberry cultivation.", "ko": "딸기 재배."},
+    "cad-free-assembly": {"en": "CAD-free assembly.", "ko": "CAD-free assembly."},
+    "bin-picking": {"en": "Bin picking.", "ko": "Bin picking."},
+}
+
+SUBHEAD = {
+    "strawberry-cultivation": {
+        "en": "UMI and Diffusion Policy. Exhibited at CES 2025.",
+        "ko": "UMI 시연과 Diffusion Policy. CES 2025에 전시했습니다.",
+    },
+    "cad-free-assembly": {
+        "en": "6D tool poses from a 2D camera, with no CAD model of the part.",
+        "ko": "부품 CAD 없이 2D camera로 조립용 6D tool pose를 구합니다.",
+    },
+    "bin-picking": {
+        "en": "Picking poses from RGB-D images and known CAD geometry.",
+        "ko": "RGB-D와 CAD geometry로 picking pose를 구합니다.",
+    },
+}
+
+THEMES = {
+    "strawberry-cultivation": "ink",
+    "cad-free-assembly": "paper",
+    "bin-picking": "white",
+}
+
+FEATURED = [
+    {
+        "slug": "strawberry-cultivation",
+        "result": {
+            "en": "Fixed lab, 1,000 trials.||93.8% transplanting, 87.5% flower thinning, 65% runner handling.",
+            "ko": "고정 실험실, 1,000회: transplanting 93.8%, flower thinning 87.5%, runner handling 65%.",
+        },
+    },
+    {
+        "slug": "cad-free-assembly",
+        "result": {
+            "en": "93% task success, 1,000 in-house trials.||Basis of Korean Patent 10-2694987.",
+            "ko": '사내 1,000회 시험, task success 93%. <span class="nobr">한국 특허 10-2694987</span>의 기반.',
+        },
+    },
+    {
+        "slug": "bin-picking",
+        "result": {
+            "en": "89% task success, 1,000 in-house trials.||Fixed environment. Five object types moved into an empty container.",
+            "ko": "사내 고정 환경, object type 5종을 빈 용기로 옮긴 1,000회. task success 89%.",
+        },
+    },
+]
+
+
 def nav_html(lang):
     base = home_href(lang)
-    links = []
-    for label, anchor, wide in NAV[lang]:
-        cls = ' class="nav-wide"' if wide else ""
-        links.append(f'<a href="{base}#{anchor}"{cls}>{esc(label)}</a>')
-    ui = UI[lang]
-    links.append(f'<!-- {ui["cv_comment"]} -->\n<a href="/cv.pdf">{esc(ui["cv"])}</a>')
-    return "<nav>\n" + "\n".join(links) + "\n</nav>"
+    links = "\n".join(
+        f'<a href="{base}#{anchor}">{esc(label)}</a>'
+        for label, anchor in NAV_LINKS[lang]
+    )
+    return f"""<header class="nav">
+<div class="nav-bar">
+<a class="wordmark" href="{base}">{'Jaewoo Choi'}</a>
+<nav>
+{links}
+</nav>
+</div>
+</header>"""
 
 
 def head(lang, title, desc, path, en_path, ko_path):
     canonical = abs_url(path)
-    kr = ""
-    if lang == "ko":
-        kr = '<link rel="preload" href="/assets/fonts/ibm-plex-sans-kr-400.woff2" as="font" type="font/woff2" crossorigin>\n'
     ko_alt = ""
     if PUBLISH_KO:
         ko_alt = f'<link rel="alternate" hreflang="ko" href="{esc(abs_url(ko_path))}">\n'
+    kr = ""
+    if lang == "ko":
+        kr = '<link rel="preload" href="/assets/fonts/ibm-plex-sans-kr-400.woff2" as="font" type="font/woff2" crossorigin>\n'
     return f"""<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -630,23 +710,42 @@ def head(lang, title, desc, path, en_path, ko_path):
 <meta name="description" content="{esc(desc)}">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#eef1f3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141a1e" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f5f5f7">
 <link rel="canonical" href="{esc(canonical)}">
 <link rel="alternate" hreflang="en" href="{esc(abs_url(en_path))}">
 {ko_alt}<link rel="alternate" hreflang="x-default" href="{esc(abs_url(en_path))}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 {kr}<link rel="stylesheet" href="/assets/css/site.css">
 </head>"""
 
 
+def profile_links(lang):
+    items = [
+        (f"mailto:{EMAIL}", EMAIL_LABEL[lang], ""),
+        (GITHUB, "GitHub", ' rel="me"'),
+        (KAGGLE, "Kaggle", ' rel="me"'),
+        (LINKEDIN, "LinkedIn", ' rel="me"'),
+    ]
+    return "".join(
+        f'<a class="cta" href="{esc(href)}"{extra}>{esc(label)}</a>'
+        for href, label, extra in items
+    )
+
+
 def footer(lang):
-    ui = UI[lang]
+    address = f'<a href="mailto:{esc(EMAIL)}">{esc(EMAIL)}</a>'
+    profiles = "".join(
+        f'<a href="{esc(href)}" rel="me">{esc(label)}</a>'
+        for href, label in (
+            (GITHUB, "GitHub"),
+            (KAGGLE, "Kaggle"),
+            (LINKEDIN, "LinkedIn"),
+        )
+    )
     return f"""<footer class="colophon">
-<p>{esc(ui["updated"])}</p>
-{contact_html()}
+<p class="quiet">Jaewoo Choi</p>
+<p class="links">{address}{profiles}</p>
 </footer>"""
 
 
@@ -678,60 +777,13 @@ def script():
 </script>"""
 
 
-def focus_html(lang):
-    if lang == "en":
-        return """<p class="focus">Open-vocabulary perception, 6D pose, and imitation learning for orchard and manipulation robots.</p>"""
-    return """<p class="focus">과수원 로봇과 manipulation 로봇의 open-vocabulary perception, 6D pose, imitation learning을 연구합니다.</p>"""
-
-
-def rail_html(lang, en_path, ko_path, as_home):
-    role = "Senior AI Researcher, Daedong AILab"
-    loc = "Seoul, South Korea" if lang == "en" else "서울, 대한민국"
-    if as_home:
-        name = "<h1>Jaewoo Choi</h1>"
-        mobile = ""
-        klass = "rail rail-home"
-        intro = "intro"
-    else:
-        name = f'<p class="rail-name"><a href="{home_href(lang)}">Jaewoo Choi</a></p>'
-        mobile = f'<a class="name" href="{home_href(lang)}">Jaewoo Choi</a>\n'
-        klass = "rail"
-        intro = "intro sub"
-    return f"""<div class="{klass}">
-{mobile}{nav_html(lang)}
-{langs_html(lang, en_path, ko_path)}
-<div class="{intro}">
-{name}
-<p class="role">{esc(role)}</p>
-<p class="loc">{esc(loc)}</p>
-{focus_html(lang)}
-{contact_html()}
-</div>
-</div>"""
-
-
-def shell(lang, en_path, ko_path, sheet, as_home, project=False):
-    sheet_cls = "sheet project" if project else "sheet"
-    return f"""<div class="wrap">
-<main id="content">
-{rail_html(lang, en_path, ko_path, as_home)}
-<div class="{sheet_cls}">
-{sheet}
-{footer(lang)}
-</div>
-</main>
-</div>"""
-
-
 def video_html(key, lang, caption=True):
     v = VIDEOS[key]
-    portrait = v["orient"] == "portrait"
-    cls = "portrait" if portrait else "landscape"
-    fig = "portrait" if portrait else "landscape"
+    cls = "portrait" if v["orient"] == "portrait" else "landscape"
     src = f"/assets/video/{v['file']}.mp4"
     poster = f"/assets/video/{v['file']}.jpg"
     cap = f"\n<figcaption>{v['cap'][lang]}</figcaption>" if caption else ""
-    return f"""<figure class="{fig}">
+    return f"""<figure class="{cls}">
 <video class="{cls}" width="{v['w']}" height="{v['h']}" muted loop playsinline preload="none" poster="{poster}" aria-label="{esc(v['label'][lang])}">
 <source src="{src}" type="video/mp4">
 <a href="{src}">{esc(UI[lang]['watch'])}</a>
@@ -743,96 +795,70 @@ def slot_html(lang):
     return f"<!-- {UI[lang]['media_comment']} -->"
 
 
-def entry_html(project, lang):
-    href = project_href(lang, project["slug"])
-    title = esc(project["title"][lang])
-    if project["video"]:
-        klass = "entry has-video"
-        media = "\n" + video_html(project["video"], lang)
+def page(lang, title, desc, path, en_path, ko_path, body):
+    return f"""<!DOCTYPE html>
+<html lang="{lang}">
+{head(lang, title, desc, path, en_path, ko_path)}
+<body>
+<a class="skip" href="#content">{esc(UI[lang]['skip'])}</a>
+{nav_html(lang)}
+{body}
+{footer(lang)}
+{script()}
+</body>
+</html>
+"""
+
+
+def hero_html(lang):
+    role = "Senior AI Researcher, Daedong AILab"
+    loc = "Seoul, South Korea" if lang == "en" else "서울, 대한민국"
+    if lang == "en":
+        lede = "Open-vocabulary perception, 6D pose, and imitation learning for orchard and manipulation robots."
     else:
-        klass = "entry"
-        media = "\n" + slot_html(lang)
-    return f"""<article class="{klass}">
-<h3><a href="{href}">{title}</a></h3>
-<p>{project['line'][lang]}</p>
-<p class="tools">{project['tools'][lang]}</p>{media}
-</article>"""
+        lede = "과수원 로봇과 manipulation 로봇의 open-vocabulary perception, 6D pose, imitation learning을 연구합니다."
+    return f"""<section class="band band-white">
+<h1>Jaewoo Choi</h1>
+<p class="subhead">{esc(role)}</p>
+<p class="lede">{lede}</p>
+<p class="links">{profile_links(lang)}</p>
+<p class="quiet">{esc(loc)}</p>
+</section>"""
 
 
-FEATURED = [
-    {
-        "slug": "strawberry-cultivation",
-        "tall": True,
-        "result": {
-            "en": "Fixed lab, 1,000 trials: 93.8% transplanting, 87.5% flower thinning, 65% runner handling.",
-            "ko": "고정 실험실, 1,000회: transplanting 93.8%, flower thinning 87.5%, runner handling 65%.",
-        },
-        "did": {
-            "en": "I led the data pipeline and the policy training on UMI demonstrations. Exhibited at CES 2025.",
-            "ko": "세 작업의 data pipeline과 policy 학습을 맡았습니다. CES 2025에 전시했습니다.",
-        },
-    },
-    {
-        "slug": "cad-free-assembly",
-        "tall": False,
-        "result": {
-            "en": "93% task success across 1,000 in-house trials. Basis of Korean Patent 10-2694987.",
-            "ko": '사내 1,000회 시험, task success 93%. <span class="nobr">한국 특허 10-2694987</span>의 기반.',
-        },
-        "did": {
-            "en": "6D tool poses for assembly from a 2D camera, with no CAD model of the part.",
-            "ko": "부품 CAD 없이 2D camera로 조립용 6D tool pose를 구합니다.",
-        },
-    },
-    {
-        "slug": "bin-picking",
-        "tall": False,
-        "result": {
-            "en": "89% task success across 1,000 in-house trials. Fixed environment, five object types moved into an empty container.",
-            "ko": "사내 고정 환경, object type 5종을 빈 용기로 옮긴 1,000회. task success 89%.",
-        },
-        "did": {
-            "en": "Picking poses from RGB-D images and known CAD geometry.",
-            "ko": "RGB-D와 CAD geometry로 picking pose를 구합니다.",
-        },
-    },
-]
+def paragraphs(text, klass):
+    return "".join(f'<p class="{klass}">{part}</p>' for part in text.split("||"))
 
 
-def feature_html(spec, lang):
-    ui = UI[lang]
+def product_html(spec, lang, anchor=""):
     project = next(p for p in PROJECTS if p["slug"] == spec["slug"])
     href = project_href(lang, project["slug"])
-    tall = " feature-tall" if spec["tall"] else ""
-    return f"""<article class="feature{tall}">
-{video_html(project["video"], lang, caption=False)}
-<div class="feature-copy">
-<h3><a href="{href}">{esc(project["title"][lang])}</a></h3>
-<p class="result">{spec["result"][lang]}</p>
-<p class="did">{spec["did"][lang]}</p>
-<p class="more"><a href="{href}">{esc(ui["details"])}</a></p>
-</div>
+    src = f"/assets/video/{VIDEOS[project['video']]['file']}.mp4"
+    theme = THEMES[spec["slug"]]
+    idattr = f' id="{anchor}"' if anchor else ""
+    links = (
+        f'<a class="cta" href="{src}">{esc(WATCH[lang])}</a>'
+        f'<a class="cta" href="{href}">{esc(READ[lang])}</a>'
+    )
+    return f"""<section class="band band-{theme}"{idattr}>
+<h2>{esc(HEADLINE[spec['slug']][lang])}</h2>
+<p class="subhead">{esc(SUBHEAD[spec['slug']][lang])}</p>
+<p class="links">{links}</p>
+{video_html(project['video'], lang)}
+{paragraphs(spec['result'][lang], "fact")}
+</section>"""
+
+
+def tile_html(project, lang, ink):
+    group = next(g for g in GROUPS if g["id"] == project["group"])
+    href = project_href(lang, project["slug"])
+    klass = "tile tile-ink" if ink else "tile"
+    return f"""<article class="{klass}">
+<h3>{esc(project['title'][lang])}</h3>
+<p>{esc(project['desc'][lang])}</p>
+<p class="quiet">{esc(group['org'])}, {esc(group['when'][lang])}</p>
+<p class="links"><a class="cta" href="{href}">{esc(READ[lang])}</a></p>
 </article>"""
-
-
-def roster_html(lang):
-    featured = {spec["slug"] for spec in FEATURED}
-    items = []
-    for project in PROJECTS:
-        if project["slug"] in featured:
-            continue
-        group = next(g for g in GROUPS if g["id"] == project["group"])
-        href = project_href(lang, project["slug"])
-        items.append(
-            f"""<li>
-<a href="{href}">
-<span class="roster-title">{esc(project["title"][lang])}</span>
-<span class="roster-when">{esc(group["org"])}, {esc(group["when"][lang])}</span>
-<span class="roster-sum">{esc(project["desc"][lang])}</span>
-</a>
-</li>"""
-        )
-    return '<ul class="roster">\n' + "\n".join(items) + "\n</ul>"
 
 
 def home_page(lang):
@@ -842,75 +868,83 @@ def home_page(lang):
     if lang == "en":
         title = "Jaewoo Choi, Senior AI Researcher"
         desc = "Senior AI Researcher at Daedong AILab. Open-vocabulary perception, 6D pose, and imitation learning for orchard and manipulation robots."
-        research = """<p class="measure">I work on perception for real robots: open-vocabulary RGB-D segmentation, point-cloud and image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. I have developed and tested this work on deployed orchard robots and on manipulation robots. I want to extend it toward vision-language-action models that connect what a robot sees with how it acts.</p>"""
-        edu = """<article>
+        research = "I work on perception for real robots: open-vocabulary RGB-D segmentation, point-cloud and image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. I have developed and tested this work on deployed orchard robots and on manipulation robots. I want to extend it toward vision-language-action models that connect what a robot sees with how it acts."
+        edu = """<article class="rule">
 <h3>Seokyeong University</h3>
-<p class="when">Mar 2016 to Aug 2022</p>
+<p class="quiet">Mar 2016 to Aug 2022</p>
 <p>Seoul, South Korea</p>
 <p>Bachelor of Engineering, Industrial Management Systems Engineering. Multidisciplinary major: Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies).</p>
 </article>"""
         patent = f"""<article>
 <h3>Korean Patent 10-2694987</h3>
-<p class="when">Registered Aug 2024</p>
+<p class="quiet">Registered Aug 2024</p>
 <p>Applicant: PLAIF. Co-inventor.</p>
 <p class="patent-title">Pose estimating device and method using artificial intelligence to estimate pose of robot's end effector for object and robot control system including the same.</p>
 <p>The <a href="{project_href('en', 'cad-free-assembly')}">CAD-free auto assembly</a> work is the basis of this patent.</p>
 </article>"""
-        awards = f"""<article>
+        awards = f"""<article class="rule">
 <h3>Kaggle UBC-OCEAN</h3>
-<p class="when">Jan 2024</p>
+<p class="quiet">Jan 2024</p>
 <p>Bronze medal, team rank 83/1,326.</p>
 </article>
-<article>
+<article class="rule">
 <h3>Kaggle Image Matching Challenge 2022</h3>
-<p class="when">Jun 2022</p>
+<p class="quiet">Jun 2022</p>
 <p>Silver medal, team rank 50/642.</p>
 <p><a href="{MATCH}">kaggle_image_matching2022</a></p>
 </article>
-<article>
+<article class="rule">
 <h3>Kaggle Happywhale</h3>
-<p class="when">Apr 2022</p>
+<p class="quiet">Apr 2022</p>
 <p>Whale and Dolphin Identification. Bronze medal, team rank 127/1,588.</p>
 <p><a href="{WHALE}">kaggle_happy_whale</a></p>
 </article>"""
     else:
         title = "Jaewoo Choi, Senior AI Researcher"
         desc = "Daedong AILab Senior AI Researcher. 과수원 로봇과 manipulation 로봇의 open-vocabulary perception, 6D pose, imitation learning."
-        research = """<p class="measure">실제 로봇의 perception을 다룹니다. 주제는 open-vocabulary RGB-D segmentation, 장애물 매핑을 위한 point cloud와 image의 fusion, 6D pose estimation, manipulation을 위한 imitation learning입니다. 배치된 과수원 로봇과 manipulation 로봇에서 이 작업을 개발하고 시험했습니다. 로봇이 본 것과 행동을 잇는 vision-language-action model로 확장하고 싶습니다.</p>"""
-        edu = """<article>
+        research = "실제 로봇의 perception을 다룹니다. 주제는 open-vocabulary RGB-D segmentation, 장애물 매핑을 위한 point cloud와 image의 fusion, 6D pose estimation, manipulation을 위한 imitation learning입니다. 배치된 과수원 로봇과 manipulation 로봇에서 이 작업을 개발하고 시험했습니다. 로봇이 본 것과 행동을 잇는 vision-language-action model로 확장하고 싶습니다."
+        edu = """<article class="rule">
 <h3>Seokyeong University</h3>
-<p class="when">2016년 3월부터 2022년 8월</p>
+<p class="quiet">2016년 3월부터 2022년 8월</p>
 <p>서울, 대한민국</p>
 <p>Bachelor of Engineering, Industrial Management Systems Engineering. 융합전공은 Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies)입니다.</p>
 </article>"""
         patent = f"""<article>
 <h3>한국 특허 10-2694987</h3>
-<p class="when">2024년 8월 등록</p>
+<p class="quiet">2024년 8월 등록</p>
 <p>출원인은 PLAIF입니다. 공동 발명자입니다.</p>
 <p class="patent-title" lang="en">Pose estimating device and method using artificial intelligence to estimate pose of robot's end effector for object and robot control system including the same.</p>
 <p><a href="{project_href('ko', 'cad-free-assembly')}">CAD-free auto assembly</a>가 이 특허의 기반입니다.</p>
 </article>"""
-        awards = f"""<article>
+        awards = f"""<article class="rule">
 <h3>Kaggle UBC-OCEAN</h3>
-<p class="when">2024년 1월</p>
+<p class="quiet">2024년 1월</p>
 <p>동메달, 팀 순위 83/1,326.</p>
 </article>
-<article>
+<article class="rule">
 <h3>Kaggle Image Matching Challenge 2022</h3>
-<p class="when">2022년 6월</p>
+<p class="quiet">2022년 6월</p>
 <p>은메달, 팀 순위 50/642.</p>
 <p><a href="{MATCH}">kaggle_image_matching2022</a></p>
 </article>
-<article>
+<article class="rule">
 <h3>Kaggle Happywhale</h3>
-<p class="when">2022년 4월</p>
+<p class="quiet">2022년 4월</p>
 <p>Whale and Dolphin Identification. 동메달, 팀 순위 127/1,588.</p>
 <p><a href="{WHALE}">kaggle_happy_whale</a></p>
 </article>"""
 
-    features = "\n".join(feature_html(spec, lang) for spec in FEATURED)
-    roster = roster_html(lang)
-
+    products = []
+    for i, spec in enumerate(FEATURED):
+        products.append(product_html(spec, lang, "work" if i == 0 else ""))
+    featured = {spec["slug"] for spec in FEATURED}
+    tiles = []
+    n = 0
+    for project in PROJECTS:
+        if project["slug"] in featured:
+            continue
+        tiles.append(tile_html(project, lang, ink=(n % 2 == 1)))
+        n += 1
     exp_blocks = []
     for group in GROUPS:
         items = [p for p in PROJECTS if p["group"] == group["id"]]
@@ -919,63 +953,55 @@ def home_page(lang):
             for p in items
         )
         exp_blocks.append(
-            f"""<article>
+            f"""<article class="rule">
 <h3>{esc(group['org'])}</h3>
-<p class="when">{esc(group['when'][lang])}</p>
 <p>{esc(group['role'][lang])}</p>
-<ul class="role-projects">
+<p class="quiet">{esc(group['when'][lang])}</p>
+<ul>
 {lis}
 </ul>
 </article>"""
         )
-
-    sheet = f"""<section id="projects">
-<h2>{esc(ui['work'])}</h2>
-{features}
+    body = f"""<main id="content">
+<div class="stack">
+{hero_html(lang)}
+{''.join(products)}
+<section class="tile-grid" aria-label="{esc(ui['other'])}">
+{''.join(tiles)}
 </section>
-<section id="other">
-<h2>{esc(ui['other'])}</h2>
-{roster}
+<section class="section section-paper" id="research">
+<h2 class="section-title">{esc(ui['research'])}</h2>
+<div class="block">
+<p class="measure">{research}</p>
+</div>
 </section>
-<section id="research">
-<h2>{esc(ui['research'])}</h2>
-{research}
-</section>
-<section id="experience">
-<h2>{esc(ui['experience'])}</h2>
-<div class="cv">
+<section class="section" id="experience">
+<h2 class="section-title">{esc(ui['experience'])}</h2>
+<div class="block">
 {''.join(exp_blocks)}
 </div>
 </section>
-<section id="education">
-<h2>{esc(ui['education'])}</h2>
-<div class="cv">
+<section class="section section-paper" id="education">
+<h2 class="section-title">{esc(ui['education'])}</h2>
+<div class="block">
 {edu}
 </div>
 </section>
-<section id="patent">
-<h2>{esc(ui['patent'])}</h2>
-<div class="cv">
+<section class="section section-ink" id="patent">
+<h2 class="section-title">{esc(ui['patent'])}</h2>
+<div class="block">
 {patent}
 </div>
 </section>
-<section id="awards">
-<h2>{esc(ui['awards'])}</h2>
-<div class="cv">
+<section class="section section-paper" id="awards">
+<h2 class="section-title">{esc(ui['awards'])}</h2>
+<div class="block">
 {awards}
 </div>
-</section>"""
-    doc = f"""<!DOCTYPE html>
-<html lang="{lang}">
-{head(lang, title, desc, path, en_path, ko_path)}
-<body>
-<a class="skip" href="#content">{esc(ui['skip'])}</a>
-{shell(lang, en_path, ko_path, sheet, True)}
-{script()}
-</body>
-</html>
-"""
-    return doc
+</section>
+</div>
+</main>"""
+    return page(lang, title, desc, path, en_path, ko_path, body)
 
 
 def sections_html(pairs):
@@ -995,16 +1021,18 @@ def pager_html(project, lang):
         prev = PROJECTS[idx - 1]
         links.append(
             f'<a class="pager-prev" href="{project_href(lang, prev["slug"])}">'
-            f'<span class="pager-label">{esc(ui["prev"])}</span> {esc(prev["title"][lang])}</a>'
+            f'<span class="pager-label">{esc(ui["prev"])}</span>'
+            f'<span class="pager-name">{esc(prev["title"][lang])}</span></a>'
         )
+    else:
+        links.append("<span></span>")
     if idx + 1 < len(PROJECTS):
         nxt = PROJECTS[idx + 1]
         links.append(
             f'<a class="pager-next" href="{project_href(lang, nxt["slug"])}">'
-            f'<span class="pager-label">{esc(ui["next"])}</span> {esc(nxt["title"][lang])}</a>'
+            f'<span class="pager-label">{esc(ui["next"])}</span>'
+            f'<span class="pager-name">{esc(nxt["title"][lang])}</span></a>'
         )
-    if not links:
-        return ""
     return (
         f'<nav class="pager" aria-label="{esc(ui["pager"])}">\n'
         + "\n".join(links)
@@ -1021,31 +1049,33 @@ def project_page(project, lang):
     desc = project["desc"][lang]
     group = next(g for g in GROUPS if g["id"] == project["group"])
     if project["video"]:
+        src = f"/assets/video/{VIDEOS[project['video']]['file']}.mp4"
         media = video_html(project["video"], lang)
+        watch = f'<p class="links"><a class="cta" href="{src}">{esc(WATCH[lang])}</a></p>'
     else:
         media = slot_html(lang)
-    sections = sections_html(project["sections"][lang])
-    back = home_href(lang) + "#projects"
-    sheet = f"""<p class="kicker">{esc(group['org'])}, {esc(group['role'][lang])}, {esc(group['when'][lang])}</p>
+        watch = ""
+    kicker = f"{group['org']} · {group['role'][lang]} · {group['when'][lang]}"
+    back = home_href(lang) + "#work"
+    body = f"""<main id="content">
+<header class="band band-white project-top">
+<p class="kicker">{esc(kicker)}</p>
 <h1>{esc(project['title'][lang])}</h1>
-<p class="dek">{project['line'][lang]}</p>
+{paragraphs(project['line'][lang], "dek")}
+{watch}
+</header>
+<div class="project-media">
 {media}
+</div>
+<div class="section section-paper">
 <div class="prose">
-{sections}
+{sections_html(project['sections'][lang])}
 </div>
 {pager_html(project, lang)}
-<p class="back"><a href="{back}">{esc(ui['projects_back'])}</a></p>"""
-    doc = f"""<!DOCTYPE html>
-<html lang="{lang}">
-{head(lang, title, desc, path, en_path, ko_path)}
-<body>
-<a class="skip" href="#content">{esc(ui['skip'])}</a>
-{shell(lang, en_path, ko_path, sheet, False, project=True)}
-{script()}
-</body>
-</html>
-"""
-    return doc
+<p class="back"><a class="cta" href="{back}">{esc(ui['work'])}</a></p>
+</div>
+</main>"""
+    return page(lang, title, desc, path, en_path, ko_path, body)
 
 
 def not_found_page():
@@ -1053,21 +1083,15 @@ def not_found_page():
     ko_note = ""
     if PUBLISH_KO:
         ui_ko = UI["ko"]
-        ko_note = f'<p lang="ko">{esc(ui_ko["missing_body"])} <a href="/ko/" hreflang="ko" lang="ko">한국어</a></p>\n'
-    sheet = f"""<h1>{esc(ui['missing'])}</h1>
-<p>{esc(ui['missing_body'])}</p>
-<p><a href="/">Jaewoo Choi</a></p>
-{ko_note}"""
-    return f"""<!DOCTYPE html>
-<html lang="en">
-{head("en", ui["missing"], ui["missing_body"], "/404.html", "/", "/ko/")}
-<body>
-<a class="skip" href="#content">{esc(ui['skip'])}</a>
-{shell("en", "/", "/ko/", sheet, False)}
-</body>
-</html>
-"""
-
+        ko_note = f'<p class="lede" lang="ko">{esc(ui_ko["missing_body"])}</p>\n'
+    body = f"""<main id="content">
+<section class="band band-white">
+<h1>{esc(ui['missing'])}</h1>
+<p class="subhead">{esc(ui['missing_body'])}</p>
+{ko_note}<p class="links"><a class="cta" href="/">Jaewoo Choi</a></p>
+</section>
+</main>"""
+    return page("en", ui["missing"], ui["missing_body"], "/404.html", "/", "/ko/", body)
 
 NBH = "\u2011"
 PHRASES = (
@@ -1078,7 +1102,19 @@ PHRASES = (
     "6D tool pose를 구합니다",
     "picking pose를 구합니다",
     "학습을 맡았습니다",
+    "Hand-Eye Calibration Tools",
+    "Autonomous Orchard Robots",
+    "Orchard Robots",
     "known CAD geometry",
+    "no CAD model of the part",
+    "Exhibited at CES 2025",
+    "Diffusion Policy",
+    "Data Captioning System",
+    "CES 2025",
+    "87.5% flower thinning",
+    "93.8% transplanting",
+    "UMI demonstrations",
+    "65% for runner handling",
     "65% runner handling",
     "runner handling 65%",
     "into an empty container",
@@ -1095,10 +1131,18 @@ PHRASES = (
 )
 
 
+SOFT = {
+    "Autonomous Orchard Robots",
+    "Hand-Eye Calibration Tools",
+    "Data Captioning System",
+}
+
+
 def harden_text(text):
     text = re.sub(r"(?<=[A-Za-z0-9])-(?=[A-Za-z0-9])", NBH, text)
     for phrase in PHRASES:
-        text = text.replace(phrase, f'<span class="nobr">{phrase}</span>')
+        klass = "nobr soft" if phrase in SOFT else "nobr"
+        text = text.replace(phrase, f'<span class="{klass}">{phrase}</span>')
     return text
 
 

@@ -14,8 +14,8 @@ HYPHEN_END = ("-", "‐", "‑")  # hyphen-minus, hyphen, non-breaking hyphen
 
 PROSE_JS = r"""
 () => {
-  const proseSel = "p.bio, p.measure, p.dek, .prose p:not(.stack), .entry > p:not(.tools)";
-  const hyphenSel = "main p, main h1, main h2, main h3, main li, main figcaption";
+  const proseSel = "p.measure, .prose p:not(.stack)";
+  const hyphenSel = "main p, main h1, main h2, main h3, main li, main figcaption, main a";
 
   function lineStrings(el) {
     const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
@@ -78,7 +78,7 @@ PROSE_JS = r"""
 
   const doc = document.documentElement;
   const overflow = doc.scrollWidth > doc.clientWidth + 1;
-  const wrap = document.querySelector(".wrap");
+  const wrap = document.querySelector("main");
   const wrapBox = wrap ? Math.round(wrap.getBoundingClientRect().width) : 0;
   return {
     overflow,
@@ -110,10 +110,20 @@ CONTRAST_JS = r"""
     const m = c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
     return m ? [+m[1], +m[2], +m[3]] : null;
   }
+  function bgOf(el) {
+    let node = el;
+    while (node) {
+      const raw = getComputedStyle(node).backgroundColor;
+      const m = raw && raw.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+      if (m && (m[4] === undefined || Number(m[4]) > 0)) return [+m[1], +m[2], +m[3]];
+      node = node.parentElement;
+    }
+    return [255, 255, 255];
+  }
   const picks = [
     ["body", "body"],
-    ["muted", ".loc"],
-    ["link", "main a"],
+    ["muted", ".quiet"],
+    ["link", "a.cta"],
     ["h1", "h1"],
   ];
   const out = [];
@@ -124,7 +134,7 @@ CONTRAST_JS = r"""
     out.push({
       name,
       fg: parse(cs.color),
-      bg: parse(getComputedStyle(document.body).backgroundColor),
+      bg: bgOf(el),
       size: cs.fontSize,
     });
   }
