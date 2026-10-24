@@ -76,6 +76,33 @@ PROSE_JS = r"""
     });
   }
 
+  const orphans = [];
+  for (const el of document.querySelectorAll("h1, h2, h3")) {
+    const lines = lineStrings(el);
+    if (lines.length < 2) continue;
+    const last = lines[lines.length - 1].text.replace(/\s+$/g, "").trim();
+    const words = last.split(/\s+/).filter(Boolean);
+    if (words.length === 1) {
+      orphans.push({
+        tag: el.tagName,
+        last,
+        text: (el.innerText || "").replace(/\s+/g, " ").slice(0, 140),
+      });
+    }
+  }
+
+  const centered = [];
+  for (const el of document.querySelectorAll("p")) {
+    if (getComputedStyle(el).textAlign !== "center") continue;
+    const lines = lineStrings(el);
+    if (lines.length > 2) {
+      centered.push({
+        lines: lines.length,
+        text: (el.innerText || "").replace(/\s+/g, " ").slice(0, 140),
+      });
+    }
+  }
+
   const doc = document.documentElement;
   const overflow = doc.scrollWidth > doc.clientWidth + 1;
   const wrap = document.querySelector("main");
@@ -87,6 +114,8 @@ PROSE_JS = r"""
     wrap: wrapBox,
     thin,
     hyphens,
+    orphans,
+    centered,
   };
 }
 """
@@ -123,7 +152,7 @@ CONTRAST_JS = r"""
   const picks = [
     ["body", "body"],
     ["muted", ".quiet"],
-    ["link", "a.cta"],
+    ["link", "a.pill"],
     ["h1", "h1"],
   ];
   const out = [];
@@ -236,6 +265,14 @@ def main():
                 for item in layout["hyphens"]:
                     errors.append(
                         f"{url} @{width} hyphen line {item['line']} …{item['end']}"
+                    )
+                for item in layout.get("orphans", []):
+                    errors.append(
+                        f"{url} @{width} orphan {item['tag']} last {item['last']!r} {item['text']}"
+                    )
+                for item in layout.get("centered", []):
+                    errors.append(
+                        f"{url} @{width} centered {item['lines']} lines {item['text']}"
                     )
             if width == 1440:
                 page.goto(BASE + "/", wait_until="domcontentloaded")

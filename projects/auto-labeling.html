@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Auto‑Labeling and <span class="nobr soft">Data Captioning System</span>, Jaewoo Choi</title>
+<title>Auto-Labeling and Data Captioning System, Jaewoo Choi</title>
 <meta name="description" content="Video auto-labeling and region-grounded captioning. Per-image labeling cost fell from about USD 1.05 to about USD 0.036.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
@@ -18,52 +18,113 @@
 <body>
 <a class="skip" href="#content">Skip to content</a>
 <header class="nav">
+<div class="nav-glass">
 <div class="nav-bar">
 <a class="wordmark" href="/">Jaewoo Choi</a>
-<nav>
+<button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><span class="nav-toggle-icon"></span></button>
+</div>
+</div>
+<nav class="nav-links" id="site-nav">
 <a href="/#work">Work</a>
-<a href="/#experience">Experience</a>
 <a href="/#patent">Patent</a>
+<a href="/#code">Code</a>
+<a href="/#experience">Experience</a>
 <a href="/#awards">Awards</a>
 </nav>
-</div>
 </header>
 <main id="content">
-<header class="band band-white project-top">
-<p class="kicker"><span class="nobr">Daedong AILab</span> · Senior AI Researcher · May 2024 to present</p>
-<h1>Auto‑Labeling and <span class="nobr soft">Data Captioning System</span></h1>
-<p class="dek">Point prompts and mask corrections become tracked masks. Qwen‑series models write region‑grounded captions. Per‑image labeling cost fell from about USD 1.05 to about USD 0.036.</p>
+<div class="local">
+<div class="local-bar">
+<a class="local-name" href="/projects/auto-labeling.html#overview">Auto‑labeling</a>
+<nav aria-label="Auto-labeling">
+<a href="/projects/auto-labeling.html#overview">Overview</a>
+<a href="/projects/auto-labeling.html#approach">Approach</a>
+<a href="/projects/auto-labeling.html#results">Results</a>
+<a href="/projects/auto-labeling.html#stack">Stack</a>
+</nav>
+</div>
+</div>
+<header class="project-hero" id="overview">
+<p class="kicker">Daedong AILab · Senior AI Researcher · May 2024 – present</p>
+<h1>Cutting labeling cost from about USD 1.05 to about USD 0.036.</h1>
+<p class="dek">Tracked masks, then region‑grounded captions.</p>
 
 </header>
-<div class="project-media">
 <!-- Media can be added later. -->
-</div>
-<div class="section section-paper">
+<section class="section" id="approach">
 <div class="prose">
-<h2>Problem</h2>
-<p>Manual annotation cost limits the supply of segmentation and region‑grounded vision‑language training data. I built a video auto‑labeling pipeline. Point prompts and mask corrections become tracked masks with consistent IDs across frames. Image and video inputs share TensorRT engines, so the same computation is not duplicated.</p>
 <h2>Approach</h2>
-<p>Qwen‑series vision‑language models generate region‑grounded object descriptions and check them. Uncertain cases go to a second review. Verified descriptions are linked to the instance annotations. I set the label taxonomy and the annotation guidelines, and built COCO‑format training datasets.</p>
+<div class="approach-block">
+<p>Manual annotation cost limits the supply of segmentation and region‑grounded vision‑language training data.</p>
+</div>
+<div class="approach-block">
+<p>I built a video auto‑labeling pipeline. Point prompts and mask corrections become tracked masks with consistent IDs across frames.</p>
+</div>
+<div class="approach-block">
+<p>Image and video share TensorRT engines.</p>
+<p>The same computation is not duplicated.</p>
+<p>Qwen‑series vision‑language models generate region‑grounded object descriptions and check them.</p>
+<p>Uncertain cases go to a second review. Verified descriptions are linked to the instance annotations.</p>
+<p>I set the label taxonomy and the annotation guidelines, and built COCO‑format training datasets.</p>
+</div>
+</div>
+</section>
+<section class="section section-paper" id="results">
+<div class="prose">
 <h2>Results</h2>
-<p>Cost per image was about USD 1.05.</p>
-<p>It fell to about USD 0.036.</p>
-<p>That is a 96.6% reduction.</p>
+<table class="spec">
+<tr><th scope="row">Cost before</th><td>about USD 1.05 per image</td></tr>
+<tr><th scope="row">Cost after</th><td>about USD 0.036 per image</td></tr>
+<tr><th scope="row">Reduction</th><td>96.6%</td></tr>
+</table>
+</div>
+</section>
+<section class="section" id="stack">
+<div class="prose">
 <h2>Stack</h2>
-<p class="stack">TensorRT, Qwen‑series vision‑language models, COCO.</p>
+<ul class="tech">
+<li>TensorRT</li>
+<li>Qwen‑series vision‑language models</li>
+<li>COCO</li>
+</ul>
 </div>
+</section>
+<section class="section section-paper">
 <nav class="pager" aria-label="Adjacent projects">
-<a class="pager-prev" href="/projects/orchard-obstacle-mapping.html"><span class="pager-label">Previous</span><span class="pager-name">Open‑Vocabulary 3D Obstacle Perception and Occupancy Mapping for <span class="nobr soft">Autonomous <span class="nobr">Orchard Robots</span></span></span></a>
-<a class="pager-next" href="/projects/strawberry-cultivation.html"><span class="pager-label">Next</span><span class="pager-name">Strawberry Cultivation‑Task Robot with UMI and <span class="nobr">Diffusion Policy</span></span></a>
+<a class="pager-prev" href="/projects/orchard-obstacle-mapping.html"><span class="pager-label">Previous</span><span class="pager-name">Mapping open‑set obstacles on RT100 with TensorRT on Jetson Nano.</span></a>
+<a class="pager-next" href="/projects/strawberry-cultivation.html"><span class="pager-label">Next</span><span class="pager-name">Teaching a robot three strawberry tasks.</span></a>
 </nav>
-<p class="back"><a class="cta" href="/#work">Selected work</a></p>
-</div>
+<p class="back"><a href="/#work">Selected work</a></p>
+</section>
 </main>
 <footer class="colophon">
-<p class="quiet">Jaewoo Choi</p>
-<p class="links"><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></p>
+<div class="colophon-inner">
+<nav class="dir" aria-label="Directory"><a href="/#work">Work</a><a href="/#experience">Experience</a><a href="/#patent">Patent</a><a href="/#awards">Awards</a></nav>
+<nav class="dir" aria-label="Contact"><a href="mailto:iam.jaewoochoi@gmail.com">Email</a><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></nav>
+<hr class="dir-rule">
+<p>© Jaewoo Choi</p>
+</div>
 </footer>
 <script>
 (function () {
+  var header = document.querySelector(".nav");
+  var btn = document.querySelector(".nav-toggle");
+  if (header && btn) {
+    btn.addEventListener("click", function () {
+      var open = header.classList.toggle("is-open");
+      document.body.classList.toggle("nav-open", open);
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.setAttribute("aria-label", open ? "Close" : "Menu");
+    });
+    header.querySelectorAll(".nav-links a").forEach(function (a) {
+      a.addEventListener("click", function () {
+        header.classList.remove("is-open");
+        document.body.classList.remove("nav-open");
+        btn.setAttribute("aria-expanded", "false");
+        btn.setAttribute("aria-label", "Menu");
+      });
+    });
+  }
   var videos = document.querySelectorAll("video");
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   videos.forEach(function (v) {

@@ -18,29 +18,55 @@
 <body>
 <a class="skip" href="#content">Skip to content</a>
 <header class="nav">
+<div class="nav-glass">
 <div class="nav-bar">
 <a class="wordmark" href="/">Jaewoo Choi</a>
-<nav>
+<button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><span class="nav-toggle-icon"></span></button>
+</div>
+</div>
+<nav class="nav-links" id="site-nav">
 <a href="/#work">Work</a>
-<a href="/#experience">Experience</a>
 <a href="/#patent">Patent</a>
+<a href="/#code">Code</a>
+<a href="/#experience">Experience</a>
 <a href="/#awards">Awards</a>
 </nav>
-</div>
 </header>
 <main id="content">
 <section class="band band-white">
-<h1>Page not found</h1>
-<p class="subhead">This address is not on the site.</p>
-<p class="links"><a class="cta" href="/">Jaewoo Choi</a></p>
+<h1>Page not found</h1>
+<p class="dek">This address is not on the site.</p>
+<p class="links"><a class="pill" href="/">Jaewoo Choi</a></p>
 </section>
 </main>
 <footer class="colophon">
-<p class="quiet">Jaewoo Choi</p>
-<p class="links"><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></p>
+<div class="colophon-inner">
+<nav class="dir" aria-label="Directory"><a href="/#work">Work</a><a href="/#experience">Experience</a><a href="/#patent">Patent</a><a href="/#awards">Awards</a></nav>
+<nav class="dir" aria-label="Contact"><a href="mailto:iam.jaewoochoi@gmail.com">Email</a><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></nav>
+<hr class="dir-rule">
+<p>© Jaewoo Choi</p>
+</div>
 </footer>
 <script>
 (function () {
+  var header = document.querySelector(".nav");
+  var btn = document.querySelector(".nav-toggle");
+  if (header && btn) {
+    btn.addEventListener("click", function () {
+      var open = header.classList.toggle("is-open");
+      document.body.classList.toggle("nav-open", open);
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.setAttribute("aria-label", open ? "Close" : "Menu");
+    });
+    header.querySelectorAll(".nav-links a").forEach(function (a) {
+      a.addEventListener("click", function () {
+        header.classList.remove("is-open");
+        document.body.classList.remove("nav-open");
+        btn.setAttribute("aria-expanded", "false");
+        btn.setAttribute("aria-label", "Menu");
+      });
+    });
+  }
   var videos = document.querySelectorAll("video");
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   videos.forEach(function (v) {

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CAD‑based Auto Bin Picking, Jaewoo Choi</title>
+<title>CAD-based Auto Bin Picking, Jaewoo Choi</title>
 <meta name="description" content="Picking poses from RGB-D and CAD geometry. 89% task success in 1,000 in-house, fixed-environment trials on five object types.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
@@ -18,60 +18,120 @@
 <body>
 <a class="skip" href="#content">Skip to content</a>
 <header class="nav">
+<div class="nav-glass">
 <div class="nav-bar">
 <a class="wordmark" href="/">Jaewoo Choi</a>
-<nav>
+<button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><span class="nav-toggle-icon"></span></button>
+</div>
+</div>
+<nav class="nav-links" id="site-nav">
 <a href="/#work">Work</a>
-<a href="/#experience">Experience</a>
 <a href="/#patent">Patent</a>
+<a href="/#code">Code</a>
+<a href="/#experience">Experience</a>
 <a href="/#awards">Awards</a>
 </nav>
-</div>
 </header>
 <main id="content">
-<header class="band band-white project-top">
-<p class="kicker">PLAIF · <span class="nobr">Computer Vision Engineer</span> · Jan 2023 to Apr 2024</p>
-<h1>CAD‑based Auto Bin Picking</h1>
-<p class="dek">Picking poses from RGB‑D images and <span class="nobr">known CAD geometry</span>. 89% task success in 1,000 in‑house, fixed‑environment trials, moving <span class="nobr">five <span class="nobr">object types</span></span> <span class="nobr">into an empty container</span>.</p>
-<p class="links"><a class="cta" href="/assets/video/bin-picking.mp4">Watch the demo</a></p>
+<div class="local">
+<div class="local-bar">
+<a class="local-name" href="/projects/bin-picking.html#overview">Bin picking</a>
+<nav aria-label="Bin picking">
+<a href="/projects/bin-picking.html#overview">Overview</a>
+<a href="/projects/bin-picking.html#approach">Approach</a>
+<a href="/projects/bin-picking.html#results">Results</a>
+<a href="/projects/bin-picking.html#stack">Stack</a>
+</nav>
+</div>
+</div>
+<header class="project-hero" id="overview">
+<p class="kicker">PLAIF · Computer Vision Engineer · Jan 2023 – Apr 2024</p>
+<h1>Estimating picking poses from RGB‑D, at 89% task success.</h1>
+<p class="dek">RGB‑D images and known CAD geometry.</p>
+<p class="links"><a class="pill" href="/assets/video/bin-picking.mp4">Watch the demo</a></p>
 </header>
 <div class="project-media">
 <figure class="landscape">
-<video class="landscape" width="1280" height="720" muted loop playsinline preload="none" poster="/assets/video/bin-picking.jpg" aria-label="CAD-based bin picking">
+<video class="landscape" width="1280" height="720" muted loop playsinline preload="none" poster="/assets/video/bin-picking.jpg" aria-label="Silent. CAD-based bin picking">
 <source src="/assets/video/bin-picking.mp4" type="video/mp4">
 <a href="/assets/video/bin-picking.mp4">Watch the MP4</a>
 </video>
-<figcaption>Silent. A ring‑scan close‑up, then a Doosan cobot picking, then a green‑bin close‑up.</figcaption>
+<figcaption>A ring‑scan close‑up, then a Doosan cobot picking, then a green‑bin close‑up.</figcaption>
 </figure>
 </div>
-<div class="section section-paper">
+<section class="section" id="approach">
 <div class="prose">
-<h2>Problem</h2>
-<p>Estimate the picking poses.</p>
-<p>Using RGB‑D images of a bin.</p>
-<p>The objects have <span class="nobr">known CAD geometry</span>.</p>
 <h2>Approach</h2>
+<div class="approach-block">
+<p>I needed picking poses for objects with known CAD geometry.</p>
+</div>
+<div class="approach-block">
+<p>The source is RGB‑D images of a bin.</p>
+</div>
+<div class="approach-block">
 <p>I trained Mask R‑CNN (ResNet‑101) with separate "unoccluded" and "hole" classes. Hole masks are subtracted from object masks. The remaining instance masks segment the point cloud.</p>
 <p>Visible‑surface CAD templates for each pick pose are built by hidden‑point removal, then fit to the segmented points with PCA initialization and point‑to‑point ICP.</p>
 <p>Each fit is checked model‑to‑scene and scene‑to‑model. Poses are filtered by registration fitness, inlier RMSE, and a combined score. Candidates are ranked. Poses are transformed into the robot base with the camera extrinsics.</p>
+</div>
+</div>
+</section>
+<section class="section section-paper" id="results">
+<div class="prose">
 <h2>Results</h2>
-<p>Task success was 89% in 1,000 in‑house, fixed‑environment trials, moving <span class="nobr">five <span class="nobr">object types</span></span> <span class="nobr">into an empty container</span>.</p>
+<table class="spec">
+<tr><th scope="row">Task success</th><td>89%</td></tr>
+<tr><th scope="row">Trials</th><td>1,000, in‑house, fixed environment</td></tr>
+<tr><th scope="row">Objects</th><td>Five types, into an empty container</td></tr>
+</table>
+</div>
+</section>
+<section class="section" id="stack">
+<div class="prose">
 <h2>Stack</h2>
-<p class="stack">Mask R‑CNN, ResNet‑101, PCA, point‑to‑point ICP.</p>
+<ul class="tech">
+<li>Mask R‑CNN</li>
+<li>ResNet‑101</li>
+<li>PCA</li>
+<li>point‑to‑point ICP</li>
+</ul>
 </div>
+</section>
+<section class="section section-paper">
 <nav class="pager" aria-label="Adjacent projects">
-<a class="pager-prev" href="/projects/cad-free-assembly.html"><span class="pager-label">Previous</span><span class="pager-name">CAD‑free Auto Assembly</span></a>
-<a class="pager-next" href="/projects/ros-6d-vision.html"><span class="pager-label">Next</span><span class="pager-name">ROS 6D Vision Server and Hand‑Eye Calibration Tools</span></a>
+<a class="pager-prev" href="/projects/cad-free-assembly.html"><span class="pager-label">Previous</span><span class="pager-name">Estimating 6D tool poses for assembly, at 93% task success.</span></a>
+<a class="pager-next" href="/projects/ros-6d-vision.html"><span class="pager-label">Next</span><span class="pager-name">Serving 6D poses over ROS, with eye‑to‑hand calibration tools.</span></a>
 </nav>
-<p class="back"><a class="cta" href="/#work">Selected work</a></p>
-</div>
+<p class="back"><a href="/#work">Selected work</a></p>
+</section>
 </main>
 <footer class="colophon">
-<p class="quiet">Jaewoo Choi</p>
-<p class="links"><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></p>
+<div class="colophon-inner">
+<nav class="dir" aria-label="Directory"><a href="/#work">Work</a><a href="/#experience">Experience</a><a href="/#patent">Patent</a><a href="/#awards">Awards</a></nav>
+<nav class="dir" aria-label="Contact"><a href="mailto:iam.jaewoochoi@gmail.com">Email</a><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></nav>
+<hr class="dir-rule">
+<p>© Jaewoo Choi</p>
+</div>
 </footer>
 <script>
 (function () {
+  var header = document.querySelector(".nav");
+  var btn = document.querySelector(".nav-toggle");
+  if (header && btn) {
+    btn.addEventListener("click", function () {
+      var open = header.classList.toggle("is-open");
+      document.body.classList.toggle("nav-open", open);
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.setAttribute("aria-label", open ? "Close" : "Menu");
+    });
+    header.querySelectorAll(".nav-links a").forEach(function (a) {
+      a.addEventListener("click", function () {
+        header.classList.remove("is-open");
+        document.body.classList.remove("nav-open");
+        btn.setAttribute("aria-expanded", "false");
+        btn.setAttribute("aria-label", "Menu");
+      });
+    });
+  }
   var videos = document.querySelectorAll("video");
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   videos.forEach(function (v) {
