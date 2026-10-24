@@ -244,9 +244,9 @@ main {
 }
 
 .lede-wrap {
-  width: min(40rem, 100%);
+  width: min(46rem, 100%);
   margin-top: 0.85rem;
-  text-align: left;
+  text-align: center;
 }
 
 .lede {
@@ -255,6 +255,13 @@ main {
   line-height: 1.47;
   font-weight: 400;
   letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+
+@media (max-width: 390px) {
+  .lede {
+    font-size: 15px;
+  }
 }
 
 .contact-row {
@@ -262,7 +269,7 @@ main {
   flex-wrap: wrap;
   gap: 0.35rem 1.15rem;
   margin: 0.85rem 0 0;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .contact-row a {
@@ -300,14 +307,26 @@ main {
   margin-top: 1rem;
 }
 
-.hero figure {
+.hero figure.portrait {
+  width: auto;
+  max-width: min(26rem, 100%);
   margin: 1.1rem auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hero video.portrait {
   width: auto;
+  height: auto;
   max-width: min(26rem, 78vw);
   max-height: min(52vh, 640px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero figcaption {
+  text-align: center;
 }
 
 .links {
