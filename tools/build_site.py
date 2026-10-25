@@ -1435,29 +1435,8 @@ def harden_html(doc):
 
 
 def main():
-    pages = {
-        "index.html": home_page("en"),
-        "404.html": not_found_page(),
-    }
-    for project in PROJECTS:
-        pages[f"projects/{project['slug']}.html"] = project_page(project, "en")
-    ko_dir = ROOT / "ko"
-    if PUBLISH_KO:
-        pages["ko/index.html"] = home_page("ko")
-        for project in PROJECTS:
-            pages[f"ko/projects/{project['slug']}.html"] = project_page(project, "ko")
-    elif ko_dir.exists():
-        shutil.rmtree(ko_dir)
-        print("removed ko/")
-    for rel, text in pages.items():
-        path = ROOT / rel
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(harden_html(text), encoding="utf-8")
-        print("wrote", rel)
-    sitemap = ROOT / "sitemap.xml"
-    if sitemap.exists():
-        sitemap.unlink()
-        print("removed sitemap.xml")
+    from renew import write_all
+    write_all()
 
 
 if __name__ == "__main__":
