@@ -7,35 +7,30 @@
 <meta name="description" content="Open-set obstacles go into an occupancy grid. The pipeline runs on production RT100, with TensorRT on Jetson Nano.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#133621">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ffffff">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/orchard-obstacle-mapping.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/orchard-obstacle-mapping.html">
 <link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/orchard-obstacle-mapping.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Young+Serif:wght@400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css">
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
 <header class="bar">
-<a class="wordmark" href="/">Jaewoo Choi</a>
+<a class="wordmark rise" style="--d:0ms" href="/">Jaewoo Choi</a>
 <nav aria-label="Sections">
-<a href="/#work">Work</a>
-<a href="/#record">Record</a>
-<a href="/#practice">Practice</a>
+<a class="rise" style="--d:30ms" href="/#work">Work</a>
+<a class="rise" style="--d:50ms" href="/#record">Record</a>
+<a class="rise" style="--d:70ms" href="/#practice">Practice</a>
 </nav>
-<p class="bar-links">
-<a href="mailto:iam.jaewoochoi@gmail.com">Email</a>
-<a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a>
-<a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a>
-<a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a>
-</p>
 </header>
 <main id="content">
 <article class="project">
+<div class="project-top">
 <div class="project-copy">
 <h1>Obstacle maps</h1>
 <p class="meta rise" style="--d:40ms">Daedong AILab. Senior AI Researcher. May 2024 – present.</p>
@@ -47,11 +42,12 @@
 <p class="action"><a class="btn" href="mailto:iam.jaewoochoi@gmail.com">Email Jaewoo</a></p>
 </div>
 <figure class="project-media">
-<video width="540" height="960" muted loop playsinline autoplay preload="metadata" poster="/assets/video/strawberry-ces2025.jpg" aria-label="Silent. Flower thinning at the CES 2025 booth">
+<video width="540" height="960" muted playsinline preload="metadata" controls poster="/assets/video/strawberry-ces2025.jpg" aria-label="Silent. Flower thinning at the CES 2025 booth">
 <source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
 </video>
 <figcaption>Another filmed trial. Flower thinning at the CES 2025 booth.</figcaption>
 </figure>
+</div>
 <section class="block"><h2 class="rise" style="--d:30ms">Problem</h2><div class="prose"><p class="rise" style="--d:50ms">Orchard robots must recognize open‑set obstacles and turn them into a navigable map under embedded compute limits.</p></div></section>
 <section class="block"><h2 class="rise" style="--d:30ms">Approach</h2><div class="prose split"><div><p class="rise" style="--d:50ms">I pre‑trained the adapter, neck, and segmentation head on multiple datasets over frozen DINOv2 and SigLIP2 encoders, with region‑text alignment for instance and semantic segmentation.</p>
 <p class="rise" style="--d:50ms">The model takes text prompts at inference and can run with a fixed vocabulary. I adapted it to the orchard domain.</p></div><div>
@@ -66,20 +62,14 @@
 </article>
 </main>
 <footer class="foot">
-<div class="back">
-<div>
-<h2>Write about a robot or a role.</h2>
-<p><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></p>
-</div>
-<div class="back-links">
-<p><a href="mailto:iam.jaewoochoi@gmail.com">Email</a></p>
-<p><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a></p>
-<p><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a></p>
-<p><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></p>
-<img src="/assets/frames/strawberry-close.jpg" alt="A closer view of flower thinning at the CES 2025 booth." width="1280" height="720">
-</div>
-<p class="legal">© Jaewoo Choi</p>
-</div>
+<p class="rise" style="--d:40ms">Robot vision, measured.</p>
+<p class="foot-links rise" style="--d:60ms">
+<a href="mailto:iam.jaewoochoi@gmail.com">Email</a>
+<a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a>
+<a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a>
+<a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a>
+</p>
+<p class="rise" style="--d:80ms">© Jaewoo Choi</p>
 </footer>
 <script>
 (function () {

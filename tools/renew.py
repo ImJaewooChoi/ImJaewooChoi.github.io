@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Lab one-sheet. Facts come from build_site.
+"""Quiet research ledger. Facts come from build_site.
 
-Direction: page-is-the-object, seed 1417602017 (Young Serif / Source Serif 4,
-bottle green and gold). The artefact is a research index, so the dealt hero
-(striped-card-beside-room), book-spine index, tilted guest list, and visit
-card are not built: each one hides the measured record or asks for a phone
-and a street. The stripe on the sheet is the dealt ornament, kept short.
+Direction: quiet-instrument, seed 398551681 (Albert Sans, sheet and biro).
+The dealt hero is two doors on a dark wall, and the ledger blueprint is a
+560px column with a hover preview. Neither can hold this record: the owner
+asked for a white page, and the first screen has to show the name, the role,
+eight dated results, the patent and Kaggle lines, and the contact links.
+Pictures sit below that, smaller, with no crossfade.
 """
 
 import shutil
@@ -34,7 +35,7 @@ from build_site import (
 FONT = (
     '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
     '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-    '<link href="https://fonts.googleapis.com/css2?family=Young+Serif:wght@400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">'
+    '<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600&display=swap" rel="stylesheet">'
 )
 
 # Employment is the only date the CV gives a project. Present has not ended,
@@ -162,8 +163,8 @@ def head(title, desc, path):
 <meta name="description" content="{esc(desc)}">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#133621">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ffffff">
 <link rel="canonical" href="{esc(canonical)}">
 <link rel="alternate" hreflang="en" href="{esc(canonical)}">
 <link rel="alternate" hreflang="x-default" href="{esc(canonical)}">
@@ -188,28 +189,15 @@ def document(title, desc, path, body):
 
 
 def bar(home=False):
-    name = '<a class="wordmark" href="/">Jaewoo Choi</a>'
-    if home:
-        name = '<a class="wordmark" href="/">Jaewoo Choi</a>'
+    _ = home
     return f"""<header class="bar">
-{name}
+<a class="wordmark rise" style="--d:0ms" href="/">Jaewoo Choi</a>
 <nav aria-label="Sections">
-<a href="/#work">Work</a>
-<a href="/#record">Record</a>
-<a href="/#practice">Practice</a>
+<a class="rise" style="--d:30ms" href="/#work">Work</a>
+<a class="rise" style="--d:50ms" href="/#record">Record</a>
+<a class="rise" style="--d:70ms" href="/#practice">Practice</a>
 </nav>
-<p class="bar-links">
-<a href="mailto:{esc(EMAIL)}">Email</a>
-<a href="{esc(GITHUB)}" rel="me">GitHub</a>
-<a href="{esc(KAGGLE)}" rel="me">Kaggle</a>
-<a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a>
-</p>
 </header>"""
-
-
-def stripe():
-    bars = "".join("<span></span>" for _ in range(72))
-    return f'<div class="stripe" aria-hidden="true">{bars}</div>'
 
 
 def work_index():
@@ -251,30 +239,30 @@ def work_index():
 def home_page():
     films = f"""<section class="films" id="films">
 <h2>Filmed trials</h2>
-<div class="film-grid">
-<div class="well">
-<img src="/assets/frames/strawberry-booth.jpg" alt="Flower thinning at the CES 2025 booth." width="1280" height="720">
-<img src="/assets/frames/cad-room.jpg" alt="UR arm with a gripper and wrist camera, assembling a part on a fixture." width="1280" height="720">
-<img src="/assets/frames/bin-arm.jpg" alt="A Doosan cobot during CAD-based bin picking." width="1280" height="720">
-</div>
 <figure class="clip">
-<video width="540" height="960" muted loop playsinline autoplay preload="metadata" poster="/assets/video/strawberry-ces2025.jpg" aria-label="Silent. Flower thinning at the CES 2025 booth">
+<video width="540" height="960" muted playsinline preload="metadata" controls poster="/assets/video/strawberry-ces2025.jpg" aria-label="Silent. Flower thinning at the CES 2025 booth">
 <source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
 </video>
 <figcaption>Flower thinning at the CES 2025 booth.</figcaption>
 </figure>
-</div>
 {stills()}
 </section>"""
     body = f"""{bar(home=True)}
 <main id="content">
 <section class="sheet">
-{stripe()}
-<div class="sheet-body">
 <div class="identity">
 <h1>Jaewoo Choi</h1>
 <p class="role">Senior AI Researcher, Daedong AILab, since May 2024</p>
 <p class="focus">{esc(FOCUS)}</p>
+</div>
+<div class="reach">
+<a class="btn" href="mailto:{esc(EMAIL)}">Email Jaewoo</a>
+<p class="socials">
+<a href="{esc(GITHUB)}" rel="me">GitHub</a>
+<a href="{esc(KAGGLE)}" rel="me">Kaggle</a>
+<a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a>
+</p>
+<a class="mail" href="mailto:{esc(EMAIL)}">{esc(EMAIL)}</a>
 </div>
 <div class="index" id="work">
 <h2>Work</h2>
@@ -289,16 +277,6 @@ def home_page():
 <li class="rise" style="--d:130ms"><a href="{esc(WHALE)}">Happywhale</a>, bronze, 127/1,588, Apr 2022. Whale and Dolphin Identification.</li>
 <li class="rise" style="--d:160ms">Code: <a href="{esc(GITHUB)}" rel="me">GitHub</a>, <a href="{esc(MATCH)}">Image Matching</a>, <a href="{esc(WHALE)}">Happywhale</a>.</li>
 </ul>
-</div>
-<div class="reach">
-<a class="btn" href="mailto:{esc(EMAIL)}">Email Jaewoo</a>
-<p class="socials">
-<a href="{esc(GITHUB)}" rel="me">GitHub</a>
-<a href="{esc(KAGGLE)}" rel="me">Kaggle</a>
-<a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a>
-</p>
-<a class="mail" href="mailto:{esc(EMAIL)}">{esc(EMAIL)}</a>
-</div>
 </div>
 </section>
 {films}
@@ -328,20 +306,14 @@ def home_page():
 
 def footer():
     return f"""<footer class="foot">
-<div class="back">
-<div>
-<h2>Write about a robot or a role.</h2>
-<p><a href="mailto:{esc(EMAIL)}">{esc(EMAIL)}</a></p>
-</div>
-<div class="back-links">
-<p><a href="mailto:{esc(EMAIL)}">Email</a></p>
-<p><a href="{esc(GITHUB)}" rel="me">GitHub</a></p>
-<p><a href="{esc(KAGGLE)}" rel="me">Kaggle</a></p>
-<p><a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a></p>
-<img src="/assets/frames/strawberry-close.jpg" alt="A closer view of flower thinning at the CES 2025 booth." width="1280" height="720">
-</div>
-<p class="legal">© Jaewoo Choi</p>
-</div>
+<p class="rise" style="--d:40ms">Robot vision, measured.</p>
+<p class="foot-links rise" style="--d:60ms">
+<a href="mailto:{esc(EMAIL)}">Email</a>
+<a href="{esc(GITHUB)}" rel="me">GitHub</a>
+<a href="{esc(KAGGLE)}" rel="me">Kaggle</a>
+<a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a>
+</p>
+<p class="rise" style="--d:80ms">© Jaewoo Choi</p>
 </footer>"""
 
 
@@ -423,7 +395,7 @@ def project_page(project):
         src = f"/assets/video/{v['file']}.mp4"
         poster = f"/assets/video/{v['file']}.jpg"
         media = f"""<figure class="project-media">
-<video width="{v['w']}" height="{v['h']}" muted loop playsinline autoplay preload="metadata" poster="{esc(poster)}" aria-label="{esc(v['label']['en'])}">
+<video width="{v['w']}" height="{v['h']}" muted playsinline preload="metadata" controls poster="{esc(poster)}" aria-label="{esc(v['label']['en'])}">
 <source src="{esc(src)}" type="video/mp4">
 </video>
 <figcaption>{esc(v['cap']['en'])}</figcaption>
@@ -432,7 +404,7 @@ def project_page(project):
         # Pages without their own film still carry one labeled clip from the trials.
         v = VIDEOS["strawberry"]
         media = f"""<figure class="project-media">
-<video width="{v['w']}" height="{v['h']}" muted loop playsinline autoplay preload="metadata" poster="/assets/video/strawberry-ces2025.jpg" aria-label="{esc(v['label']['en'])}">
+<video width="{v['w']}" height="{v['h']}" muted playsinline preload="metadata" controls poster="/assets/video/strawberry-ces2025.jpg" aria-label="{esc(v['label']['en'])}">
 <source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
 </video>
 <figcaption>Another filmed trial. {esc(v['cap']['en'])}</figcaption>
@@ -440,6 +412,7 @@ def project_page(project):
     body = f"""{bar()}
 <main id="content">
 <article class="project">
+<div class="project-top">
 <div class="project-copy">
 <h1>{esc(title)}</h1>
 <p class="meta rise" style="--d:40ms">{esc(group['org'])}. {esc(group['role']['en'])}. {esc(group['when']['en'])}.</p>
@@ -448,6 +421,7 @@ def project_page(project):
 <p class="action"><a class="btn" href="mailto:{esc(EMAIL)}">Email Jaewoo</a></p>
 </div>
 {media}
+</div>
 {split_sections(project)}
 <section class="films">
 <h2>Filmed trials</h2>
@@ -463,8 +437,18 @@ def not_found_page():
     body = f"""{bar()}
 <main id="content" class="missing">
 <h1>Not found</h1>
-<p>The address does not match a project or a section.</p>
-<p><a class="btn" href="/">Back to the sheet</a></p>
+<p class="rise" style="--d:40ms">The address does not match a project or a section.</p>
+<p class="action rise" style="--d:55ms"><a class="btn" href="/">Back to the index</a></p>
+<section class="films">
+<h2 class="rise" style="--d:70ms">Filmed trials</h2>
+<figure class="clip rise" style="--d:90ms">
+<video class="rise" style="--d:110ms" width="540" height="960" muted playsinline preload="metadata" controls poster="/assets/video/strawberry-ces2025.jpg" aria-label="Silent. Flower thinning at the CES 2025 booth">
+<source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
+</video>
+<figcaption>Flower thinning at the CES 2025 booth.</figcaption>
+</figure>
+{stills()}
+</section>
 </main>"""
     return document("Page not found", "This address is not on the site.", "/404.html", body)
 
