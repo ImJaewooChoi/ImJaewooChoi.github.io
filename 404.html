@@ -7,17 +7,16 @@
 <meta name="description" content="This address is not on the site.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<meta name="color-scheme" content="light">
-<meta name="theme-color" content="#ff7a1f">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#133621">
 <link rel="canonical" href="https://imjaewoochoi.github.io/404.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/404.html">
 <link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/404.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif:wght@400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css">
-<script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
@@ -25,34 +24,33 @@
 <a class="wordmark" href="/">Jaewoo Choi</a>
 <nav aria-label="Sections">
 <a href="/#work">Work</a>
-<a href="/#write">Write</a>
+<a href="/#record">Record</a>
+<a href="/#practice">Practice</a>
 </nav>
-</header>
-<main id="content" class="missing">
-<h1>Not found</h1>
-<p>This address is not on the site.</p>
-<a class="btn" href="/">Back to the trials</a>
-</main>
-<footer class="foot">
-<div class="foot-photo">
-<img src="/assets/frames/strawberry-close.jpg" alt="A closer view of flower thinning at the CES 2025 booth.">
-</div>
-<div class="foot-menu">
-<a class="wordmark" href="/">Jaewoo Choi</a>
-<ul class="menu">
-<li><a href="/#trials" data-rise style="--d:0ms">Trials</a></li>
-<li><a href="/#record" data-rise style="--d:50ms">Record</a></li>
-<li><a href="/#work" data-rise style="--d:100ms">Work</a></li>
-<li><a href="/#practice" data-rise style="--d:150ms">Practice</a></li>
-<li><a href="/#write" data-rise style="--d:200ms">Write</a></li>
-</ul>
-<div class="foot-meta">
-<p><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></p>
-<p>
+<p class="bar-links">
+<a href="mailto:iam.jaewoochoi@gmail.com">Email</a>
 <a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a>
 <a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a>
 <a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a>
 </p>
+</header>
+<main id="content" class="missing">
+<h1>Not found</h1>
+<p>The address does not match a project or a section.</p>
+<p><a class="btn" href="/">Back to the sheet</a></p>
+</main>
+<footer class="foot">
+<div class="back">
+<div>
+<h2>Write about a robot or a role.</h2>
+<p><a href="mailto:iam.jaewoochoi@gmail.com">iam.jaewoochoi@gmail.com</a></p>
+</div>
+<div class="back-links">
+<p><a href="mailto:iam.jaewoochoi@gmail.com">Email</a></p>
+<p><a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a></p>
+<p><a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a></p>
+<p><a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a></p>
+<img src="/assets/frames/strawberry-close.jpg" alt="A closer view of flower thinning at the CES 2025 booth." width="1280" height="720">
 </div>
 <p class="legal">© Jaewoo Choi</p>
 </div>
@@ -60,63 +58,14 @@
 <script>
 (function () {
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var stage = document.querySelector(".stage");
-  if (stage && "IntersectionObserver" in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        var n = entry.target.getAttribute("data-stage");
-        stage.classList.toggle("is-2", n === "2");
-        stage.classList.toggle("is-3", n === "3");
-      });
-    }, { rootMargin: "-45% 0px -45% 0px", threshold: [0, 0.25] });
-    stage.querySelectorAll("[data-stage]").forEach(function (m) { io.observe(m); });
-  }
-  var links = document.querySelectorAll(".names a");
-  var imgs = document.querySelectorAll(".square img");
-  var fig = document.querySelector(".square-figure");
-  var left = document.querySelector(".fact-l");
-  var right = document.querySelector(".fact-r");
-  function showWork(a) {
-    var id = a.getAttribute("data-img") || "";
-    imgs.forEach(function (img) {
-      img.classList.toggle("is-on", id !== "" && img.getAttribute("data-for") === id);
-    });
-    if (fig) fig.textContent = id ? "" : (a.getAttribute("data-fig") || "");
-    if (left) left.textContent = a.getAttribute("data-left") || "";
-    if (right) right.textContent = a.getAttribute("data-right") || "";
-    links.forEach(function (x) { x.classList.toggle("is-current", x === a); });
-  }
-  if (links.length && "IntersectionObserver" in window) {
-    var nio = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) showWork(entry.target);
-      });
-    }, { rootMargin: "-46% 0px -46% 0px", threshold: 0 });
-    links.forEach(function (a) {
-      nio.observe(a);
-      a.addEventListener("focus", function () { showWork(a); });
-      a.addEventListener("mouseenter", function () { showWork(a); });
-    });
-  }
   document.querySelectorAll("video").forEach(function (v) {
     v.muted = true;
-    v.removeAttribute("autoplay");
-    if (reduce) v.controls = true;
+    if (reduce) {
+      v.removeAttribute("autoplay");
+      v.pause();
+      v.controls = true;
+    }
   });
-  if (reduce || !("IntersectionObserver" in window)) return;
-  var vio = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      var v = entry.target;
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
-        var pending = v.play();
-        if (pending && pending.catch) pending.catch(function () {});
-      } else {
-        v.pause();
-      }
-    });
-  }, { threshold: [0, 0.25, 0.6] });
-  document.querySelectorAll("video").forEach(function (v) { vio.observe(v); });
 })();
 </script>
 </body>

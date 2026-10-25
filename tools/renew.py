@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Pinned-poster pages. Facts come from build_site; the sheet drives the form."""
+"""Lab one-sheet. Facts come from build_site.
+
+Direction: page-is-the-object, seed 1417602017 (Young Serif / Source Serif 4,
+bottle green and gold). The artefact is a research index, so the dealt hero
+(striped-card-beside-room), book-spine index, tilted guest list, and visit
+card are not built: each one hides the measured record or asks for a phone
+and a street. The stripe on the sheet is the dealt ornament, kept short.
+"""
 
 import shutil
 
@@ -27,45 +34,37 @@ from build_site import (
 FONT = (
     '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
     '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-    '<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">'
+    '<link href="https://fonts.googleapis.com/css2?family=Young+Serif:wght@400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">'
 )
 
-MARQUEE = [
-    "Transplanting",
-    "Flower thinning",
-    "Runner handling",
-    "Assembly",
-    "Bin picking",
-    "Patent 10-2694987",
-    "UBC-OCEAN",
-    "Image Matching",
-    "Happywhale",
-]
-
-# Short names for the held square. Facts are the measured ones.
-WORK = [
-    ("strawberry-cultivation", "Strawberry", "strawberry", "Imitation learning", "93.8%", ""),
-    ("cad-free-assembly", "Assembly", "assembly", "6D pose", "93%", ""),
-    ("bin-picking", "Bin picking", "bin", "RGB-D", "89%", ""),
-    ("language-distilled-segmentation", "Orchard", "", "RT100", "Training only", "RT100"),
-    ("orchard-obstacle-mapping", "Obstacles", "", "Occupancy grid", "Jetson Nano", "Jetson"),
-    ("auto-labeling", "Labeling", "", "Auto-labeling", "USD 0.036", "0.036"),
-    ("ros-6d-vision", "ROS vision", "", "Eye to hand", "6D", "6D"),
-    ("license-plate", "Plates", "", "Detection", "OCR", "OCR"),
-]
-
-FRAMES = {
-    "strawberry": "/assets/frames/strawberry-booth.jpg",
-    "assembly": "/assets/frames/cad-room.jpg",
-    "bin": "/assets/frames/bin-arm.jpg",
+# Employment is the only date the CV gives a project. Present has not ended,
+# so it sorts ahead of every finished role. Projects that share a period keep
+# the order they already have in PROJECTS: nothing in the content ends one
+# of them later than the others.
+_END = {
+    "daedong": (9999, 12),
+    "plaif": (2024, 4),
+    "fs": (2022, 12),
+}
+_START = {
+    "daedong": (2024, 5),
+    "plaif": (2023, 1),
+    "fs": (2022, 5),
 }
 
-STILLS = [
-    ("strawberry-cultivation", "CES booth", "/assets/frames/strawberry-booth.jpg", "Flower thinning at the CES 2025 booth."),
-    ("strawberry-cultivation", "Close view", "/assets/frames/strawberry-close.jpg", "A closer view of flower thinning at the CES 2025 booth."),
-    ("cad-free-assembly", "Assembly", "/assets/frames/cad-room.jpg", "UR arm with a gripper and wrist camera, assembling a part on a fixture."),
-    ("bin-picking", "Bin picking", "/assets/frames/bin-arm.jpg", "A Doosan cobot during CAD-based bin picking."),
-]
+FOCUS = "Perception for robots that leave the lab."
+
+# Kept to one line on a 390px screen. The project pages carry the full sentences.
+RESULT = {
+    "strawberry-cultivation": "93.8% / 87.5% / 65%, 1,000 trials. CES 2025.",
+    "cad-free-assembly": "93% success, 1,000 trials. Patent 10-2694987.",
+    "bin-picking": "89% success, 1,000 trials, five object types.",
+    "language-distilled-segmentation": "Production RT100. Teacher is training-only.",
+    "orchard-obstacle-mapping": "Occupancy grid on RT100, Jetson Nano.",
+    "auto-labeling": "About USD 1.05 to about 0.036 (96.6%).",
+    "ros-6d-vision": "Base and camera-frame poses over ROS.",
+    "license-plate": "Detection locates the plate. OCR reads it.",
+}
 
 HEADS = {
     "strawberry-cultivation": "Strawberry tasks",
@@ -76,17 +75,6 @@ HEADS = {
     "auto-labeling": "Labeling cost",
     "ros-6d-vision": "Poses over ROS",
     "license-plate": "License plates",
-}
-
-LEADS = {
-    "strawberry-cultivation": "Three strawberry tasks, learned from UMI demonstrations and Diffusion Policy.",
-    "cad-free-assembly": "6D tool poses from a 2D camera, with no CAD model of the part.",
-    "bin-picking": "Picking poses from RGB-D images and known CAD geometry.",
-    "language-distilled-segmentation": "Instance masks for the RT100. The language teacher is used only while training.",
-    "orchard-obstacle-mapping": "Open-set obstacles go into an occupancy grid on the production RT100.",
-    "auto-labeling": "Point prompts become tracked masks. Region-grounded captions follow.",
-    "ros-6d-vision": "A ROS action server returns robot-base and camera-frame poses.",
-    "license-plate": "Object detection locates the plate. OCR reads the letters and digits.",
 }
 
 FIGURES = {
@@ -130,66 +118,37 @@ FIGURES = {
     ],
 }
 
+STILLS = [
+    ("strawberry-cultivation", "CES booth", "/assets/frames/strawberry-booth.jpg", "Flower thinning at the CES 2025 booth."),
+    ("strawberry-cultivation", "Close view", "/assets/frames/strawberry-close.jpg", "A closer view of flower thinning at the CES 2025 booth."),
+    ("cad-free-assembly", "Assembly", "/assets/frames/cad-room.jpg", "UR arm with a gripper and wrist camera, assembling a part on a fixture."),
+    ("bin-picking", "Bin picking", "/assets/frames/bin-arm.jpg", "A Doosan cobot during CAD-based bin picking."),
+]
+
+GROUP_BY = {g["id"]: g for g in GROUPS}
+
+
+def ordered_projects():
+    indexed = list(enumerate(PROJECTS))
+    indexed.sort(key=lambda pair: (-_END[pair[1]["group"]][0], -_END[pair[1]["group"]][1], -_START[pair[1]["group"]][0], -_START[pair[1]["group"]][1], pair[0]))
+    return [project for _, project in indexed]
+
+
+def when_of(project):
+    return GROUP_BY[project["group"]]["when"]["en"]
+
+
 SCRIPT = """<script>
 (function () {
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var stage = document.querySelector(".stage");
-  if (stage && "IntersectionObserver" in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        var n = entry.target.getAttribute("data-stage");
-        stage.classList.toggle("is-2", n === "2");
-        stage.classList.toggle("is-3", n === "3");
-      });
-    }, { rootMargin: "-45% 0px -45% 0px", threshold: [0, 0.25] });
-    stage.querySelectorAll("[data-stage]").forEach(function (m) { io.observe(m); });
-  }
-  var links = document.querySelectorAll(".names a");
-  var imgs = document.querySelectorAll(".square img");
-  var fig = document.querySelector(".square-figure");
-  var left = document.querySelector(".fact-l");
-  var right = document.querySelector(".fact-r");
-  function showWork(a) {
-    var id = a.getAttribute("data-img") || "";
-    imgs.forEach(function (img) {
-      img.classList.toggle("is-on", id !== "" && img.getAttribute("data-for") === id);
-    });
-    if (fig) fig.textContent = id ? "" : (a.getAttribute("data-fig") || "");
-    if (left) left.textContent = a.getAttribute("data-left") || "";
-    if (right) right.textContent = a.getAttribute("data-right") || "";
-    links.forEach(function (x) { x.classList.toggle("is-current", x === a); });
-  }
-  if (links.length && "IntersectionObserver" in window) {
-    var nio = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) showWork(entry.target);
-      });
-    }, { rootMargin: "-46% 0px -46% 0px", threshold: 0 });
-    links.forEach(function (a) {
-      nio.observe(a);
-      a.addEventListener("focus", function () { showWork(a); });
-      a.addEventListener("mouseenter", function () { showWork(a); });
-    });
-  }
   document.querySelectorAll("video").forEach(function (v) {
     v.muted = true;
-    v.removeAttribute("autoplay");
-    if (reduce) v.controls = true;
+    if (reduce) {
+      v.removeAttribute("autoplay");
+      v.pause();
+      v.controls = true;
+    }
   });
-  if (reduce || !("IntersectionObserver" in window)) return;
-  var vio = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      var v = entry.target;
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
-        var pending = v.play();
-        if (pending && pending.catch) pending.catch(function () {});
-      } else {
-        v.pause();
-      }
-    });
-  }, { threshold: [0, 0.25, 0.6] });
-  document.querySelectorAll("video").forEach(function (v) { vio.observe(v); });
 })();
 </script>"""
 
@@ -203,15 +162,14 @@ def head(title, desc, path):
 <meta name="description" content="{esc(desc)}">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<meta name="color-scheme" content="light">
-<meta name="theme-color" content="#ff7a1f">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#133621">
 <link rel="canonical" href="{esc(canonical)}">
 <link rel="alternate" hreflang="en" href="{esc(canonical)}">
 <link rel="alternate" hreflang="x-default" href="{esc(canonical)}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 {FONT}
 <link rel="stylesheet" href="/assets/css/site.css">
-<script>document.documentElement.classList.add("js")</script>
 </head>"""
 
 
@@ -229,272 +187,284 @@ def document(title, desc, path, body):
 """
 
 
-def footer():
-    items = [
-        ("Trials", "/#trials"),
-        ("Record", "/#record"),
-        ("Work", "/#work"),
-        ("Practice", "/#practice"),
-        ("Write", "/#write"),
-    ]
-    menu = "\n".join(
-        f'<li><a href="{esc(href)}" data-rise style="--d:{i * 50}ms">{esc(label)}</a></li>'
-        for i, (label, href) in enumerate(items)
-    )
-    return f"""<footer class="foot">
-<div class="foot-photo">
-<img src="/assets/frames/strawberry-close.jpg" alt="A closer view of flower thinning at the CES 2025 booth.">
-</div>
-<div class="foot-menu">
-<a class="wordmark" href="/">Jaewoo Choi</a>
-<ul class="menu">
-{menu}
-</ul>
-<div class="foot-meta">
-<p><a href="mailto:{esc(EMAIL)}">{esc(EMAIL)}</a></p>
-<p>
+def bar(home=False):
+    name = '<a class="wordmark" href="/">Jaewoo Choi</a>'
+    if home:
+        name = '<a class="wordmark" href="/">Jaewoo Choi</a>'
+    return f"""<header class="bar">
+{name}
+<nav aria-label="Sections">
+<a href="/#work">Work</a>
+<a href="/#record">Record</a>
+<a href="/#practice">Practice</a>
+</nav>
+<p class="bar-links">
+<a href="mailto:{esc(EMAIL)}">Email</a>
 <a href="{esc(GITHUB)}" rel="me">GitHub</a>
 <a href="{esc(KAGGLE)}" rel="me">Kaggle</a>
 <a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a>
 </p>
+</header>"""
+
+
+def stripe():
+    bars = "".join("<span></span>" for _ in range(72))
+    return f'<div class="stripe" aria-hidden="true">{bars}</div>'
+
+
+def work_index():
+    chunks = []
+    current = None
+    delay = 0
+    for project in ordered_projects():
+        group = GROUP_BY[project["group"]]
+        if group["id"] != current:
+            current = group["id"]
+            chunks.append(f'<h3>{esc(group["org"])}</h3>')
+        slug = project["slug"]
+        delay += 30
+        chunks.append(
+            f'<li class="rise" style="--d:{delay}ms">'
+            f'<a href="{esc(project_href("en", slug))}">'
+            f'<span class="name">{esc(HEADS[slug])}</span>'
+            f'<span class="when">{esc(when_of(project))}</span>'
+            f'<span class="result">{esc(RESULT[slug])}</span>'
+            f"</a></li>"
+        )
+    # h3 siblings of li is invalid. Wrap each group.
+    grouped = []
+    bucket = []
+    heading = ""
+    for part in chunks:
+        if part.startswith("<h3>"):
+            if heading:
+                grouped.append(f"<div class=\"group\">{heading}<ul>{''.join(bucket)}</ul></div>")
+            heading = part
+            bucket = []
+        else:
+            bucket.append(part)
+    if heading:
+        grouped.append(f"<div class=\"group\">{heading}<ul>{''.join(bucket)}</ul></div>")
+    return "\n".join(grouped)
+
+
+def home_page():
+    films = f"""<section class="films" id="films">
+<h2>Filmed trials</h2>
+<div class="film-grid">
+<div class="well">
+<img src="/assets/frames/strawberry-booth.jpg" alt="Flower thinning at the CES 2025 booth." width="1280" height="720">
+<img src="/assets/frames/cad-room.jpg" alt="UR arm with a gripper and wrist camera, assembling a part on a fixture." width="1280" height="720">
+<img src="/assets/frames/bin-arm.jpg" alt="A Doosan cobot during CAD-based bin picking." width="1280" height="720">
+</div>
+<figure class="clip">
+<video width="540" height="960" muted loop playsinline autoplay preload="metadata" poster="/assets/video/strawberry-ces2025.jpg" aria-label="Silent. Flower thinning at the CES 2025 booth">
+<source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
+</video>
+<figcaption>Flower thinning at the CES 2025 booth.</figcaption>
+</figure>
+</div>
+{stills()}
+</section>"""
+    body = f"""{bar(home=True)}
+<main id="content">
+<section class="sheet">
+{stripe()}
+<div class="sheet-body">
+<div class="identity">
+<h1>Jaewoo Choi</h1>
+<p class="role">Senior AI Researcher, Daedong AILab, since May 2024</p>
+<p class="focus">{esc(FOCUS)}</p>
+</div>
+<div class="index" id="work">
+<h2>Work</h2>
+{work_index()}
+</div>
+<div class="record" id="record">
+<h2>Record</h2>
+<ul>
+<li class="rise" style="--d:40ms"><a href="{esc(project_href("en", "cad-free-assembly"))}">Patent 10-2694987</a>, Aug 2024. Co-inventor.</li>
+<li class="rise" style="--d:70ms">UBC-OCEAN, bronze, 83/1,326, Jan 2024.</li>
+<li class="rise" style="--d:100ms"><a href="{esc(MATCH)}">Image Matching Challenge 2022</a>, silver, 50/642.</li>
+<li class="rise" style="--d:130ms"><a href="{esc(WHALE)}">Happywhale</a>, bronze, 127/1,588, Apr 2022. Whale and Dolphin Identification.</li>
+<li class="rise" style="--d:160ms">Code: <a href="{esc(GITHUB)}" rel="me">GitHub</a>, <a href="{esc(MATCH)}">Image Matching</a>, <a href="{esc(WHALE)}">Happywhale</a>.</li>
+</ul>
+</div>
+<div class="reach">
+<a class="btn" href="mailto:{esc(EMAIL)}">Email Jaewoo</a>
+<p class="socials">
+<a href="{esc(GITHUB)}" rel="me">GitHub</a>
+<a href="{esc(KAGGLE)}" rel="me">Kaggle</a>
+<a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a>
+</p>
+<a class="mail" href="mailto:{esc(EMAIL)}">{esc(EMAIL)}</a>
+</div>
+</div>
+</section>
+{films}
+<section class="practice" id="practice">
+<h2>Practice</h2>
+<div class="practice-grid">
+<div class="prose">
+<p class="rise" style="--d:40ms">Open-vocabulary RGB-D segmentation, point-cloud and image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. Tested on deployed orchard robots and on manipulation robots.</p>
+<p class="rise" style="--d:80ms">Bachelor of Engineering, Industrial Management Systems Engineering, at Seokyeong University, Seoul, Mar 2016 to Aug 2022. Multidisciplinary major: Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies).</p>
+<p class="rise" style="--d:120ms">Co-inventor of Korean Patent 10-2694987, registered Aug 2024. Applicant PLAIF. The basis is the CAD-free assembly work. The registered title is: {esc(PATENT_TITLE)}</p>
+</div>
+<div>
+<h3>Roles</h3>
+<ul class="roles">
+<li><span>Daedong AILab, Senior AI Researcher</span><span>May 2024 to present</span></li>
+<li><span>PLAIF, Computer Vision Engineer</span><span>Jan 2023 to Apr 2024</span></li>
+<li><span>FS Solution Co., Ltd., Computer Vision Engineer</span><span>May 2022 to Dec 2022</span></li>
+</ul>
+</div>
+</div>
+</section>
+</main>"""
+    title = "Jaewoo Choi, Senior AI Researcher"
+    desc = "Senior AI Researcher at Daedong AILab. Perception for orchard robots and manipulation arms."
+    return document(title, desc, "/", body)
+
+
+def footer():
+    return f"""<footer class="foot">
+<div class="back">
+<div>
+<h2>Write about a robot or a role.</h2>
+<p><a href="mailto:{esc(EMAIL)}">{esc(EMAIL)}</a></p>
+</div>
+<div class="back-links">
+<p><a href="mailto:{esc(EMAIL)}">Email</a></p>
+<p><a href="{esc(GITHUB)}" rel="me">GitHub</a></p>
+<p><a href="{esc(KAGGLE)}" rel="me">Kaggle</a></p>
+<p><a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a></p>
+<img src="/assets/frames/strawberry-close.jpg" alt="A closer view of flower thinning at the CES 2025 booth." width="1280" height="720">
 </div>
 <p class="legal">© Jaewoo Choi</p>
 </div>
 </footer>"""
 
 
-def marquee():
-    bits = []
-    for name in MARQUEE:
-        bits.append(f"<span>{esc(name)}</span>")
-        bits.append('<span class="dot" aria-hidden="true"></span>')
-    seq = "".join(bits)
-    return f'<div class="marquee" aria-hidden="true"><div class="marquee-track">{seq}{seq}</div></div>'
-
-
-def home_page():
-    imgs = "\n".join(
-        f'<img src="{esc(src)}" alt="" data-for="{esc(key)}" width="1280" height="720"'
-        + (' class="is-on"' if key == "strawberry" else "")
-        + ">"
-        for key, src in FRAMES.items()
-    )
-    names = []
-    for i, (slug, name, img, left, right, fig) in enumerate(WORK):
-        names.append(
-            f'<li><a href="{esc(project_href("en", slug))}" data-img="{esc(img)}" '
-            f'data-left="{esc(left)}" data-right="{esc(right)}" data-fig="{esc(fig)}" '
-            f'data-rise style="--d:{i * 40}ms">{esc(name)}</a></li>'
-        )
-    body = f"""<main id="content">
-<section class="hero">
-<img class="hero-photo" src="/assets/frames/cad-room.jpg" alt="UR arm with a gripper and wrist camera, assembling a part on a fixture.">
-<div class="card">
-<h1><span>Robot</span><span>vision</span><span>trials</span></h1>
-<div class="card-facts" data-rise style="--d:40ms">
-<p>Daedong AILab</p>
-<p>Senior AI Researcher</p>
-<p>Since May 2024</p>
-</div>
-<p class="card-lead" data-rise style="--d:90ms">Jaewoo Choi builds perception for robots that leave the lab.</p>
-<div class="card-foot" data-rise style="--d:140ms">
-<p class="credit">UR arm, gripper, and wrist camera, on a fixture.</p>
-<a class="btn" href="#trials">Watch a trial</a>
-<a class="textlink" href="#write">Write</a>
-</div>
-</div>
-</section>
-<section class="stage" id="trials">
-<div class="markers" aria-hidden="true">
-<div data-stage="1"></div>
-<div data-stage="2"></div>
-<div data-stage="3"></div>
-</div>
-<div class="stage-sticky">
-<h2 class="half-a"><span class="s1">Three tasks</span><span class="s2">Fixed lab</span><span class="s3">CES 2025</span></h2>
-<div class="frame">
-<video width="540" height="960" muted loop playsinline preload="none" poster="/assets/video/strawberry-ces2025.jpg" aria-label="Silent. Flower thinning at the CES 2025 booth">
-<source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
-</video>
-</div>
-<p class="half-b"><span class="s2">A thousand trials</span><span class="s3">Flower thinning</span></p>
-<p class="stage-cap">Flower thinning at the CES 2025 booth. Transplanting 93.8%, flower thinning 87.5%, runner handling 65%, across 1,000 fixed-lab trials.</p>
-</div>
-</section>
-<section class="proof" id="record">
-<h2 data-rise style="--d:40ms">The measured record</h2>
-{marquee()}
-<p class="proof-line" data-rise style="--d:80ms">These names are the strawberry tasks, the assembly and picking trials, Korean Patent 10-2694987, and three Kaggle medals.</p>
-</section>
-<section class="work" id="work">
-<div class="work-stage">
-<p class="fact fact-l">Imitation learning</p>
-<div class="square">
-{imgs}
-<p class="square-figure"></p>
-</div>
-<p class="fact fact-r">93.8%</p>
-</div>
-<h2 data-rise style="--d:40ms">The work</h2>
-<ul class="names">
-{"".join(names)}
-</ul>
-</section>
-<section class="about" id="practice">
-<h2 data-rise style="--d:40ms">Practice</h2>
-<div class="about-row">
-<dl class="facts">
-<div><dt>Role</dt><dd>Senior AI Researcher, Daedong AILab</dd></div>
-<div><dt>Since</dt><dd>May 2024</dd></div>
-<div><dt>School</dt><dd>Seokyeong University, Seoul</dd></div>
-</dl>
-<div class="about-copy" data-rise style="--d:80ms">
-<p>Open-vocabulary RGB-D segmentation, point-cloud and image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. Tested on deployed orchard robots and on manipulation robots.</p>
-<p>Bachelor of Engineering, Industrial Management Systems Engineering, at Seokyeong University, Seoul, Mar 2016 to Aug 2022. Multidisciplinary major: Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies).</p>
-<p>Co-inventor of Korean Patent 10-2694987, registered Aug 2024. Applicant PLAIF. The basis is the CAD-free assembly work. The registered title is: {esc(PATENT_TITLE)}</p>
-</div>
-</div>
-<div class="record" data-rise style="--d:120ms">
-<h3>Roles</h3>
-<ul>
-<li><span>Daedong AILab, Senior AI Researcher</span><span class="when">May 2024 to present</span></li>
-<li><span>PLAIF, Computer Vision Engineer</span><span class="when">Jan 2023 to Apr 2024</span></li>
-<li><span>FS Solution Co., Ltd., Computer Vision Engineer</span><span class="when">May 2022 to Dec 2022</span></li>
-</ul>
-<div>
-<h3>Medals</h3>
-<ul>
-<li><span>UBC-OCEAN, bronze, team rank 83/1,326</span><span class="when">Jan 2024</span></li>
-<li><span><a href="{esc(MATCH)}">Image Matching Challenge 2022, silver, 50/642</a></span><span class="when">Jun 2022</span></li>
-<li><span><a href="{esc(WHALE)}">Happywhale, bronze, 127/1,588</a></span><span class="when">Apr 2022</span></li>
-</ul>
-<p>Happywhale is the Whale and Dolphin Identification competition.</p>
-</div>
-</div>
-</section>
-<section class="write" id="write">
-<h2 data-rise style="--d:40ms">Write about a robot or a role.</h2>
-<a class="email" href="mailto:{esc(EMAIL)}"><span>iam.jaewoochoi@</span><span>gmail.com</span></a>
-<div class="write-foot">
-<p>Seoul, South Korea</p>
-<p>
-<a href="{esc(GITHUB)}" rel="me">GitHub</a>
-<a href="{esc(KAGGLE)}" rel="me">Kaggle</a>
-<a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a>
-</p>
-</div>
-</section>
-</main>"""
-    title = "Jaewoo Choi, robot vision trials"
-    desc = "Jaewoo Choi builds perception for robots that leave the lab."
-    return document(title, desc, "/", body)
-
-
-def bar():
-    return """<header class="bar">
-<a class="wordmark" href="/">Jaewoo Choi</a>
-<nav aria-label="Sections">
-<a href="/#work">Work</a>
-<a href="/#write">Write</a>
-</nav>
-</header>"""
-
-
 def stills():
     items = []
-    for slug, label, src, alt in STILLS:
+    for i, (slug, label, src, alt) in enumerate(STILLS):
         items.append(
-            f'<li><a href="{esc(project_href("en", slug))}">'
+            f'<li class="rise" style="--d:{i * 40}ms"><a href="{esc(project_href("en", slug))}">'
             f'<img src="{esc(src)}" alt="{esc(alt)}" width="1280" height="720">'
             f"<span>{esc(label)}</span></a></li>"
         )
-    return f"""<section class="stills">
-<h2>Filmed trials</h2>
-<ul class="still-row">
-{"".join(items)}
-</ul>
-</section>"""
+    return f'<ul class="stills">{"".join(items)}</ul>'
 
 
 def figures(slug):
     rows = FIGURES.get(slug) or []
-    if not rows:
-        return ""
     items = "\n".join(
-        f"<li data-rise style=\"--d:{i * 40}ms\"><strong>{esc(value)}</strong><span>{esc(label)}</span></li>"
+        f'<li class="rise" style="--d:{i * 40}ms"><strong>{esc(value)}</strong><span>{esc(label)}</span></li>'
         for i, (value, label) in enumerate(rows)
     )
     return f'<ul class="figures">\n{items}\n</ul>'
 
 
+def split_sections(project):
+    blocks = []
+    sections = list(project["sections"]["en"])
+    if project["slug"] == "cad-free-assembly":
+        sections.append((
+            "Patent",
+            f"<p>Korean Patent 10-2694987, registered Aug 2024. Applicant PLAIF. Co-inventor. The registered title is: {esc(PATENT_TITLE)}</p>",
+        ))
+    for heading, html in sections:
+        paras = html if isinstance(html, str) else ""
+        # Two columns when a section has more than one paragraph, so the
+        # right side of a wide screen is part of the same section.
+        parts = [p for p in paras.split("</p>") if p.strip()]
+        marked = paras.replace("<p>", '<p class="rise" style="--d:50ms">')
+        if len(parts) >= 2:
+            bits = [p for p in marked.split("</p>") if p.strip()]
+            mid = (len(bits) + 1) // 2
+            left = "</p>".join(bits[:mid]) + "</p>"
+            right = "</p>".join(bits[mid:]) + "</p>"
+            prose = f'<div class="prose split"><div>{left}</div><div>{right}</div></div>'
+        else:
+            prose = f'<div class="prose">{marked}</div>'
+        blocks.append(
+            f'<section class="block"><h2 class="rise" style="--d:30ms">{esc(heading)}</h2>{prose}</section>'
+        )
+    return "\n".join(blocks)
+
+
+def pager(project):
+    projects = ordered_projects()
+    idx = next(i for i, item in enumerate(projects) if item["slug"] == project["slug"])
+    links = []
+    if idx > 0:
+        prev = projects[idx - 1]
+        links.append(
+            f'<a class="rise" style="--d:40ms" href="{esc(project_href("en", prev["slug"]))}">'
+            f'{esc(HEADS[prev["slug"]])} <span>{esc(when_of(prev))}</span></a>'
+        )
+    if idx + 1 < len(projects):
+        nxt = projects[idx + 1]
+        links.append(
+            f'<a class="rise" style="--d:70ms" href="{esc(project_href("en", nxt["slug"]))}">'
+            f'{esc(HEADS[nxt["slug"]])} <span>{esc(when_of(nxt))}</span></a>'
+        )
+    return f'<nav class="pager" aria-label="Adjacent projects">{"".join(links)}</nav>'
+
+
 def project_page(project):
     slug = project["slug"]
     info = DISPLAY[slug]
-    group = next(g for g in GROUPS if g["id"] == project["group"])
+    group = GROUP_BY[project["group"]]
     title = HEADS[slug]
-    lead = LEADS[slug]
-    blocks = []
-    for i, (heading, html) in enumerate(project["sections"]["en"]):
-        blocks.append(
-            f'<section class="block" data-rise style="--d:{i * 40}ms">'
-            f"<h2>{esc(heading)}</h2><div class=\"prose\">{html}</div></section>"
-        )
-    if slug == "cad-free-assembly":
-        blocks.append(
-            '<section class="block"><h2>Patent</h2><div class="prose"><p>'
-            f"Korean Patent {esc('10-2694987')}, registered Aug 2024. Applicant PLAIF. Co-inventor. "
-            f"The registered title is: {esc(PATENT_TITLE)}</p></div></section>"
-        )
     media = ""
-    action = f'<a class="btn" href="mailto:{esc(EMAIL)}">Write about this</a>'
     if project["video"]:
         v = VIDEOS[project["video"]]
         src = f"/assets/video/{v['file']}.mp4"
         poster = f"/assets/video/{v['file']}.jpg"
-        media = f"""<div class="project-media">
-<video width="{v['w']}" height="{v['h']}" muted loop playsinline preload="none" poster="{esc(poster)}" aria-label="{esc(v['label']['en'])}">
+        media = f"""<figure class="project-media">
+<video width="{v['w']}" height="{v['h']}" muted loop playsinline autoplay preload="metadata" poster="{esc(poster)}" aria-label="{esc(v['label']['en'])}">
 <source src="{esc(src)}" type="video/mp4">
-<a href="{esc(src)}">Watch the film</a>
 </video>
-</div>"""
-        action = f'<a class="btn" href="{esc(src)}">Watch the film</a>'
-    idx = next(i for i, p in enumerate(PROJECTS) if p["slug"] == slug)
-    prev_link = ""
-    next_link = ""
-    if idx > 0:
-        prev = PROJECTS[idx - 1]
-        prev_link = f'<a href="{esc(project_href("en", prev["slug"]))}">{esc(HEADS[prev["slug"]])}</a>'
-    if idx + 1 < len(PROJECTS):
-        nxt = PROJECTS[idx + 1]
-        next_link = f'<a href="{esc(project_href("en", nxt["slug"]))}">{esc(HEADS[nxt["slug"]])}</a>'
+<figcaption>{esc(v['cap']['en'])}</figcaption>
+</figure>"""
+    else:
+        # Pages without their own film still carry one labeled clip from the trials.
+        v = VIDEOS["strawberry"]
+        media = f"""<figure class="project-media">
+<video width="{v['w']}" height="{v['h']}" muted loop playsinline autoplay preload="metadata" poster="/assets/video/strawberry-ces2025.jpg" aria-label="{esc(v['label']['en'])}">
+<source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
+</video>
+<figcaption>Another filmed trial. {esc(v['cap']['en'])}</figcaption>
+</figure>"""
     body = f"""{bar()}
 <main id="content">
 <article class="project">
+<div class="project-copy">
 <h1>{esc(title)}</h1>
-<p class="lead" data-rise style="--d:40ms">{esc(lead)}</p>
-<p class="meta" data-rise style="--d:70ms">{esc(group['org'])}. {esc(group['role']['en'])}. {esc(group['when']['en'])}.</p>
-<p data-rise style="--d:100ms">{action}</p>
-{media}
+<p class="meta rise" style="--d:40ms">{esc(group['org'])}. {esc(group['role']['en'])}. {esc(group['when']['en'])}.</p>
 {figures(slug)}
-{"".join(blocks)}
+<p class="did rise" style="--d:80ms">{esc(info['blurb'])}</p>
+<p class="action"><a class="btn" href="mailto:{esc(EMAIL)}">Email Jaewoo</a></p>
+</div>
+{media}
+{split_sections(project)}
+<section class="films">
+<h2>Filmed trials</h2>
 {stills()}
-<nav class="pager" aria-label="Adjacent projects">
-{prev_link}
-{next_link}
-</nav>
+</section>
+{pager(project)}
 </article>
 </main>"""
-    desc = info["blurb"]
-    path = project_href("en", slug)
-    return document(f"{title}, Jaewoo Choi", desc, path, body)
+    return document(f"{title}, Jaewoo Choi", info["blurb"], project_href("en", slug), body)
 
 
 def not_found_page():
     body = f"""{bar()}
 <main id="content" class="missing">
 <h1>Not found</h1>
-<p>This address is not on the site.</p>
-<a class="btn" href="/">Back to the trials</a>
+<p>The address does not match a project or a section.</p>
+<p><a class="btn" href="/">Back to the sheet</a></p>
 </main>"""
     return document("Page not found", "This address is not on the site.", "/404.html", body)
 
@@ -519,5 +489,4 @@ def write_all():
     if sitemap.exists():
         sitemap.unlink()
         print("removed sitemap.xml")
-    # The constant is referenced so a future publish flag stays visible here.
     _ = SITE
