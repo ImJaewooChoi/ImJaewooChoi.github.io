@@ -3,77 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Assembly, Jaewoo Choi</title>
-<meta name="description" content="I matched a live 2D image to a stored RGB-D reference, with no CAD model of the part. Task success was 93% across 1,000 in-house trials.">
+<title>CAD-free assembly, Jaewoo Choi</title>
+<meta name="description" content="6D tool poses for assembly from a 2D camera, with no CAD model of the part. 93% task success across 1,000 in-house trials.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="CAD-free assembly, Jaewoo Choi">
+<meta property="og:description" content="6D tool poses for assembly from a 2D camera, with no CAD model of the part. 93% task success across 1,000 in-house trials.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
-<link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
-<link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/source-serif-4-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
 </head>
-<body>
+
+<body class="page">
 <a class="skip" href="#content">Skip to content</a>
-<header class="bar">
-<a class="wordmark rise" style="--d:0ms" href="/">Jaewoo Choi</a>
-<nav aria-label="Sections">
-<a class="rise" style="--d:30ms" href="/#work">Work</a>
-<a class="rise" style="--d:50ms" href="/#record">Record</a>
-<a class="rise" style="--d:70ms" href="/#practice">Practice</a>
-</nav>
+<header class="bar wrap">
+<a href="/#work">Work</a>
+<a href="/#record">Patent and awards</a>
+<a href="/#education">Education</a>
+<a href="/#experience">Experience</a>
 </header>
+
 <main id="content">
-<article class="project">
-<div class="project-top">
-<div class="project-copy">
-<h1>Assembly</h1>
-<p class="meta rise" style="--d:40ms">PLAIF. Computer Vision Engineer. Jan 2023 – Apr 2024.</p>
-<ul class="figures">
-<li class="rise" style="--d:0ms"><strong>93%</strong><span>Task success</span></li>
-<li class="rise" style="--d:40ms"><strong>1,000</strong><span>In‑house trials</span></li>
-<li class="rise" style="--d:80ms"><strong>2D</strong><span>Camera at run time</span></li>
-<li class="rise" style="--d:120ms"><strong>10‑2694987</strong><span>Korean patent</span></li>
-</ul>
-<p class="did rise" style="--d:80ms">I matched a live 2D image to a stored RGB‑D reference, with no CAD model of the part. Task success was 93% across 1,000 in‑house trials.</p>
-<p class="action"><a class="btn" href="mailto:iam.jaewoochoi@gmail.com">Email Jaewoo</a></p>
-</div>
-<figure class="project-media">
-<video width="1280" height="720" muted playsinline preload="metadata" controls poster="/assets/video/cad-free-assembly.jpg" aria-label="Silent. CAD-free auto assembly on a UR arm">
-<source src="/assets/video/cad-free-assembly.mp4" type="video/mp4">
-</video>
-<figcaption>UR arm with a gripper and wrist camera, assembling a part on a fixture.</figcaption>
-</figure>
-</div>
-<section class="block"><h2 class="rise" style="--d:30ms">Problem</h2><div class="prose"><p class="rise" style="--d:50ms">Assembly needs a target 6D tool pose when the part has no CAD model. At run time the sensor is a 2D camera, not a 3D camera.</p></div></section>
-<section class="block"><h2 class="rise" style="--d:30ms">Approach</h2><div class="prose split"><div><p class="rise" style="--d:50ms">I prototyped a two‑view RGB baseline first: learned feature matching between a reference image and a target image, USAC essential‑matrix estimation, relative pose recovery, and triangulation.</p>
-<p class="rise" style="--d:50ms">In the final pipeline, LightGlue matches the live 2D image to a stored reference RGB‑D capture, so each match carries depth. Matches with no depth are removed.</p></div><div>
-<p class="rise" style="--d:50ms">solvePnP and RANSAC estimate the camera pose from the 3D‑2D matches. That pose is chained with the hand‑eye calibration and the stored reference pose. The result is the target 6D tool pose.</p>
-<p class="rise" style="--d:50ms">Task success was 93% across 1,000 in‑house trials. This work is the basis of Korean Patent 10‑2694987.</p></div></div></section>
-<section class="block"><h2 class="rise" style="--d:30ms">Stack</h2><div class="prose"><p class="rise" style="--d:50ms">LightGlue, USAC, solvePnP, RANSAC, hand‑eye calibration.</p></div></section>
-<section class="block"><h2 class="rise" style="--d:30ms">Patent</h2><div class="prose"><p class="rise" style="--d:50ms">Korean Patent 10‑2694987, registered Aug 2024. Applicant PLAIF. Co‑inventor. The registered title is: Pose estimating device and method using artificial intelligence to estimate pose of robot&#x27;s end effector for object and robot control system including the same.</p></div></section>
-<section class="films">
-<h2>Filmed trials</h2>
-<ul class="stills"><li class="rise" style="--d:0ms"><a href="/projects/strawberry-cultivation.html"><img src="/assets/frames/strawberry-booth.jpg" alt="Flower thinning at the CES 2025 booth." width="1280" height="720"><span>CES booth</span></a></li><li class="rise" style="--d:40ms"><a href="/projects/strawberry-cultivation.html"><img src="/assets/frames/strawberry-close.jpg" alt="A closer view of flower thinning at the CES 2025 booth." width="1280" height="720"><span>Close view</span></a></li><li class="rise" style="--d:80ms"><a href="/projects/cad-free-assembly.html"><img src="/assets/frames/cad-room.jpg" alt="UR arm with a gripper and wrist camera, assembling a part on a fixture." width="1280" height="720"><span>Assembly</span></a></li><li class="rise" style="--d:120ms"><a href="/projects/bin-picking.html"><img src="/assets/frames/bin-arm.jpg" alt="A Doosan cobot during CAD-based bin picking." width="1280" height="720"><span>Bin picking</span></a></li></ul>
+<h1>CAD‑free assembly</h1>
+<p class="meta">PLAIF, Computer Vision Engineer, Jan. 2023–Apr. 2024.</p>
+<figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/cad-room.jpg" aria-label="UR arm with a gripper and wrist camera, assembling a part on a fixture."><source src="/assets/video/cad-free-assembly.mp4" type="video/mp4"></video><figcaption>UR arm with a gripper and wrist camera, assembling a part on a fixture.</figcaption></figure>
+<section>
+<h2>Problem</h2>
+<p>Assembly needs a target 6D tool pose when the part has no CAD model. At run time the sensor is a 2D camera.</p>
 </section>
-<nav class="pager" aria-label="Adjacent projects"><a class="rise" style="--d:40ms" href="/projects/strawberry-cultivation.html">Strawberry tasks <span>May 2024 – present</span></a><a class="rise" style="--d:70ms" href="/projects/bin-picking.html">Bin picking <span>Jan 2023 – Apr 2024</span></a></nav>
-</article>
+<section>
+<h2>My role</h2>
+<p>I prototyped a two‑view baseline and built the final pose pipeline.</p>
+</section>
+<section>
+<h2>Method</h2>
+<ol>
+<li>I prototyped a two‑view RGB baseline: learned feature matching between a reference image and a target image, USAC essential‑matrix estimation, relative pose recovery, and triangulation.</li>
+<li>In the final pipeline, LightGlue matches the live 2D image to a stored reference RGB‑D capture, so each match carries depth. Matches with no depth are removed.</li>
+<li>solvePnP and RANSAC estimate the camera pose from the 3D‑2D matches. That pose is chained with the hand‑eye calibration and the stored reference pose. The result is the target 6D tool pose.</li>
+</ol>
+</section>
+<section>
+<h2>Result</h2>
+<p>Task success was 93% across 1,000 in‑house trials. This work is the basis of Korean Patent 10‑2694987.</p>
+</section>
+<section>
+<h2>Stack</h2>
+<p>LightGlue, USAC, solvePnP, RANSAC, and hand‑eye calibration.</p>
+</section>
+<nav class="pager" aria-label="Adjacent projects"><a href="/projects/strawberry-cultivation.html"><span class="dir quiet">Previous</span>Strawberry cultivation tasks</a><a href="/#work">All work</a><a href="/projects/bin-picking.html"><span class="dir quiet">Next</span>CAD‑based bin picking</a></nav>
 </main>
-<footer class="foot">
-<p class="rise" style="--d:40ms">Robot vision, measured.</p>
-<p class="foot-links rise" style="--d:60ms">
-<a href="mailto:iam.jaewoochoi@gmail.com">Email</a>
-<a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a>
-<a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a>
-<a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a>
-</p>
-<p class="rise" style="--d:80ms">© Jaewoo Choi</p>
-</footer>
 <script>
 (function () {
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -87,5 +70,6 @@
   });
 })();
 </script>
+
 </body>
 </html>

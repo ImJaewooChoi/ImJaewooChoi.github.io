@@ -3,80 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Labeling cost, Jaewoo Choi</title>
-<meta name="description" content="Point prompts become tracked masks. Per-image cost fell from about USD 1.05 to about USD 0.036, a 96.6% reduction.">
+<title>Auto-labeling pipeline, Jaewoo Choi</title>
+<meta name="description" content="Video auto-labeling and region-grounded captions. Per-image cost fell from about USD 1.05 to about USD 0.036.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="Auto-labeling pipeline, Jaewoo Choi">
+<meta property="og:description" content="Video auto-labeling and region-grounded captions. Per-image cost fell from about USD 1.05 to about USD 0.036.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
-<link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
-<link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/source-serif-4-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
 </head>
-<body>
+
+<body class="page">
 <a class="skip" href="#content">Skip to content</a>
-<header class="bar">
-<a class="wordmark rise" style="--d:0ms" href="/">Jaewoo Choi</a>
-<nav aria-label="Sections">
-<a class="rise" style="--d:30ms" href="/#work">Work</a>
-<a class="rise" style="--d:50ms" href="/#record">Record</a>
-<a class="rise" style="--d:70ms" href="/#practice">Practice</a>
-</nav>
+<header class="bar wrap">
+<a href="/#work">Work</a>
+<a href="/#record">Patent and awards</a>
+<a href="/#education">Education</a>
+<a href="/#experience">Experience</a>
 </header>
+
 <main id="content">
-<article class="project">
-<div class="project-top">
-<div class="project-copy">
-<h1>Labeling cost</h1>
-<p class="meta rise" style="--d:40ms">Daedong AILab. Senior AI Researcher. May 2024 – present.</p>
-<ul class="figures">
-<li class="rise" style="--d:0ms"><strong>1.05</strong><span>USD per image, before</span></li>
-<li class="rise" style="--d:40ms"><strong>0.036</strong><span>USD per image, after</span></li>
-<li class="rise" style="--d:80ms"><strong>96.6%</strong><span>Cost reduction</span></li>
-</ul>
-<p class="did rise" style="--d:80ms">Point prompts become tracked masks. Per‑image cost fell from about USD 1.05 to about USD 0.036, a 96.6% reduction.</p>
-<p class="action"><a class="btn" href="mailto:iam.jaewoochoi@gmail.com">Email Jaewoo</a></p>
-</div>
-<figure class="project-media">
-<video width="540" height="960" muted playsinline preload="metadata" controls poster="/assets/video/strawberry-ces2025.jpg" aria-label="Silent. Flower thinning at the CES 2025 booth">
-<source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
-</video>
-<figcaption>Another filmed trial. Flower thinning at the CES 2025 booth.</figcaption>
-</figure>
-</div>
-<section class="block"><h2 class="rise" style="--d:30ms">Problem</h2><div class="prose split"><div><p class="rise" style="--d:50ms">Manual annotation cost limits the supply of segmentation and region‑grounded vision‑language training data.</p>
-<p class="rise" style="--d:50ms">I built a video auto‑labeling pipeline. Point prompts and mask corrections become tracked masks with consistent IDs across frames.</p></div><div>
-<p class="rise" style="--d:50ms">Image and video share TensorRT engines.</p>
-<p class="rise" style="--d:50ms">The same computation is not duplicated.</p></div></div></section>
-<section class="block"><h2 class="rise" style="--d:30ms">Approach</h2><div class="prose split"><div><p class="rise" style="--d:50ms">Qwen‑series vision‑language models generate region‑grounded object descriptions and check them.</p>
-<p class="rise" style="--d:50ms">Uncertain cases go to a second review. Verified descriptions are linked to the instance annotations.</p></div><div>
-<p class="rise" style="--d:50ms">I set the label taxonomy and the annotation guidelines, and built COCO‑format training datasets.</p></div></div></section>
-<section class="block"><h2 class="rise" style="--d:30ms">Results</h2><div class="prose split"><div><p class="rise" style="--d:50ms">Cost per image was about USD 1.05.</p>
-<p class="rise" style="--d:50ms">It fell to about USD 0.036.</p></div><div>
-<p class="rise" style="--d:50ms">That is a 96.6% reduction.</p></div></div></section>
-<section class="block"><h2 class="rise" style="--d:30ms">Stack</h2><div class="prose"><p class="rise" style="--d:50ms">TensorRT, Qwen‑series vision‑language models, COCO.</p></div></section>
-<section class="films">
-<h2>Filmed trials</h2>
-<ul class="stills"><li class="rise" style="--d:0ms"><a href="/projects/strawberry-cultivation.html"><img src="/assets/frames/strawberry-booth.jpg" alt="Flower thinning at the CES 2025 booth." width="1280" height="720"><span>CES booth</span></a></li><li class="rise" style="--d:40ms"><a href="/projects/strawberry-cultivation.html"><img src="/assets/frames/strawberry-close.jpg" alt="A closer view of flower thinning at the CES 2025 booth." width="1280" height="720"><span>Close view</span></a></li><li class="rise" style="--d:80ms"><a href="/projects/cad-free-assembly.html"><img src="/assets/frames/cad-room.jpg" alt="UR arm with a gripper and wrist camera, assembling a part on a fixture." width="1280" height="720"><span>Assembly</span></a></li><li class="rise" style="--d:120ms"><a href="/projects/bin-picking.html"><img src="/assets/frames/bin-arm.jpg" alt="A Doosan cobot during CAD-based bin picking." width="1280" height="720"><span>Bin picking</span></a></li></ul>
+<h1>Auto‑labeling pipeline</h1>
+<p class="meta">Daedong AILab, Senior AI Researcher, May 2024–Present.</p>
+
+<section>
+<h2>Problem</h2>
+<p>Manual annotation cost limits the supply of segmentation data and region‑grounded vision‑language training data.</p>
 </section>
-<nav class="pager" aria-label="Adjacent projects"><a class="rise" style="--d:40ms" href="/projects/orchard-obstacle-mapping.html">Obstacle maps <span>May 2024 – present</span></a><a class="rise" style="--d:70ms" href="/projects/strawberry-cultivation.html">Strawberry tasks <span>May 2024 – present</span></a></nav>
-</article>
+<section>
+<h2>My role</h2>
+<p>I built the video auto‑labeling pipeline, set the label taxonomy and the annotation guidelines, and compiled the COCO‑format training datasets.</p>
+</section>
+<section>
+<h2>Method</h2>
+<ol>
+<li>Point prompts and mask corrections become tracked masks with consistent IDs across frames.</li>
+<li>Image and video inputs share TensorRT engines, so the same computation is not duplicated.</li>
+<li>Qwen‑series vision‑language models write region‑grounded object descriptions and check them. Uncertain cases go to a second review. Verified descriptions are linked to the instance annotations.</li>
+</ol>
+</section>
+<section>
+<h2>Result</h2>
+<p>Per‑image labeling cost fell from about USD 1.05 to about USD 0.036, a 96.6% reduction.</p>
+</section>
+<section>
+<h2>Stack</h2>
+<p>TensorRT, Qwen‑series vision‑language models, and COCO.</p>
+</section>
+<nav class="pager" aria-label="Adjacent projects"><a href="/projects/orchard-obstacle-mapping.html"><span class="dir quiet">Previous</span>Obstacle mapping</a><a href="/#work">All work</a><a href="/projects/strawberry-cultivation.html"><span class="dir quiet">Next</span>Strawberry cultivation tasks</a></nav>
 </main>
-<footer class="foot">
-<p class="rise" style="--d:40ms">Robot vision, measured.</p>
-<p class="foot-links rise" style="--d:60ms">
-<a href="mailto:iam.jaewoochoi@gmail.com">Email</a>
-<a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a>
-<a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a>
-<a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a>
-</p>
-<p class="rise" style="--d:80ms">© Jaewoo Choi</p>
-</footer>
 <script>
 (function () {
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -90,5 +70,6 @@
   });
 })();
 </script>
+
 </body>
 </html>

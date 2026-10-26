@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Write the static HTML for the personal site. Facts come from the CV."""
+"""Facts for the personal site, from the CV.
+
+`python3 tools/build_site.py` writes the HTML through renew.write_all.
+The published design is the faculty skim (prototype A): Source Serif 4,
+white page, project rows with a clip or an empty slot.
+Korean copy stays in this file. PUBLISH_KO is false, so ko/ is not written.
+"""
 
 import html
 import re
@@ -1394,7 +1400,7 @@ def not_found_page():
 
 def glue_tokens(text):
     text = re.sub(
-        r"\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{4})",
+        r"\b((?:January|February|March|April|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?)\s+(\d{4})",
         lambda m: f"{m.group(1)}\u00a0{m.group(2)}",
         text,
     )
@@ -1405,7 +1411,7 @@ def glue_tokens(text):
         text,
     )
     text = re.sub(r"\bUSD\s+", "USD\u00a0", text)
-    text = re.sub(r"\bPatent\s+", "Patent\u00a0", text)
+    text = re.sub(r"\bPatent\s+(?=\d)", "Patent\u00a0", text)
     text = re.sub(r"\bCES\s+", "CES\u00a0", text)
     text = re.sub(r"\b6D\s+", "6D\u00a0", text)
     return text

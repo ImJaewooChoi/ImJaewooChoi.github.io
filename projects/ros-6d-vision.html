@@ -3,73 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Poses over ROS, Jaewoo Choi</title>
-<meta name="description" content="A ROS action server runs capture, segmentation, and pose estimation per request. I also wrote eye-to-hand calibration tools.">
+<title>ROS 6D vision server, Jaewoo Choi</title>
+<meta name="description" content="A ROS action server for capture, segmentation, and 6D pose, plus eye-to-hand calibration tools.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="ROS 6D vision server, Jaewoo Choi">
+<meta property="og:description" content="A ROS action server for capture, segmentation, and 6D pose, plus eye-to-hand calibration tools.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
-<link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
-<link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/source-serif-4-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
 </head>
-<body>
+
+<body class="page">
 <a class="skip" href="#content">Skip to content</a>
-<header class="bar">
-<a class="wordmark rise" style="--d:0ms" href="/">Jaewoo Choi</a>
-<nav aria-label="Sections">
-<a class="rise" style="--d:30ms" href="/#work">Work</a>
-<a class="rise" style="--d:50ms" href="/#record">Record</a>
-<a class="rise" style="--d:70ms" href="/#practice">Practice</a>
-</nav>
+<header class="bar wrap">
+<a href="/#work">Work</a>
+<a href="/#record">Patent and awards</a>
+<a href="/#education">Education</a>
+<a href="/#experience">Experience</a>
 </header>
+
 <main id="content">
-<article class="project">
-<div class="project-top">
-<div class="project-copy">
-<h1>Poses over ROS</h1>
-<p class="meta rise" style="--d:40ms">PLAIF. Computer Vision Engineer. Jan 2023 – Apr 2024.</p>
-<ul class="figures">
-<li class="rise" style="--d:0ms"><strong>6D</strong><span>Poses returned</span></li>
-<li class="rise" style="--d:40ms"><strong>AX=YB</strong><span>Eye‑to‑hand batch</span></li>
-</ul>
-<p class="did rise" style="--d:80ms">A ROS action server runs capture, segmentation, and pose estimation per request. I also wrote eye‑to‑hand calibration tools.</p>
-<p class="action"><a class="btn" href="mailto:iam.jaewoochoi@gmail.com">Email Jaewoo</a></p>
-</div>
-<figure class="project-media">
-<video width="540" height="960" muted playsinline preload="metadata" controls poster="/assets/video/strawberry-ces2025.jpg" aria-label="Silent. Flower thinning at the CES 2025 booth">
-<source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
-</video>
-<figcaption>Another filmed trial. Flower thinning at the CES 2025 booth.</figcaption>
-</figure>
-</div>
-<section class="block"><h2 class="rise" style="--d:30ms">Problem</h2><div class="prose"><p class="rise" style="--d:50ms">A caller needs the object pose in the robot base frame and in the camera frame. The camera also has to be calibrated to the robot.</p></div></section>
-<section class="block"><h2 class="rise" style="--d:30ms">Approach</h2><div class="prose split"><div><p class="rise" style="--d:50ms">I wrote a ROS action server that runs capture, segmentation, and pose estimation per request. It returns robot‑base and camera‑frame poses with matching scores.</p>
-<p class="rise" style="--d:50ms">A configuration file selects the camera (Zivid, RealSense, or recorded data), the model, and the pipeline.</p></div><div>
-<p class="rise" style="--d:50ms">Eye‑to‑hand calibration uses ArUco board pose estimation, the OpenCV Park method, and a batch AX = YB solver that reports residual error. I added a calibration validation tool. Runtime parameters use ROS dynamic_reconfigure.</p></div></div></section>
-<section class="block"><h2 class="rise" style="--d:30ms">Stack</h2><div class="prose"><p class="rise" style="--d:50ms">ROS, Zivid, RealSense, ArUco, OpenCV, dynamic_reconfigure.</p></div></section>
-<section class="films">
-<h2>Filmed trials</h2>
-<ul class="stills"><li class="rise" style="--d:0ms"><a href="/projects/strawberry-cultivation.html"><img src="/assets/frames/strawberry-booth.jpg" alt="Flower thinning at the CES 2025 booth." width="1280" height="720"><span>CES booth</span></a></li><li class="rise" style="--d:40ms"><a href="/projects/strawberry-cultivation.html"><img src="/assets/frames/strawberry-close.jpg" alt="A closer view of flower thinning at the CES 2025 booth." width="1280" height="720"><span>Close view</span></a></li><li class="rise" style="--d:80ms"><a href="/projects/cad-free-assembly.html"><img src="/assets/frames/cad-room.jpg" alt="UR arm with a gripper and wrist camera, assembling a part on a fixture." width="1280" height="720"><span>Assembly</span></a></li><li class="rise" style="--d:120ms"><a href="/projects/bin-picking.html"><img src="/assets/frames/bin-arm.jpg" alt="A Doosan cobot during CAD-based bin picking." width="1280" height="720"><span>Bin picking</span></a></li></ul>
+<h1>ROS 6D vision server</h1>
+<p class="meta">PLAIF, Computer Vision Engineer, Jan. 2023–Apr. 2024.</p>
+
+<section>
+<h2>Problem</h2>
+<p>A caller needs the object pose in the robot base frame and in the camera frame. The camera also has to be calibrated to the robot.</p>
 </section>
-<nav class="pager" aria-label="Adjacent projects"><a class="rise" style="--d:40ms" href="/projects/bin-picking.html">Bin picking <span>Jan 2023 – Apr 2024</span></a><a class="rise" style="--d:70ms" href="/projects/license-plate.html">License plates <span>May 2022 – Dec 2022</span></a></nav>
-</article>
+<section>
+<h2>My role</h2>
+<p>I wrote the ROS action server and the eye‑to‑hand calibration tools.</p>
+</section>
+<section>
+<h2>Method</h2>
+<ol>
+<li>The server runs capture, segmentation, and pose estimation per request, and returns robot‑base and camera‑frame poses with matching scores.</li>
+<li>A configuration file selects the camera (Zivid, RealSense, or recorded data), the model, and the pipeline.</li>
+<li>Eye‑to‑hand calibration uses ArUco board pose estimation, the OpenCV Park method, and a batch AX = YB solver that reports residual error. A validation tool checks the calibration. Runtime parameters use ROS dynamic_reconfigure.</li>
+</ol>
+</section>
+<section>
+<h2>Result</h2>
+<p>Each request returns the object pose in the robot base frame and in the camera frame, with a matching score.</p>
+</section>
+<section>
+<h2>Stack</h2>
+<p>ROS, Zivid, RealSense, ArUco, OpenCV, and dynamic_reconfigure.</p>
+</section>
+<nav class="pager" aria-label="Adjacent projects"><a href="/projects/bin-picking.html"><span class="dir quiet">Previous</span>CAD‑based bin picking</a><a href="/#work">All work</a><a href="/projects/license-plate.html"><span class="dir quiet">Next</span>License plate recognition</a></nav>
 </main>
-<footer class="foot">
-<p class="rise" style="--d:40ms">Robot vision, measured.</p>
-<p class="foot-links rise" style="--d:60ms">
-<a href="mailto:iam.jaewoochoi@gmail.com">Email</a>
-<a href="https://github.com/ImJaewooChoi" rel="me">GitHub</a>
-<a href="https://www.kaggle.com/loveacaji" rel="me">Kaggle</a>
-<a href="https://www.linkedin.com/in/jaewoo-choi-955340356" rel="me">LinkedIn</a>
-</p>
-<p class="rise" style="--d:80ms">© Jaewoo Choi</p>
-</footer>
 <script>
 (function () {
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -83,5 +70,6 @@
   });
 })();
 </script>
+
 </body>
 </html>

@@ -123,11 +123,14 @@ PROSE_JS = r"""
 ROBOTS_JS = r"""
 () => {
   const robots = document.querySelector('meta[name="robots"]');
-  const og = document.querySelector('[property^="og:"], meta[name^="twitter:"]');
+  const image = document.querySelector('[property="og:image"], meta[name^="twitter:"]');
+  const title = document.querySelector('[property="og:title"]');
+  const desc = document.querySelector('[property="og:description"]');
   const br = document.body.innerHTML.includes("<br");
   return {
     robots: robots ? robots.getAttribute("content") : "",
-    share: og ? (og.getAttribute("property") || og.getAttribute("name")) : "",
+    share: image ? (image.getAttribute("property") || image.getAttribute("name")) : "",
+    og: !!(title && desc),
     br,
   };
 }
@@ -152,7 +155,7 @@ CONTRAST_JS = r"""
   const picks = [
     ["body", "body"],
     ["muted", ".quiet"],
-    ["link", "a.pill"],
+    ["link", "a"],
     ["h1", "h1"],
   ];
   const out = [];
@@ -225,8 +228,10 @@ def static_checks():
             errors.append(f"{rel} still points at a Korean page")
         if 'name="robots" content="noindex, nofollow, noarchive"' not in text:
             errors.append(f"{rel} missing robots noindex meta")
-        if "og:" in text or "twitter:" in text:
-            errors.append(f"{rel} has share metadata")
+        if 'property="og:title"' not in text or 'property="og:description"' not in text:
+            errors.append(f"{rel} missing og:title or og:description")
+        if 'property="og:image"' in text or "twitter:" in text:
+            errors.append(f"{rel} has an image or Twitter share tag")
         if "<br" in text.lower():
             errors.append(f"{rel} has a br")
         if "No media yet" in text or "미디어 없음" in text:
@@ -250,6 +255,8 @@ def main():
                     errors.append(f"{url} @{width} robots={meta['robots']!r}")
                 if meta["share"]:
                     errors.append(f"{url} @{width} share tag {meta['share']}")
+                if not meta["og"]:
+                    errors.append(f"{url} @{width} missing og:title or og:description")
                 if meta["br"]:
                     errors.append(f"{url} @{width} rendered br")
                 layout = page.evaluate(PROSE_JS)
