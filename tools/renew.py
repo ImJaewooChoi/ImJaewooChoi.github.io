@@ -236,23 +236,39 @@ def work_index():
     return "\n".join(grouped)
 
 
-def home_page():
-    films = f"""<section class="films" id="films">
-<h2>Filmed trials</h2>
-<figure class="clip">
-<video width="540" height="960" muted playsinline preload="metadata" controls poster="/assets/video/strawberry-ces2025.jpg" aria-label="Silent. Flower thinning at the CES 2025 booth">
-<source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4">
-</video>
-<figcaption>Flower thinning at the CES 2025 booth.</figcaption>
-</figure>
-{stills()}
+def home_frames():
+    # Only three projects were filmed. Two frames each, same size, newest
+    # project first. The other five have no footage, so they stay in the
+    # index only. No clip on the home page: the strawberry trial would
+    # become the main item again.
+    frames = [
+        ("strawberry-cultivation", "/assets/frames/strawberry-booth.jpg", "Flower thinning at the CES 2025 booth."),
+        ("strawberry-cultivation", "/assets/frames/strawberry-close.jpg", "A closer view of flower thinning at the CES 2025 booth."),
+        ("cad-free-assembly", "/assets/frames/cad-room.jpg", "UR arm with a gripper and wrist camera, assembling a part on a fixture."),
+        ("cad-free-assembly", "/assets/frames/cad-detail.jpg", "A closer view of the UR arm, gripper, wrist camera, and fixture."),
+        ("bin-picking", "/assets/frames/bin-arm.jpg", "A Doosan cobot during CAD-based bin picking."),
+        ("bin-picking", "/assets/frames/bin-ring.jpg", "A Doosan cobot with a suction gripper picking ring parts from a bin."),
+    ]
+    items = []
+    for i, (slug, src, alt) in enumerate(frames):
+        items.append(
+            f'<li class="rise" style="--d:{i * 40}ms"><a href="{esc(project_href("en", slug))}">'
+            f'<img src="{esc(src)}" alt="{esc(alt)}" width="1280" height="720">'
+            f"<span>{esc(HEADS[slug])}</span></a></li>"
+        )
+    return f"""<section class="films frames" id="frames">
+<h2>Frames</h2>
+<ul class="stills">{"".join(items)}</ul>
 </section>"""
+
+
+def home_page():
     body = f"""{bar(home=True)}
 <main id="content">
 <section class="sheet">
 <div class="identity">
 <h1>Jaewoo Choi</h1>
-<p class="role">Senior AI Researcher, Daedong AILab, since May 2024</p>
+<p class="role">Senior AI Researcher, Daedong AILab, <span class="keep">since May 2024</span></p>
 <p class="focus">{esc(FOCUS)}</p>
 </div>
 <div class="reach">
@@ -279,7 +295,6 @@ def home_page():
 </ul>
 </div>
 </section>
-{films}
 <section class="practice" id="practice">
 <h2>Practice</h2>
 <div class="practice-grid">
@@ -298,6 +313,7 @@ def home_page():
 </div>
 </div>
 </section>
+{home_frames()}
 </main>"""
     title = "Jaewoo Choi, Senior AI Researcher"
     desc = "Senior AI Researcher at Daedong AILab. Perception for orchard robots and manipulation arms."

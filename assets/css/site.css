@@ -176,6 +176,10 @@ h3 {
   max-width: 36em;
 }
 
+.keep {
+  white-space: nowrap;
+}
+
 .focus {
   margin-top: 8px;
   max-width: 28em;
@@ -323,6 +327,10 @@ a.btn {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px 12px;
+}
+
+.frames .stills {
+  grid-template-columns: 1fr 1fr;
 }
 
 .stills a {
@@ -545,6 +553,10 @@ a.btn {
   .films,
   .practice {
     margin-top: 104px;
+  }
+
+  .frames .stills {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
   .practice-grid {
