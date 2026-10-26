@@ -237,28 +237,43 @@ def work_index():
 
 
 def home_frames():
-    # Only three projects were filmed. Two frames each, same size, newest
-    # project first. The other five have no footage, so they stay in the
-    # index only. No clip on the home page: the strawberry trial would
-    # become the main item again.
-    frames = [
-        ("strawberry-cultivation", "/assets/frames/strawberry-booth.jpg", "Flower thinning at the CES 2025 booth."),
-        ("strawberry-cultivation", "/assets/frames/strawberry-close.jpg", "A closer view of flower thinning at the CES 2025 booth."),
-        ("cad-free-assembly", "/assets/frames/cad-room.jpg", "UR arm with a gripper and wrist camera, assembling a part on a fixture."),
-        ("cad-free-assembly", "/assets/frames/cad-detail.jpg", "A closer view of the UR arm, gripper, wrist camera, and fixture."),
-        ("bin-picking", "/assets/frames/bin-arm.jpg", "A Doosan cobot during CAD-based bin picking."),
-        ("bin-picking", "/assets/frames/bin-ring.jpg", "A Doosan cobot with a suction gripper picking ring parts from a bin."),
+    # One short clip per filmed project, newest first, same tile size.
+    # The other five projects have no footage, so they stay in the index.
+    # The still is the poster under the clip, the same frame the page already used.
+    clips = [
+        (
+            "strawberry-cultivation",
+            "/assets/video/home/strawberry.mp4",
+            "/assets/frames/strawberry-booth.jpg",
+            "Flower thinning at the CES 2025 booth.",
+        ),
+        (
+            "cad-free-assembly",
+            "/assets/video/home/assembly.mp4",
+            "/assets/frames/cad-room.jpg",
+            "UR arm with a gripper and wrist camera, assembling a part on a fixture.",
+        ),
+        (
+            "bin-picking",
+            "/assets/video/home/bin-picking.mp4",
+            "/assets/frames/bin-arm.jpg",
+            "A Doosan cobot during CAD-based bin picking.",
+        ),
     ]
     items = []
-    for i, (slug, src, alt) in enumerate(frames):
+    for i, (slug, src, poster, alt) in enumerate(clips):
         items.append(
-            f'<li class="rise" style="--d:{i * 40}ms"><a href="{esc(project_href("en", slug))}">'
-            f'<img src="{esc(src)}" alt="{esc(alt)}" width="1280" height="720">'
+            f'<li class="rise" style="--d:{i * 40}ms"><a class="thumb" href="{esc(project_href("en", slug))}">'
+            f'<span class="shot">'
+            f'<img src="{esc(poster)}" alt="{esc(alt)}" width="720" height="404">'
+            f'<video width="720" height="404" muted loop playsinline autoplay preload="metadata" poster="{esc(poster)}" aria-label="{esc(alt)}">'
+            f'<source src="{esc(src)}" type="video/mp4">'
+            f"</video></span>"
             f"<span>{esc(HEADS[slug])}</span></a></li>"
         )
     return f"""<section class="films frames" id="frames">
 <h2>Frames</h2>
-<ul class="stills">{"".join(items)}</ul>
+<ul class="clips">{"".join(items)}</ul>
 </section>"""
 
 

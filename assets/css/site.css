@@ -257,6 +257,7 @@ a.btn {
 .record ul,
 .roles,
 .stills,
+.clips,
 .figures {
   list-style: none;
   padding: 0;
@@ -329,8 +330,45 @@ a.btn {
   gap: 16px 12px;
 }
 
-.frames .stills {
-  grid-template-columns: 1fr 1fr;
+.clips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 300px));
+  gap: 16px 12px;
+  justify-content: start;
+  max-width: 100%;
+}
+
+.thumb {
+  display: block;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.shot {
+  position: relative;
+  display: block;
+  background: var(--surface);
+}
+
+.shot img,
+.shot video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: var(--surface);
+  display: block;
+}
+
+.shot video {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+.thumb span + span {
+  display: block;
+  margin-top: 6px;
+  font-size: var(--step-small);
 }
 
 .stills a {
@@ -495,6 +533,7 @@ a.btn {
 .bar nav a:hover,
 .index a:hover,
 .stills a:hover,
+.thumb:hover,
 .pager a:hover,
 .foot a:hover {
   text-decoration: underline;
@@ -513,6 +552,10 @@ a.btn {
 
   .stills {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .clips {
+    grid-template-columns: repeat(3, minmax(0, 300px));
   }
 
   .foot {
@@ -553,10 +596,6 @@ a.btn {
   .films,
   .practice {
     margin-top: 104px;
-  }
-
-  .frames .stills {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
   .practice-grid {
