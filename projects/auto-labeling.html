@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Auto-labeling pipeline, Jaewoo Choi</title>
-<meta name="description" content="Video auto-labeling and region-grounded captions. Per-image cost fell from about USD 1.05 to about USD 0.036.">
+<meta name="description" content="I built a video auto-labeling pipeline that writes region-grounded captions and reduced the cost of labeling one image by 96.6%, from about USD 1.05 to about USD 0.036.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="Auto-labeling pipeline, Jaewoo Choi">
-<meta property="og:description" content="Video auto-labeling and region-grounded captions. Per-image cost fell from about USD 1.05 to about USD 0.036.">
+<meta property="og:description" content="I built a video auto-labeling pipeline that writes region-grounded captions and reduced the cost of labeling one image by 96.6%, from about USD 1.05 to about USD 0.036.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -33,7 +33,7 @@
 
 <section>
 <h2>Problem</h2>
-<p>Manual annotation cost limits the supply of segmentation data and region‑grounded vision‑language training data.</p>
+<p>Segmentation data and region‑grounded vision‑language data were labeled by hand.</p>
 </section>
 <section>
 <h2>My role</h2>
@@ -42,14 +42,14 @@
 <section>
 <h2>Method</h2>
 <ol>
-<li>Point prompts and mask corrections become tracked masks with consistent IDs across frames.</li>
-<li>Image and video inputs share TensorRT engines, so the same computation is not duplicated.</li>
-<li>Qwen‑series vision‑language models write region‑grounded object descriptions and check them. Uncertain cases go to a second review. Verified descriptions are linked to the instance annotations.</li>
+<li>I turned point prompts and mask corrections into tracked masks with consistent IDs across frames.</li>
+<li>I shared TensorRT engines between image and video inputs, so the same computation is not run twice.</li>
+<li>I used Qwen‑series vision‑language models to write region‑grounded object descriptions and to check them. I sent uncertain cases to a second review and linked the verified descriptions to the instance annotations.</li>
 </ol>
 </section>
 <section>
 <h2>Result</h2>
-<p>Per‑image labeling cost fell from about USD 1.05 to about USD 0.036, a 96.6% reduction.</p>
+<p>Labeling one image cost about USD 1.05 before this pipeline and about USD 0.036 after it, a 96.6% reduction.</p>
 </section>
 <section>
 <h2>Stack</h2>

@@ -172,7 +172,7 @@ PROJECTS = [
             "ko": "RT100 open-vocabulary segmentation and occupancy mapping",
         },
         "line": {
-            "en": "Two versions of an open-vocabulary segmenter for RT100. Obstacle mapping is the occupancy grid built from the masks. The work runs on production RT100, with TensorRT on Jetson Nano.",
+            "en": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step after it. Deployed on production RT100 robots with TensorRT on Jetson Nano.",
             "ko": "RT100용 open-vocabulary segmenter 두 버전과, mask로 만드는 occupancy grid입니다. Production RT100에서 TensorRT, Jetson Nano로 돌아갑니다.",
         },
         "tools": {
@@ -440,7 +440,7 @@ PROJECTS = [
             "ko": "ROS 6D Vision Server와 Hand-Eye Calibration 도구",
         },
         "line": {
-            "en": "A ROS action server runs capture, segmentation, and pose estimation per request, and returns robot-base and camera-frame poses. Eye-to-hand calibration tools sit beside it.",
+            "en": "Wrote the ROS server that returns camera and robot-base poses on each request from Zivid, RealSense, or recorded data, plus eye-to-hand calibration tools that report residual error.",
             "ko": "요청마다 capture, segmentation, pose estimation을 실행하는 ROS action server입니다. Eye-to-hand calibration 도구를 같이 만들었습니다.",
         },
         "tools": {
@@ -488,7 +488,7 @@ PROJECTS = [
             "ko": "차량 번호판 인식",
         },
         "line": {
-            "en": "Object detection locates the plate. OCR reads the letters and digits.",
+            "en": "Built the plate recognition pipeline end to end: detection finds the plate, OCR reads it.",
             "ko": "Object detection으로 번호판 위치를 찾습니다. OCR로 문자와 숫자를 읽습니다.",
         },
         "tools": {
@@ -496,7 +496,7 @@ PROJECTS = [
             "ko": "Detection, OCR",
         },
         "desc": {
-            "en": "License plate pipeline: object detection locates the plate, OCR reads the letters and digits.",
+            "en": "Object detection locates a car license plate, and OCR reads the letters and digits.",
             "ko": "번호판 pipeline. Object detection으로 위치를 찾고 OCR로 문자와 숫자를 읽습니다.",
         },
         "sections": {

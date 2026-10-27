@@ -26,115 +26,115 @@ from build_site import (
 PAGES = {
     "language-distilled-segmentation": {
         "title": "Open-vocabulary segmentation and mapping",
-        "result": "Instance masks and an occupancy grid run on production RT100, with TensorRT on Jetson Nano.",
-        "desc": "Two versions of an open-vocabulary segmenter for RT100, and the occupancy-grid mapping that uses the masks. Deployed on production RT100.",
+        "result": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step after it. Deployed on production RT100 robots with TensorRT on Jetson Nano.",
+        "desc": "Two versions of an open-vocabulary segmenter for the RT100 orchard platform, and the occupancy grid built from the masks. The pipeline runs on production RT100 with TensorRT on Jetson Nano.",
         "video": None,
         "problem": "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map under embedded compute limits. A language teacher is available during training. The deployed model does not add inference cost.",
-        "role": "I pre-trained one segmentation stack, adapted a DETR-based segmenter for the RT100 orchard platform, and built the occupancy-grid mapping from the instance masks.",
+        "role": "I pre-trained a DINOv2 and SigLIP2 segmenter, adapted a DETR-based segmenter for the RT100 orchard platform, and built the occupancy-grid mapping from the instance masks.",
         "method": [
             (
                 "Version 1",
-                "I pre-trained the adapter, neck, and segmentation head on multiple datasets over frozen DINOv2 and SigLIP2 encoders, with region-text alignment for instance and semantic segmentation. The model takes text prompts at inference and can run with a fixed vocabulary. I adapted it to the orchard domain.",
+                "I pre-trained the adapter, neck, and segmentation head on multiple datasets over frozen DINOv2 and SigLIP2 encoders, with region-text alignment for instance and semantic segmentation. I added text-prompt inference and fixed-vocabulary conversion, and I adapted the model to the orchard domain.",
             ),
             (
                 "Version 2",
-                "A DETR-based segmenter uses a frozen DINOv3 backbone, a trainable lightweight text encoder, a multi-scale feature projector, and a three-layer decoder. The decoder predicts masks from dot products between queries and refined spatial features. During training only, object queries and pooled image features are matched to precomputed language-teacher embeddings of object and image descriptions. Semantically related negatives are reweighted so they are not pushed apart. The language teacher adds no inference cost.",
+                "I adapted a DETR-based segmenter with a frozen DINOv3 backbone, a trainable lightweight text encoder, a multi-scale feature projector, and a three-layer decoder that predicts masks from dot products of queries and refined spatial features. During training only, I aligned object queries and pooled image features with precomputed language-teacher embeddings of object and image descriptions, and I reweighted semantically related negatives so they are not pushed apart.",
             ),
             (
                 "Post-processing",
-                "Point-cloud voxel centers are projected into the image and tied to the instance masks. Virtual voxels are added from valid anchor depths. Obstacles go into a navigable occupancy grid with decay, hysteresis, and cost inflation.",
+                "I projected point-cloud voxel centers into the image and associated them with the instance masks. I added virtual voxels from valid anchor depths, and I mapped obstacles into a navigable occupancy grid with decay, hysteresis, and cost inflation.",
             ),
         ],
-        "outcome": "The work runs in the production RT100 perception pipeline. It is deployed on production RT100 platforms and optimized with TensorRT on Jetson Nano.",
+        "outcome": "The model is integrated into the production RT100 perception pipeline. I deployed the pipeline on production RT100 platforms and optimized it with TensorRT on Jetson Nano.",
         "stack": "DINOv2, SigLIP2, DETR, a frozen DINOv3 backbone, a lightweight text encoder, a multi-scale feature projector, a three-layer decoder, TensorRT, and Jetson Nano.",
     },
     "auto-labeling": {
         "title": "Auto-labeling pipeline",
         "result": "Per-image labeling cost fell from about USD 1.05 to about USD 0.036 (96.6%).",
-        "desc": "Video auto-labeling and region-grounded captions. Per-image cost fell from about USD 1.05 to about USD 0.036.",
+        "desc": "I built a video auto-labeling pipeline that writes region-grounded captions and reduced the cost of labeling one image by 96.6%, from about USD 1.05 to about USD 0.036.",
         "video": None,
-        "problem": "Manual annotation cost limits the supply of segmentation data and region-grounded vision-language training data.",
+        "problem": "Segmentation data and region-grounded vision-language data were labeled by hand.",
         "role": "I built the video auto-labeling pipeline, set the label taxonomy and the annotation guidelines, and compiled the COCO-format training datasets.",
         "method": [
-            "Point prompts and mask corrections become tracked masks with consistent IDs across frames.",
-            "Image and video inputs share TensorRT engines, so the same computation is not duplicated.",
-            "Qwen-series vision-language models write region-grounded object descriptions and check them. Uncertain cases go to a second review. Verified descriptions are linked to the instance annotations.",
+            "I turned point prompts and mask corrections into tracked masks with consistent IDs across frames.",
+            "I shared TensorRT engines between image and video inputs, so the same computation is not run twice.",
+            "I used Qwen-series vision-language models to write region-grounded object descriptions and to check them. I sent uncertain cases to a second review and linked the verified descriptions to the instance annotations.",
         ],
-        "outcome": "Per-image labeling cost fell from about USD 1.05 to about USD 0.036, a 96.6% reduction.",
+        "outcome": "Labeling one image cost about USD 1.05 before this pipeline and about USD 0.036 after it, a 96.6% reduction.",
         "stack": "TensorRT, Qwen-series vision-language models, and COCO.",
     },
     "strawberry-cultivation": {
         "title": "Strawberry cultivation tasks",
         "result": "Transplanting 93.8%, flower thinning 87.5%, and runner handling 65% across 1,000 fixed-lab trials. Shown at CES 2025.",
-        "desc": "Diffusion Policy on UMI demonstrations for three strawberry tasks. 93.8%, 87.5%, and 65% across 1,000 fixed-lab trials. Exhibited at CES 2025.",
+        "desc": "I trained Diffusion Policy on UMI demonstrations for transplanting, flower thinning, and runner handling. In 1,000 fixed-lab trials, success was 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. The work was exhibited at CES 2025.",
         "video": "strawberry",
-        "problem": "Three strawberry cultivation tasks had to be learned from human demonstrations: transplanting, flower thinning, and runner handling. The demonstrations were collected with a Universal Manipulation Interface (UMI).",
+        "problem": "Transplanting, flower thinning, and runner handling are learned from human demonstrations collected with a Universal Manipulation Interface (UMI).",
         "role": "I led the data pipeline and the policy training for all three tasks. I built everything except the robot-side post-processing.",
         "method": [
             "I collected GoPro RGB and IMU data and calibrated the camera to the IMU.",
             "I turned ORB-SLAM3 visual-inertial SLAM trajectories into training sets.",
             "I trained Diffusion Policy with RGB features and robot state as global conditioning, and compared U-Net and ViT configurations.",
         ],
-        "outcome": "In a fixed lab, across 1,000 trials, success was 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. The work was exhibited at CES 2025.",
+        "outcome": "Across 1,000 trials in a fixed lab, transplanting succeeded 93.8% of the time, flower thinning 87.5%, and runner handling 65%. The work was exhibited at CES 2025.",
         "stack": "UMI, GoPro, IMU, ORB-SLAM3, Diffusion Policy, U-Net, and ViT.",
     },
     "cad-free-assembly": {
         "title": "CAD-free assembly",
         "result": "93% task success across 1,000 in-house trials, with no CAD model of the part.",
-        "desc": "6D tool poses for assembly from a 2D camera, with no CAD model of the part. 93% task success across 1,000 in-house trials.",
+        "desc": "I estimated 6D tool poses for assembly from a 2D camera at run time, with no CAD model of the part. Task success was 93% across 1,000 in-house trials.",
         "video": "cad",
         "problem": "Assembly needs a target 6D tool pose when the part has no CAD model. At run time the sensor is a 2D camera.",
         "role": "I prototyped a two-view baseline and built the final pose pipeline.",
         "method": [
-            "I prototyped a two-view RGB baseline: learned feature matching between a reference image and a target image, USAC essential-matrix estimation, relative pose recovery, and triangulation.",
-            "In the final pipeline, LightGlue matches the live 2D image to a stored reference RGB-D capture, so each match carries depth. Matches with no depth are removed.",
-            "solvePnP and RANSAC estimate the camera pose from the 3D-2D matches. That pose is chained with the hand-eye calibration and the stored reference pose. The result is the target 6D tool pose.",
+            "I prototyped a two-view RGB baseline that matched a reference image to a target image with learned features, estimated the essential matrix with USAC, recovered the relative pose, and ran triangulation.",
+            "In the final pipeline, I matched the live 2D image to a stored reference RGB-D capture with LightGlue, so each match carries depth. I removed matches with no depth.",
+            "I recovered the camera pose with solvePnP and RANSAC on the 3D-2D matches, and I chained that pose with the hand-eye calibration and the stored reference pose to get the target 6D tool pose.",
         ],
-        "outcome": "Task success was 93% across 1,000 in-house trials. This work is the basis of Korean Patent 10-2694987.",
+        "outcome": "93% of 1,000 in-house trials succeeded. This work is the basis of Korean Patent 10-2694987.",
         "stack": "LightGlue, USAC, solvePnP, RANSAC, and hand-eye calibration.",
     },
     "bin-picking": {
         "title": "CAD-based bin picking",
         "result": "89% task success across 1,000 in-house trials on five object types.",
-        "desc": "Picking poses from RGB-D images and known CAD geometry. 89% task success in 1,000 in-house, fixed-environment trials.",
+        "desc": "I estimated picking poses from RGB-D images for objects with known CAD geometry. Task success was 89% in 1,000 in-house, fixed-environment trials.",
         "video": "bin",
-        "problem": "Picking poses were needed for objects with known CAD geometry. The source is RGB-D images of a bin.",
-        "role": "I trained the segmenter and fit visible-surface CAD templates to the segmented points.",
+        "problem": "Picking poses for objects with known CAD geometry come from RGB-D images of a bin.",
+        "role": "I trained the segmenter and aligned visible-surface CAD templates to the segmented points.",
         "method": [
-            "I trained Mask R-CNN (ResNet-101) with separate unoccluded and hole classes. Hole masks are subtracted from object masks. The remaining instance masks segment the point cloud.",
-            "Visible-surface CAD templates for each pick pose are built by hidden-point removal, then fit to the segmented points with PCA initialization and point-to-point ICP.",
-            "Each fit is checked model-to-scene and scene-to-model. Poses are filtered by registration fitness, inlier RMSE, and a combined score. Candidates are ranked and transformed into the robot base with the camera extrinsics.",
+            "I trained Mask R-CNN (ResNet-101) with separate unoccluded and hole classes, subtracted hole masks from object masks, and segmented the point cloud with the remaining instance masks.",
+            "I built visible-surface CAD templates for each pick pose by hidden-point removal, and I aligned them to the segmented points with PCA initialization and point-to-point ICP.",
+            "I checked each fit model-to-scene and scene-to-model, filtered poses by registration fitness, inlier RMSE, and a combined score, then ranked the candidates and transformed the poses into the robot base with the camera extrinsics.",
         ],
-        "outcome": "Task success was 89% in 1,000 in-house, fixed-environment trials, moving five object types into an empty container.",
+        "outcome": "In 1,000 in-house, fixed-environment trials, the robot moved five object types into an empty container with 89% task success.",
         "stack": "Mask R-CNN, ResNet-101, PCA, and point-to-point ICP.",
     },
     "ros-6d-vision": {
         "title": "ROS 6D vision server",
-        "result": "A ROS action server returns robot-base and camera-frame poses, with eye-to-hand calibration tools.",
-        "desc": "A ROS action server for capture, segmentation, and 6D pose, plus eye-to-hand calibration tools.",
+        "result": "Wrote the ROS server that returns camera and robot-base poses on each request from Zivid, RealSense, or recorded data, plus eye-to-hand calibration tools that report residual error.",
+        "desc": "Capture, segmentation, and pose estimation run on each request and return poses with matching scores. The eye-to-hand tools report residual error.",
         "video": None,
-        "problem": "A caller needs the object pose in the robot base frame and in the camera frame. The camera also has to be calibrated to the robot.",
+        "problem": "Each request returns an object pose in the robot base frame and in the camera frame, so the camera has to be calibrated to the robot.",
         "role": "I wrote the ROS action server and the eye-to-hand calibration tools.",
         "method": [
-            "The server runs capture, segmentation, and pose estimation per request, and returns robot-base and camera-frame poses with matching scores.",
-            "A configuration file selects the camera (Zivid, RealSense, or recorded data), the model, and the pipeline.",
-            "Eye-to-hand calibration uses ArUco board pose estimation, the OpenCV Park method, and a batch AX = YB solver that reports residual error. A validation tool checks the calibration. Runtime parameters use ROS dynamic_reconfigure.",
+            "I wrote the server to run capture, segmentation, and pose estimation on each request.",
+            "I used a configuration file to select the camera (Zivid, RealSense, or recorded data), the model, and the pipeline.",
+            "I computed the eye-to-hand transform from ArUco board poses with the OpenCV Park method and a batch AX = YB solver that reports residual error. I added a validation tool and ROS dynamic_reconfigure for runtime parameters.",
         ],
-        "outcome": "Each request returns the object pose in the robot base frame and in the camera frame, with a matching score.",
+        "outcome": "Each request returns the pose in the camera frame and in the robot base, with a matching score.",
         "stack": "ROS, Zivid, RealSense, ArUco, OpenCV, and dynamic_reconfigure.",
     },
     "license-plate": {
         "title": "License plate recognition",
-        "result": "Object detection finds the plate and OCR reads the letters and digits.",
-        "desc": "A license-plate pipeline: object detection finds the plate, and OCR reads the letters and digits.",
+        "result": "Built the plate recognition pipeline end to end: detection finds the plate, OCR reads it.",
+        "desc": "Object detection locates a car license plate, and OCR reads the letters and digits.",
         "video": None,
         "problem": "The letters and digits on a car license plate had to be read.",
         "role": "I built the recognition pipeline.",
         "method": [
-            "Object detection finds the plate.",
-            "OCR reads the letters and digits.",
+            "I used object detection to find the plate.",
+            "I used OCR to read the letters and digits.",
         ],
-        "outcome": "The pipeline finds the plate and reads its letters and digits.",
+        "outcome": "The output is the plate's letters and digits.",
         "stack": "Object detection and OCR.",
     },
 }
@@ -149,7 +149,7 @@ CLIPS = {
         "full_w": 540,
         "full_h": 960,
         "orient": "portrait",
-        "label": "Flower thinning at the CES 2025 booth.",
+        "label": "Strawberry cultivation at the CES 2025 booth.",
     },
     "cad": {
         "home": "/assets/video/home/assembly.mp4",
@@ -160,7 +160,7 @@ CLIPS = {
         "full_w": 1280,
         "full_h": 720,
         "orient": "landscape",
-        "label": "UR arm with a gripper and wrist camera, assembling a part on a fixture.",
+        "label": "Robot arm with a gripper and wrist camera, assembling a part on a fixture.",
     },
     "bin": {
         "home": "/assets/video/home/bin-picking.mp4",
@@ -171,7 +171,7 @@ CLIPS = {
         "full_w": 1280,
         "full_h": 720,
         "orient": "landscape",
-        "label": "A Doosan cobot during CAD-based bin picking.",
+        "label": "A cobot arm during CAD-based bin picking.",
     },
 }
 
@@ -270,14 +270,14 @@ def home_page():
             f'<p>{esc(page["result"])} <a href="{href}">details</a></p>'
             "</div></article>"
         )
-    body = f"""{head("Jaewoo Choi", "Senior AI Researcher at Daedong AILab. Perception for real robots, toward vision-language-action models.", "/")}
+    body = f"""{head("Jaewoo Choi", "Senior AI Researcher at Daedong AILab, with work on open-vocabulary segmentation, obstacle mapping, 6D pose, and imitation learning for orchard and manipulation robots.", "/")}
 <body>
 {nav(True)}
 <main class="wrap glance" id="glance">
 <div class="who">
 <h1>Jaewoo Choi</h1>
 <p class="role">Senior AI Researcher, Daedong AILab</p>
-<p class="interest">I work on perception for real robots and want to extend it toward vision-language-action models that connect what a robot sees with how it acts.</p>
+<p class="interest">I work on perception for real robots: open-vocabulary RGB-D segmentation, point-cloud-image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. I have developed and tested this work on deployed orchard robots and on manipulation robots. I want to extend it toward vision-language-action models that connect what a robot sees with how it acts.</p>
 <p class="contacts"><a href="mailto:{esc(EMAIL)}">Email</a><a href="{esc(GITHUB)}" rel="me">GitHub</a><a href="{esc(KAGGLE)}" rel="me">Kaggle</a><a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a></p>
 </div>
 <p class="evidence">Production RT100. 1,000-trial robot evaluations. Patent 10-2694987. 3 Kaggle medals.</p>

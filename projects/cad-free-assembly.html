@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CAD-free assembly, Jaewoo Choi</title>
-<meta name="description" content="6D tool poses for assembly from a 2D camera, with no CAD model of the part. 93% task success across 1,000 in-house trials.">
+<meta name="description" content="I estimated 6D tool poses for assembly from a 2D camera at run time, with no CAD model of the part. Task success was 93% across 1,000 in-house trials.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="CAD-free assembly, Jaewoo Choi">
-<meta property="og:description" content="6D tool poses for assembly from a 2D camera, with no CAD model of the part. 93% task success across 1,000 in-house trials.">
+<meta property="og:description" content="I estimated 6D tool poses for assembly from a 2D camera at run time, with no CAD model of the part. Task success was 93% across 1,000 in-house trials.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -30,7 +30,7 @@
 <main id="content">
 <h1>CAD‑free assembly</h1>
 <p class="meta">PLAIF, Computer Vision Engineer, Jan. 2023–Apr. 2024.</p>
-<figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/cad-room.jpg" aria-label="UR arm with a gripper and wrist camera, assembling a part on a fixture."><source src="/assets/video/cad-free-assembly.mp4" type="video/mp4"></video><figcaption>UR arm with a gripper and wrist camera, assembling a part on a fixture.</figcaption></figure>
+<figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/cad-room.jpg" aria-label="Robot arm with a gripper and wrist camera, assembling a part on a fixture."><source src="/assets/video/cad-free-assembly.mp4" type="video/mp4"></video><figcaption>Robot arm with a gripper and wrist camera, assembling a part on a fixture.</figcaption></figure>
 <section>
 <h2>Problem</h2>
 <p>Assembly needs a target 6D tool pose when the part has no CAD model. At run time the sensor is a 2D camera.</p>
@@ -42,14 +42,14 @@
 <section>
 <h2>Method</h2>
 <ol>
-<li>I prototyped a two‑view RGB baseline: learned feature matching between a reference image and a target image, USAC essential‑matrix estimation, relative pose recovery, and triangulation.</li>
-<li>In the final pipeline, LightGlue matches the live 2D image to a stored reference RGB‑D capture, so each match carries depth. Matches with no depth are removed.</li>
-<li>solvePnP and RANSAC estimate the camera pose from the 3D‑2D matches. That pose is chained with the hand‑eye calibration and the stored reference pose. The result is the target 6D tool pose.</li>
+<li>I prototyped a two‑view RGB baseline that matched a reference image to a target image with learned features, estimated the essential matrix with USAC, recovered the relative pose, and ran triangulation.</li>
+<li>In the final pipeline, I matched the live 2D image to a stored reference RGB‑D capture with LightGlue, so each match carries depth. I removed matches with no depth.</li>
+<li>I recovered the camera pose with solvePnP and RANSAC on the 3D‑2D matches, and I chained that pose with the hand‑eye calibration and the stored reference pose to get the target 6D tool pose.</li>
 </ol>
 </section>
 <section>
 <h2>Result</h2>
-<p>Task success was 93% across 1,000 in‑house trials. This work is the basis of Korean Patent 10‑2694987.</p>
+<p>93% of 1,000 in‑house trials succeeded. This work is the basis of Korean Patent 10‑2694987.</p>
 </section>
 <section>
 <h2>Stack</h2>

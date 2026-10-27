@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ROS 6D vision server, Jaewoo Choi</title>
-<meta name="description" content="A ROS action server for capture, segmentation, and 6D pose, plus eye-to-hand calibration tools.">
+<meta name="description" content="Capture, segmentation, and pose estimation run on each request and return poses with matching scores. The eye-to-hand tools report residual error.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="ROS 6D vision server, Jaewoo Choi">
-<meta property="og:description" content="A ROS action server for capture, segmentation, and 6D pose, plus eye-to-hand calibration tools.">
+<meta property="og:description" content="Capture, segmentation, and pose estimation run on each request and return poses with matching scores. The eye-to-hand tools report residual error.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -33,7 +33,7 @@
 
 <section>
 <h2>Problem</h2>
-<p>A caller needs the object pose in the robot base frame and in the camera frame. The camera also has to be calibrated to the robot.</p>
+<p>Each request returns an object pose in the robot base frame and in the camera frame, so the camera has to be calibrated to the robot.</p>
 </section>
 <section>
 <h2>My role</h2>
@@ -42,14 +42,14 @@
 <section>
 <h2>Method</h2>
 <ol>
-<li>The server runs capture, segmentation, and pose estimation per request, and returns robot‑base and camera‑frame poses with matching scores.</li>
-<li>A configuration file selects the camera (Zivid, RealSense, or recorded data), the model, and the pipeline.</li>
-<li>Eye‑to‑hand calibration uses ArUco board pose estimation, the OpenCV Park method, and a batch AX = YB solver that reports residual error. A validation tool checks the calibration. Runtime parameters use ROS dynamic_reconfigure.</li>
+<li>I wrote the server to run capture, segmentation, and pose estimation on each request.</li>
+<li>I used a configuration file to select the camera (Zivid, RealSense, or recorded data), the model, and the pipeline.</li>
+<li>I computed the eye‑to‑hand transform from ArUco board poses with the OpenCV Park method and a batch AX = YB solver that reports residual error. I added a validation tool and ROS dynamic_reconfigure for runtime parameters.</li>
 </ol>
 </section>
 <section>
 <h2>Result</h2>
-<p>Each request returns the object pose in the robot base frame and in the camera frame, with a matching score.</p>
+<p>Each request returns the pose in the camera frame and in the robot base, with a matching score.</p>
 </section>
 <section>
 <h2>Stack</h2>

@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CAD-based bin picking, Jaewoo Choi</title>
-<meta name="description" content="Picking poses from RGB-D images and known CAD geometry. 89% task success in 1,000 in-house, fixed-environment trials.">
+<meta name="description" content="I estimated picking poses from RGB-D images for objects with known CAD geometry. Task success was 89% in 1,000 in-house, fixed-environment trials.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="CAD-based bin picking, Jaewoo Choi">
-<meta property="og:description" content="Picking poses from RGB-D images and known CAD geometry. 89% task success in 1,000 in-house, fixed-environment trials.">
+<meta property="og:description" content="I estimated picking poses from RGB-D images for objects with known CAD geometry. Task success was 89% in 1,000 in-house, fixed-environment trials.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/bin-picking.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -30,26 +30,26 @@
 <main id="content">
 <h1>CAD‑based bin picking</h1>
 <p class="meta">PLAIF, Computer Vision Engineer, Jan. 2023–Apr. 2024.</p>
-<figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/bin-arm.jpg" aria-label="A Doosan cobot during CAD-based bin picking."><source src="/assets/video/bin-picking.mp4" type="video/mp4"></video><figcaption>A Doosan cobot during CAD‑based bin picking.</figcaption></figure>
+<figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/bin-arm.jpg" aria-label="A cobot arm during CAD-based bin picking."><source src="/assets/video/bin-picking.mp4" type="video/mp4"></video><figcaption>A cobot arm during CAD‑based bin picking.</figcaption></figure>
 <section>
 <h2>Problem</h2>
-<p>Picking poses were needed for objects with known CAD geometry. The source is RGB‑D images of a bin.</p>
+<p>Picking poses for objects with known CAD geometry come from RGB‑D images of a bin.</p>
 </section>
 <section>
 <h2>My role</h2>
-<p>I trained the segmenter and fit visible‑surface CAD templates to the segmented points.</p>
+<p>I trained the segmenter and aligned visible‑surface CAD templates to the segmented points.</p>
 </section>
 <section>
 <h2>Method</h2>
 <ol>
-<li>I trained Mask R‑CNN (ResNet‑101) with separate unoccluded and hole classes. Hole masks are subtracted from object masks. The remaining instance masks segment the point cloud.</li>
-<li>Visible‑surface CAD templates for each pick pose are built by hidden‑point removal, then fit to the segmented points with PCA initialization and point‑to‑point ICP.</li>
-<li>Each fit is checked model‑to‑scene and scene‑to‑model. Poses are filtered by registration fitness, inlier RMSE, and a combined score. Candidates are ranked and transformed into the robot base with the camera extrinsics.</li>
+<li>I trained Mask R‑CNN (ResNet‑101) with separate unoccluded and hole classes, subtracted hole masks from object masks, and segmented the point cloud with the remaining instance masks.</li>
+<li>I built visible‑surface CAD templates for each pick pose by hidden‑point removal, and I aligned them to the segmented points with PCA initialization and point‑to‑point ICP.</li>
+<li>I checked each fit model‑to‑scene and scene‑to‑model, filtered poses by registration fitness, inlier RMSE, and a combined score, then ranked the candidates and transformed the poses into the robot base with the camera extrinsics.</li>
 </ol>
 </section>
 <section>
 <h2>Result</h2>
-<p>Task success was 89% in 1,000 in‑house, fixed‑environment trials, moving five object types into an empty container.</p>
+<p>In 1,000 in‑house, fixed‑environment trials, the robot moved five object types into an empty container with 89% task success.</p>
 </section>
 <section>
 <h2>Stack</h2>

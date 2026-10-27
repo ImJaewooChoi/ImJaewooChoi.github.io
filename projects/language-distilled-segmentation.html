@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Open-vocabulary segmentation and mapping, Jaewoo Choi</title>
-<meta name="description" content="Two versions of an open-vocabulary segmenter for RT100, and the occupancy-grid mapping that uses the masks. Deployed on production RT100.">
+<meta name="description" content="Two versions of an open-vocabulary segmenter for the RT100 orchard platform, and the occupancy grid built from the masks. The pipeline runs on production RT100 with TensorRT on Jetson Nano.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="Open-vocabulary segmentation and mapping, Jaewoo Choi">
-<meta property="og:description" content="Two versions of an open-vocabulary segmenter for RT100, and the occupancy-grid mapping that uses the masks. Deployed on production RT100.">
+<meta property="og:description" content="Two versions of an open-vocabulary segmenter for the RT100 orchard platform, and the occupancy grid built from the masks. The pipeline runs on production RT100 with TensorRT on Jetson Nano.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/language-distilled-segmentation.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -37,20 +37,20 @@
 </section>
 <section>
 <h2>My role</h2>
-<p>I pre‑trained one segmentation stack, adapted a DETR‑based segmenter for the RT100 orchard platform, and built the occupancy‑grid mapping from the instance masks.</p>
+<p>I pre‑trained a DINOv2 and SigLIP2 segmenter, adapted a DETR‑based segmenter for the RT100 orchard platform, and built the occupancy‑grid mapping from the instance masks.</p>
 </section>
 <section>
 <h2>Method</h2>
 <h3>Version 1</h3>
-<p>I pre‑trained the adapter, neck, and segmentation head on multiple datasets over frozen DINOv2 and SigLIP2 encoders, with region‑text alignment for instance and semantic segmentation. The model takes text prompts at inference and can run with a fixed vocabulary. I adapted it to the orchard domain.</p>
+<p>I pre‑trained the adapter, neck, and segmentation head on multiple datasets over frozen DINOv2 and SigLIP2 encoders, with region‑text alignment for instance and semantic segmentation. I added text‑prompt inference and fixed‑vocabulary conversion, and I adapted the model to the orchard domain.</p>
 <h3>Version 2</h3>
-<p>A DETR‑based segmenter uses a frozen DINOv3 backbone, a trainable lightweight text encoder, a multi‑scale feature projector, and a three‑layer decoder. The decoder predicts masks from dot products between queries and refined spatial features. During training only, object queries and pooled image features are matched to precomputed language‑teacher embeddings of object and image descriptions. Semantically related negatives are reweighted so they are not pushed apart. The language teacher adds no inference cost.</p>
+<p>I adapted a DETR‑based segmenter with a frozen DINOv3 backbone, a trainable lightweight text encoder, a multi‑scale feature projector, and a three‑layer decoder that predicts masks from dot products of queries and refined spatial features. During training only, I aligned object queries and pooled image features with precomputed language‑teacher embeddings of object and image descriptions, and I reweighted semantically related negatives so they are not pushed apart.</p>
 <h3>Post‑processing</h3>
-<p>Point‑cloud voxel centers are projected into the image and tied to the instance masks. Virtual voxels are added from valid anchor depths. Obstacles go into a navigable occupancy grid with decay, hysteresis, and cost inflation.</p>
+<p>I projected point‑cloud voxel centers into the image and associated them with the instance masks. I added virtual voxels from valid anchor depths, and I mapped obstacles into a navigable occupancy grid with decay, hysteresis, and cost inflation.</p>
 </section>
 <section>
 <h2>Result</h2>
-<p>The work runs in the production RT100 perception pipeline. It is deployed on production RT100 platforms and optimized with TensorRT on Jetson Nano.</p>
+<p>The model is integrated into the production RT100 perception pipeline. I deployed the pipeline on production RT100 platforms and optimized it with TensorRT on Jetson Nano.</p>
 </section>
 <section>
 <h2>Stack</h2>
