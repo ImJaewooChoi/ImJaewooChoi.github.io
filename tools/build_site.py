@@ -172,8 +172,8 @@ PROJECTS = [
             "ko": "RT100 open-vocabulary segmentation and occupancy mapping",
         },
         "line": {
-            "en": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step. Version 1 runs on production RT100 robots with TensorRT on Jetson Nano.",
-            "ko": "RT100용 open-vocabulary segmenter(Version 1), open-vocabulary DETR 계열 instance segmentation 모델(Version 2), mask로 만드는 occupancy grid입니다. Production RT100에서는 Version 1이 TensorRT, Jetson Nano로 돌아갑니다.",
+            "en": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step. Version 1 runs on production RT100 robots with TensorRT on Jetson Orin Nano.",
+            "ko": "RT100용 open-vocabulary segmenter(Version 1), open-vocabulary DETR 계열 instance segmentation 모델(Version 2), mask로 만드는 occupancy grid입니다. Production RT100에서는 Version 1이 TensorRT, Jetson Orin Nano로 돌아갑니다.",
         },
         "tools": {
             "en": "Open-vocabulary segmentation, DETR, DINOv3, SigLIP2, TensorRT",
@@ -195,9 +195,6 @@ PROJECTS = [
                 )),
                 ("Results", P(
                     "Instance masks feed point-cloud projection and occupancy-grid mapping. Version 1 is in the production RT100 perception pipeline.",
-                )),
-                ("Stack", P(
-                    "DETR, frozen DINOv3, a trainable lightweight text encoder, a multi-scale feature projector, a three-layer decoder.",
                 )),
             ],
             "ko": [
@@ -650,9 +647,9 @@ DISPLAY = {
         "blurb": "I built two versions of an open-vocabulary segmenter for RT100 and the occupancy-grid mapping that uses the masks.",
         "results": [
             ("Where it runs", "Version 1: production RT100 perception pipeline"),
-            ("Deployment", "Version 1: production RT100, TensorRT on Jetson Nano"),
+            ("Deployment", "Version 1: production RT100, TensorRT on Jetson Orin Nano"),
         ],
-        "stack": ["DINOv3", "SigLIP2", "DETR", "lightweight text encoder", "TensorRT", "Jetson Nano"],
+        "stack": ["DINOv3", "SigLIP2", "DETR", "lightweight text encoder", "TensorRT", "Jetson Orin Nano"],
     },
     "auto-labeling": {
         "nav": "Auto-labeling",

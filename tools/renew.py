@@ -26,15 +26,15 @@ from build_site import (
 PAGES = {
     "language-distilled-segmentation": {
         "title": "Open-vocabulary segmentation and mapping",
-        "result": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step. Version 1 runs on production RT100 robots with TensorRT on Jetson Nano.",
-        "desc": "Two versions of an open-vocabulary segmenter for the RT100 orchard platform, and the occupancy grid built from the masks. Version 1 runs on production RT100 with TensorRT on Jetson Nano.",
+        "result": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step. Version 1 runs on production RT100 robots with TensorRT on Jetson Orin Nano.",
+        "desc": "Two versions of an open-vocabulary segmenter for the RT100 orchard platform, and the occupancy grid built from the masks. Version 1 runs on production RT100 with TensorRT on Jetson Orin Nano.",
         "video": None,
         "problem": "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map under embedded compute limits.",
         "role": "I pre-trained a DINOv3 and SigLIP2 segmenter (Version 1), implemented and trained a second open-vocabulary segmenter (Version 2), and built the occupancy-grid mapping from the instance masks.",
         "method": [
             (
                 "Version 1",
-                "With the DINOv3 and SigLIP2 encoders frozen, I pre-trained the adapter, neck, and segmentation head on multiple datasets, with region-text alignment for instance and semantic segmentation. I added text-prompt inference and fixed-vocabulary conversion, and adapted it to the orchard domain.",
+                "With the DINOv3 and SigLIP2 encoders frozen, I pre-trained the image adapter, PAN-FPN neck, text adapter, and instance and semantic heads on multiple datasets. The two heads were trained together on alternating batches. A region-text alignment loss supervised the instance head, and the semantic head classified each pixel against the class-name text embeddings. I added text-prompt inference and fixed-vocabulary conversion, and adapted the model to the orchard domain.",
             ),
             (
                 "Version 2",
@@ -45,8 +45,7 @@ PAGES = {
                 "Point-cloud voxel centers were projected into the image and associated with the instance masks. I added virtual voxels from valid anchor depths, and obstacles were mapped into a navigable occupancy grid with decay, hysteresis, and cost inflation.",
             ),
         ],
-        "outcome": "Version 1 is integrated into the production RT100 perception pipeline. I deployed it and optimized it with TensorRT on Jetson Nano. For Version 2, the detection model exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime. Full-dataset training and accuracy evaluation of Version 2 are pending.",
-        "stack": "DINOv3, SigLIP2, DETR, a lightweight text encoder, a multi-scale feature projector, a three-layer decoder, TensorRT, and Jetson Nano.",
+        "outcome": "Version 1 is integrated into the production RT100 perception pipeline. I deployed it and optimized it with TensorRT on Jetson Orin Nano. For Version 2, the detection model exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime. Full-dataset training and accuracy evaluation of Version 2 are pending.",
     },
     "auto-labeling": {
         "title": "Auto-labeling pipeline",
@@ -111,7 +110,7 @@ PAGES = {
         "result": "Wrote the ROS server that returns camera and robot-base poses on each request, plus eye-to-hand calibration tools that report residual error.",
         "desc": "Capture, segmentation, and pose estimation run on each request and return poses with matching scores. The eye-to-hand tools report residual error.",
         "video": None,
-        "problem": "Each request returns an object pose in the robot base frame, so the camera has to be calibrated to the robot.",
+        "problem": "A caller needs each object pose in the robot base frame, so the camera has to be calibrated to the robot.",
         "role": "I wrote the ROS action server and the eye-to-hand calibration tools.",
         "method": [],
         "outcome": "Each request returns the pose in the camera frame and in the robot base, with a matching score.",
@@ -283,7 +282,7 @@ def home_page():
 <div class="who">
 <h1>Jaewoo Choi</h1>
 <p class="role">Senior AI Researcher, Daedong AILab</p>
-<p class="interest">I work on perception for real robots: open-vocabulary RGB-D segmentation, point-cloud-image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. It was tested on deployed orchard robots and on manipulation robots. Next, I want to extend it toward vision-language-action models.</p>
+<p class="interest">I work on perception for real robots: open-vocabulary RGB-D segmentation, point-cloud-image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. This work was tested on deployed orchard robots and on manipulation robots. Next, I want to extend it toward vision-language-action models.</p>
 <p class="contacts"><a href="mailto:{esc(EMAIL)}">Email</a><a href="{esc(GITHUB)}" rel="me">GitHub</a><a href="{esc(KAGGLE)}" rel="me">Kaggle</a><a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a></p>
 </div>
 <p class="evidence">Production RT100. 1,000-trial robot evaluations. Patent 10-2694987. 3 Kaggle medals.</p>
@@ -378,7 +377,7 @@ DIAGRAMS = {
 <div class="flow-fork">
 <div>
 <p class="flow-k">Version 1</p>
-<p>Frozen DINOv3 + SigLIP2 encoders, trained adapter, neck, segmentation head.</p>
+<p>Frozen DINOv3 + SigLIP2 encoders. Trained image and text adapters, PAN-FPN neck, instance and semantic heads.</p>
 </div>
 <div>
 <p class="flow-k">Version 2</p>
@@ -444,8 +443,8 @@ ARCH = {
         "src": "/assets/figures/open-vocab-v1.png",
         "w": 1920,
         "h": 930,
-        "alt": "Version 1: a frozen image encoder, an adapter, a PAN-FPN neck, instance and semantic heads, and a text encoder.",
-        "caption": "Version 1. Frozen image and text encoders, a trained adapter and neck, and instance and semantic heads.",
+        "alt": "Version 1: frozen DINOv3 image and SigLIP2 text encoders, with a trained image adapter, PAN-FPN neck, text adapter, and instance and semantic heads.",
+        "caption": "Version 1. DINOv3 and SigLIP2 stay frozen. The image adapter, PAN-FPN neck, text adapter, and instance and semantic heads are trained.",
     },
     ("language-distilled-segmentation", "Version 2"): {
         "src": "/assets/figures/open-vocab-v2.png",
