@@ -106,7 +106,7 @@ PAGES = {
         "stack": "An instance segmentation model, PCA, and point-to-point ICP.",
     },
     "ros-6d-vision": {
-        "title": "ROS 6D vision server",
+        "title": "Hand-eye calibration and 6D pose server",
         "result": "Wrote the ROS server that returns camera and robot-base poses on each request, plus eye-to-hand calibration tools that report residual error.",
         "desc": "Capture, segmentation, and pose estimation run on each request and return poses with matching scores. The eye-to-hand tools report residual error.",
         "video": None,
@@ -261,6 +261,37 @@ def slot(page):
     )
 
 
+# Home intro, version A in out/r15_for_slop.md.
+INTRO = (
+    "I build perception for real robots, covering image segmentation, point-cloud perception for obstacle mapping, "
+    "object pose estimation, and imitation learning for manipulation. This work has been tested on robots deployed "
+    "in orchards and on robot arms. Next, I want to move toward vision-language-action models."
+)
+
+# Monochrome 24x24 paths. GitHub, Kaggle, and LinkedIn are Simple Icons (CC0); Email is an envelope.
+ICONS = {
+    "Email": "M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z",
+    "GitHub": "M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12",
+    "Kaggle": "M18.825 23.859c-.022.092-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .235-.117.352-.351.352H5.505c-.236 0-.354-.117-.354-.352V.353c0-.233.118-.353.354-.353h2.431c.234 0 .351.12.351.353v14.343l6.203-6.272c.165-.165.33-.246.495-.246h3.239c.144 0 .236.06.285.18.046.149.034.255-.036.315l-6.555 6.344 6.836 8.507c.095.104.117.208.07.358",
+    "LinkedIn": "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z",
+}
+
+
+def contact_icons():
+    links = [
+        ("Email", f"mailto:{EMAIL}", ""),
+        ("GitHub", GITHUB, ' rel="me"'),
+        ("Kaggle", KAGGLE, ' rel="me"'),
+        ("LinkedIn", LINKEDIN, ' rel="me"'),
+    ]
+    return "".join(
+        f'<a href="{esc(href)}"{rel} aria-label="{name}" title="{name}">'
+        f'<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">'
+        f'<path d="{ICONS[name]}"/></svg></a>'
+        for name, href, rel in links
+    )
+
+
 def home_page():
     rows = []
     for project in PROJECTS:
@@ -275,17 +306,16 @@ def home_page():
             f'<p>{esc(page["result"])} <a href="{href}">details</a></p>'
             "</div></article>"
         )
-    body = f"""{head("Jaewoo Choi", "Senior AI Researcher working on open-vocabulary segmentation, obstacle mapping, 6D pose, and imitation learning for orchard and manipulation robots.", "/")}
+    body = f"""{head("Jaewoo Choi", "Perception engineer building segmentation, point-cloud perception, pose estimation, and manipulation learning for orchard robots and robot arms.", "/")}
 <body>
 {nav(True)}
 <main class="wrap glance" id="glance">
 <div class="who">
 <h1>Jaewoo Choi</h1>
-<p class="role">Senior AI Researcher, Daedong AILab</p>
-<p class="interest">I work on perception for real robots: open-vocabulary segmentation, point-cloud-image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. This work was tested on deployed orchard robots and on manipulation robots. Next, I want to extend it toward vision-language-action models.</p>
-<p class="contacts"><a href="mailto:{esc(EMAIL)}">Email</a><a href="{esc(GITHUB)}" rel="me">GitHub</a><a href="{esc(KAGGLE)}" rel="me">Kaggle</a><a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a></p>
+<p class="role">Perception Engineer</p>
+<p class="interest">{esc(INTRO)}</p>
+<p class="contacts">{contact_icons()}</p>
 </div>
-<p class="evidence">Production RT100. 1,000-trial robot evaluations. Patent 10-2694987. 3 Kaggle medals.</p>
 <div class="work" id="work">
 {''.join(rows)}
 </div>

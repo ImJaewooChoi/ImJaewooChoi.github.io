@@ -1,7 +1,7 @@
 /* Faculty skim, prototype A.
    Paper #ffffff, ink #1a1a1a, quiet #3e4a56, link #234e6d, slot #f3f4f5.
    Source Serif 4, self-hosted. The name is the only display size.
-   Order: identity, one evidence line, equal project rows, then the lists.
+   Order: identity with icon links, equal project rows, then the lists.
    A filmed row has a 16:9 clip on the left. A row without footage is text
    only, and its copy starts on the same edge as the copy beside a clip.
    Project pages are one column. Portrait footage keeps
@@ -127,17 +127,36 @@ p {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px 14px;
+  gap: 6px 10px;
   margin-top: 6px;
+  margin-left: -4px;
 }
 
 .contacts a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   color: var(--ink);
   text-decoration: none;
 }
 
-.evidence {
-  margin-top: 10px;
+.contacts a:hover,
+.contacts a:focus-visible {
+  color: var(--link);
+}
+
+.contacts a:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.contacts svg {
+  display: block;
+  width: 20px;
+  height: 20px;
 }
 
 .work {
@@ -262,7 +281,6 @@ p {
   margin-top: 6px;
 }
 
-.contacts a:hover,
 .bar a:hover,
 .proj a:hover,
 .pager a:hover {

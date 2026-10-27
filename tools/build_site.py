@@ -430,8 +430,8 @@ PROJECTS = [
         "group": "plaif",
         "video": None,
         "title": {
-            "en": "ROS 6D Vision Server and Hand-Eye Calibration Tools",
-            "ko": "ROS 6D Vision Server와 Hand-Eye Calibration 도구",
+            "en": "Hand-eye calibration and 6D pose server",
+            "ko": "Hand-eye calibration과 6D pose server",
         },
         "line": {
             "en": "Wrote the ROS server that returns camera and robot-base poses on each request, plus eye-to-hand calibration tools that report residual error.",
@@ -665,7 +665,7 @@ DISPLAY = {
         "stack": ["TensorRT", "Qwen-series vision-language models", "COCO"],
     },
     "ros-6d-vision": {
-        "nav": "ROS 6D vision",
+        "nav": "Hand-eye and 6D pose",
         "pitch": "Serving 6D poses over ROS, with eye-to-hand calibration tools.",
         "dek": "Robot-base poses and camera-frame poses.",
         "notes": [],
