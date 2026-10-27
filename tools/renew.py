@@ -562,10 +562,6 @@ def project_page(project):
 <h2>Result</h2>
 <p>{esc(page["outcome"])}</p>
 </section>
-<section>
-<h2>Stack</h2>
-<p>{esc(page["stack"])}</p>
-</section>
 {pager(project)}
 </main>
 {SCRIPT}
