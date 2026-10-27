@@ -172,29 +172,29 @@ PROJECTS = [
             "ko": "RT100 open-vocabulary segmentation and occupancy mapping",
         },
         "line": {
-            "en": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step after it. Deployed on production RT100 robots with TensorRT on Jetson Nano.",
-            "ko": "RT100용 open-vocabulary segmenter 두 버전과, mask로 만드는 occupancy grid입니다. Production RT100에서 TensorRT, Jetson Nano로 돌아갑니다.",
+            "en": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step after them. Version 1 runs on production RT100 robots with TensorRT on Jetson Nano.",
+            "ko": "RT100용 open-vocabulary segmenter(Version 1), open-vocabulary DETR 계열 instance segmentation 모델(Version 2), mask로 만드는 occupancy grid입니다. Production RT100에서는 Version 1이 TensorRT, Jetson Nano로 돌아갑니다.",
         },
         "tools": {
             "en": "Open-vocabulary segmentation, DETR, DINOv3, SigLIP2, TensorRT",
             "ko": "Open-vocabulary segmentation, DETR, DINOv3, SigLIP2, TensorRT",
         },
         "desc": {
-            "en": "Two versions of an open-vocabulary segmenter for RT100, and the occupancy-grid mapping that uses the masks. Deployed on production RT100.",
-            "ko": "RT100용 open-vocabulary segmenter 두 버전과 occupancy grid. Production RT100에 배포했습니다.",
+            "en": "Two versions of an open-vocabulary segmenter for RT100, and the occupancy-grid mapping that uses the masks. Version 1 is deployed on production RT100.",
+            "ko": "RT100용 open-vocabulary segmenter 두 버전과 occupancy grid. Production RT100에는 Version 1을 배포했습니다.",
         },
         "sections": {
             "en": [
                 ("Problem", P(
-                    "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set. A language teacher is available while training. The deployed model does not add inference cost.",
+                    "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set. A language teacher can supervise the model during training without adding inference cost.",
                 )),
                 ("Approach", P(
-                    "I adapted a DETR-based segmenter for RT100. The backbone is a frozen DINOv3. A lightweight text encoder trains.",
+                    "Version 2 is a DETR-style open-vocabulary instance segmentation model. The backbone is a frozen DINOv3. A MiniLM text encoder trains.",
                     "A multi-scale feature projector feeds a three-layer decoder. The decoder predicts masks from dot products between queries and refined spatial features.",
-                    "During training only, object queries and pooled image features are matched to precomputed language-teacher embeddings of object and image descriptions. Semantically related negatives are reweighted so they are not pushed apart.",
+                    "During training only, object queries and pooled image features are matched to precomputed language-teacher embeddings of object and image captions. Semantically related negatives are reweighted so they are not pushed apart.",
                 )),
                 ("Results", P(
-                    "Instance masks feed point-cloud projection and occupancy-grid mapping. The model is in the production RT100 perception pipeline.",
+                    "Instance masks feed point-cloud projection and occupancy-grid mapping. Version 1 is in the production RT100 perception pipeline.",
                 )),
                 ("Stack", P(
                     "DETR, frozen DINOv3, a trainable lightweight text encoder, a multi-scale feature projector, a three-layer decoder.",
@@ -202,14 +202,14 @@ PROJECTS = [
             ],
             "ko": [
                 ("문제", P(
-                    "RT100 자율 과수원 플랫폼은 고정된 label set 밖의 물체에도 instance mask가 필요합니다. 학습 중에는 language teacher를 쓸 수 있고, 배포 모델의 추론 비용은 늘리지 않습니다.",
+                    "RT100 자율 과수원 플랫폼은 고정된 label set 밖의 물체에도 instance mask가 필요합니다. 학습 중에만 language teacher를 써서 추론 비용을 늘리지 않습니다.",
                 )),
                 ("방법", P(
-                    "구조는 DETR 기반입니다. Backbone은 frozen DINOv3이고, lightweight text encoder는 학습합니다. Multi-scale feature projector 뒤에 three-layer decoder가 있고, decoder는 query와 refined spatial feature의 dot product로 mask를 예측합니다.",
-                    "학습 중에만 object query와 pooled image feature를 language-teacher embedding에 맞춥니다. Embedding은 물체 설명과 이미지 설명입니다. 의미가 가까운 negative는 서로 밀리지 않게 가중치를 조정합니다.",
+                    "Version 2는 DETR 계열 open-vocabulary instance segmentation 모델입니다. Backbone은 frozen DINOv3이고, lightweight text encoder는 학습합니다. Multi-scale feature projector 뒤에 three-layer decoder가 있고, decoder는 query와 refined spatial feature의 dot product로 mask를 예측합니다.",
+                    "학습 중에만 object query와 pooled image feature를 language-teacher embedding에 맞춥니다. Embedding은 물체 caption과 이미지 caption입니다. 의미가 가까운 negative는 서로 밀리지 않게 가중치를 조정합니다.",
                 )),
                 ("결과", P(
-                    "Instance mask는 point cloud projection과 occupancy grid mapping으로 넘어갑니다. 모델은 production RT100 perception pipeline에 들어가 있습니다.",
+                    "Instance mask는 point cloud projection과 occupancy grid mapping으로 넘어갑니다. Production RT100 perception pipeline에는 Version 1이 들어가 있습니다.",
                 )),
                 ("기술", P(
                     "DETR, frozen DINOv3, lightweight text encoder, multi-scale feature projector, three-layer decoder.",
@@ -246,8 +246,8 @@ PROJECTS = [
                     "The same computation is not duplicated.",
                 )),
                 ("Approach", P(
-                    "Qwen-series vision-language models generate region-grounded object descriptions and check them.",
-                    "Uncertain cases go to a second review. Verified descriptions are linked to the instance annotations.",
+                    "Qwen-series vision-language models generate region-grounded object captions and check them.",
+                    "Uncertain cases go to a second review. Verified captions are linked to the instance annotations.",
                     "I set the label taxonomy and the annotation guidelines, and built COCO-format training datasets.",
                 )),
                 ("Results", P(
@@ -265,7 +265,7 @@ PROJECTS = [
                 )),
                 ("방법", P(
                     "Video auto-labeling pipeline을 만들었습니다. Point prompt와 mask correction은 frame 사이에서 ID가 유지되는 tracked mask가 되고, image 입력과 video 입력은 TensorRT engine을 공유합니다. 같은 연산을 두 번 하지 않습니다.",
-                    "Qwen 계열 vision-language model이 region-grounded object description을 만들고 검증합니다. 불확실한 경우는 두 번째 검토로 보내고, 검증된 description은 instance annotation에 연결합니다.",
+                    "Qwen 계열 vision-language model이 region-grounded object caption을 만들고 검증합니다. 불확실한 경우는 두 번째 검토로 보내고, 검증된 caption은 instance annotation에 연결합니다.",
                     "Label taxonomy와 annotation guideline을 정하고 COCO format 학습 데이터셋을 만들었습니다.",
                 )),
                 ("결과", P(
@@ -652,8 +652,8 @@ DISPLAY = {
         "notes": [],
         "blurb": "I built two versions of an open-vocabulary segmenter for RT100 and the occupancy-grid mapping that uses the masks.",
         "results": [
-            ("Where it runs", "Production RT100 perception pipeline"),
-            ("Deployment", "Production RT100, TensorRT on Jetson Nano"),
+            ("Where it runs", "Version 1: production RT100 perception pipeline"),
+            ("Deployment", "Version 1: production RT100, TensorRT on Jetson Nano"),
         ],
         "stack": ["DINOv3", "SigLIP2", "DETR", "lightweight text encoder", "TensorRT", "Jetson Nano"],
     },
@@ -1351,6 +1351,7 @@ def glue_tokens(text):
     text = re.sub(r"\bPatent\s+(?=\d)", "Patent\u00a0", text)
     text = re.sub(r"\bCES\s+", "CES\u00a0", text)
     text = re.sub(r"\b6D\s+", "6D\u00a0", text)
+    text = re.sub(r"\bSAM\s+3\b", "SAM\u00a03", text)
     return text
 
 

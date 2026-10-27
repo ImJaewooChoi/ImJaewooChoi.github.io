@@ -26,11 +26,11 @@ from build_site import (
 PAGES = {
     "language-distilled-segmentation": {
         "title": "Open-vocabulary segmentation and mapping",
-        "result": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step after it. Deployed on production RT100 robots with TensorRT on Jetson Nano.",
-        "desc": "Two versions of an open-vocabulary segmenter for the RT100 orchard platform, and the occupancy grid built from the masks. The pipeline runs on production RT100 with TensorRT on Jetson Nano.",
+        "result": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step after them. Version 1 runs on production RT100 robots with TensorRT on Jetson Nano.",
+        "desc": "Two versions of an open-vocabulary segmenter for the RT100 orchard platform, and the occupancy grid built from the masks. Version 1 runs on production RT100 with TensorRT on Jetson Nano.",
         "video": None,
-        "problem": "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map under embedded compute limits. A language teacher is available during training. The deployed model does not add inference cost.",
-        "role": "I pre-trained a DINOv3 and SigLIP2 segmenter and adapted a DETR-based segmenter for the RT100 orchard platform. The occupancy-grid mapping built from the instance masks is also my work.",
+        "problem": "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map under embedded compute limits. A language teacher can supervise the model during training without adding inference cost.",
+        "role": "I pre-trained a DINOv3 and SigLIP2 segmenter (Version 1), implemented and trained a second open-vocabulary segmenter (Version 2), and built the occupancy-grid mapping from the instance masks.",
         "method": [
             (
                 "Version 1",
@@ -38,14 +38,14 @@ PAGES = {
             ),
             (
                 "Version 2",
-                "The second segmenter is a DETR-based model I adapted, with a frozen DINOv3 backbone, a trainable lightweight text encoder, a multi-scale feature projector, and a three-layer decoder that predicts masks from dot products of queries and refined spatial features. During training only, object queries and pooled image features are aligned with precomputed language-teacher embeddings of object and image descriptions, and semantically related negatives are reweighted so they are not pushed apart.",
+                "Version 2 is a DETR-style instance segmentation model. Its frozen DINOv3 backbone feeds a multi-scale projector and a three-layer decoder. A trainable MiniLM text encoder embeds category names, and a query-based mask head predicts masks from the highest-resolution features. Training uses category names, mask captions, and image captions. During training only, a precomputed language teacher aligns the captions with matched queries and pooled image features and reweights related negatives. Masks are matched and trained with BCE/Dice losses.",
             ),
             (
                 "Post-processing",
                 "Point-cloud voxel centers were projected into the image and associated with the instance masks. I added virtual voxels from valid anchor depths, and obstacles were mapped into a navigable occupancy grid with decay, hysteresis, and cost inflation.",
             ),
         ],
-        "outcome": "The model is integrated into the production RT100 perception pipeline. I deployed the pipeline on production RT100 platforms and optimized it with TensorRT on Jetson Nano.",
+        "outcome": "Version 1 is integrated into the production RT100 perception pipeline. I deployed it on production RT100 platforms and optimized it with TensorRT on Jetson Nano. For Version 2, the detection model exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime. Full-dataset training and accuracy evaluation of Version 2 are pending.",
         "stack": "DINOv3, SigLIP2, DETR, a lightweight text encoder, a multi-scale feature projector, a three-layer decoder, TensorRT, and Jetson Nano.",
     },
     "auto-labeling": {
@@ -58,7 +58,7 @@ PAGES = {
         "method": [
             "Point prompts and mask corrections were turned into tracked masks with consistent IDs across frames.",
             "Image and video inputs share TensorRT engines, so the same computation is not run twice.",
-            "Qwen-series vision-language models wrote the region-grounded object descriptions and checked them. I sent uncertain cases to a second review and linked the verified descriptions to the instance annotations.",
+            "Qwen-series vision-language models wrote the region-grounded object captions and checked them. I sent uncertain cases to a second review and linked the verified captions to the instance annotations.",
         ],
         "outcome": "Labeling one image cost about USD 1.05 before this pipeline and about USD 0.036 after it, a 96.6% reduction.",
         "stack": "TensorRT, Qwen-series vision-language models, and COCO.",
@@ -282,7 +282,7 @@ def home_page():
             f'<p>{esc(page["result"])} <a href="{href}">details</a></p>'
             "</div></article>"
         )
-    body = f"""{head("Jaewoo Choi", "Senior AI Researcher at Daedong AILab, with work on open-vocabulary segmentation, obstacle mapping, 6D pose, and imitation learning for orchard and manipulation robots.", "/")}
+    body = f"""{head("Jaewoo Choi", "Senior AI Researcher working on open-vocabulary segmentation, obstacle mapping, 6D pose, and imitation learning for orchard and manipulation robots.", "/")}
 <body>
 {nav(True)}
 <main class="wrap glance" id="glance">
@@ -388,7 +388,7 @@ DIAGRAMS = {
 </div>
 <div>
 <p class="flow-k">Version 2</p>
-<p>DETR-based, frozen DINOv3 backbone, lightweight text encoder, language-teacher supervision during training only.</p>
+<p>DETR-style model. Language-teacher supervision during training only.</p>
 </div>
 </div>
 <div class="flow-step">
@@ -402,7 +402,7 @@ DIAGRAMS = {
 <p class="flow-k">Occupancy grid</p>
 <p>Decay, hysteresis, and cost inflation, for navigation.</p>
 </div>
-<figcaption>Both versions write instance masks. The occupancy grid is built from those masks.</figcaption>
+<figcaption>Both versions write instance masks. On production RT100, the occupancy grid is built from the Version 1 masks.</figcaption>
 </figure>
 """,
     "ros-6d-vision": """<figure class="flow">
@@ -455,10 +455,10 @@ ARCH = {
     },
     ("language-distilled-segmentation", "Version 2"): {
         "src": "/assets/figures/open-vocab-v2.png",
-        "w": 1920,
-        "h": 860,
-        "alt": "Version 2: a multi-scale projector, a three-layer decoder, and a teacher-alignment branch that runs only during training.",
-        "caption": "Version 2. Multi-scale features and a three-layer decoder. The teacher branch runs only during training.",
+        "w": 2000,
+        "h": 1230,
+        "alt": "Diagram of Version 2. A frozen image encoder feeds a multi-scale projector and a three-layer decoder with 300 queries, which drive mask, box and class heads. Category names pass through a trainable text encoder to select queries and score classes. In a training-only branch, mask and image captions pass through a frozen teacher text encoder and are aligned with matched queries and pooled image features.",
+        "caption": "Version 2: open-vocabulary instance segmentation model. Category names (teal) are used at inference. Mask captions (magenta) and image captions (gold) are used only in training.",
     },
 }
 
@@ -466,13 +466,13 @@ ARCH = {
 # Extra sections placed after Method. Raw HTML; harden_html adds the text hyphen handling.
 EXTRA_SECTIONS = {
     "auto-labeling": """<section>
-<h2>Model: a tracker built on SAM3</h2>
-<p>The labeling tracker is based on the SAM3 video tracker, compiled to TensorRT engines and driven by clicks and seed masks. Class names and track IDs come from the labeling backend, so the model only has to produce masks. The engines follow an open-source TensorRT build of that tracker. It keeps SAM3's weights and changes how the work is divided between engines and where memory lives on the GPU.</p>
+<h2>Model: a tracker built on SAM 3</h2>
+<p>The labeling tracker is based on the SAM 3 video tracker, compiled to TensorRT engines and driven by clicks and seed masks. Class names and track IDs come from the labeling backend, so the model only has to produce masks. The engines follow an open-source TensorRT build of that tracker. It keeps SAM 3's weights and changes how the work is divided between engines and where memory lives on the GPU.</p>
 </section>
 <section>
 <h2>Model structure</h2>
 <p>The tracker runs as separate engines. A ViT image encoder runs once per frame, and a neck turns its output into multi-scale features. Two prompt paths can start an object. The point-prompt decoder predicts a mask from the first positive or negative click and refines it with each later click. The mask-prompt init takes a seed mask and writes it into the memory bank. On every later frame, a step engine runs memory attention over that bank of past mask memories and object pointers, predicts the object's mask and encodes the new memory. Each path returns mask logits with an IoU estimate and an object score.</p>
-<figure class="arch"><img src="/assets/figures/video-tracker.png" width="2040" height="900" alt="SAM3 tracker path: a frozen image encoder and neck feed a point-prompt decoder, a mask-prompt init, and a memory-attention step that reads and writes a memory bank. Mask logits go to the CPU service that writes COCO polygons and RLE masks."><figcaption>The GPU service runs the tracker. A CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
+<figure class="arch"><img src="/assets/figures/video-tracker.png" width="2040" height="900" alt="SAM 3 tracker path: a frozen image encoder and neck feed a point-prompt decoder, a mask-prompt init, and a memory-attention step that reads and writes a memory bank. Mask logits go to the CPU service that writes COCO polygons and RLE masks."><figcaption>The GPU service runs the tracker. A CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
 <h3>What the TensorRT build changes</h3>
 <p>Splitting the graph lets the costly part run once. The encoder's output buffer is bound directly as the neck's input, and the neck's three feature maps feed the init and step engines without any copy. A frame with many objects still pays for one encoder pass.</p>
 <p>The step engine takes memory as a gathered list of key tokens with a valid-key count per object, not as a fixed stack of frames. Each key carries its own rotary position index and keeps its place in the frame when other keys are dropped. Object pointers sit before the memory keys, so the count mask never cuts a pointer in a mixed batch. With the full memory, the computation matches the original tracker. The difference is per-object key pruning: only keys near the object's last mask survive, plus a coarse background grid for global context. Attention cost follows the number of keys, so each object pays only for the keys around it.</p>
@@ -480,7 +480,7 @@ EXTRA_SECTIONS = {
 </section>
 <section>
 <h2>How the pipeline uses it</h2>
-<p>On top of SAM3, I built the prompting, serving and post-processing layer.</p>
+<p>On top of SAM 3, I built the prompting, serving and post-processing layer.</p>
 <ol>
 <li>Clicks on a video frame accumulate. Each new click refines the previous mask on the GPU, and the object's memory is committed only after the last click, so a half-finished mask never reaches the memory bank.</li>
 <li>For single images, point heads are cut out of the video point-prompt graphs. They keep the mask, IoU and object-score outputs and drop the memory outputs.</li>
@@ -495,7 +495,7 @@ EXTRA_SECTIONS = {
 <h2>Captioning after labeling</h2>
 <p>After auto-labeling finished, Qwen-series vision-language models captioned the labeled data in three stages:</p>
 <ul>
-<li>Each mask got a description of the object it covers.</li>
+<li>Each mask got a caption of the object it covers.</li>
 <li>Each mask also got a caption of its relationship to the image.</li>
 <li>The whole image got a caption of its own.</li>
 </ul>
