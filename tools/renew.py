@@ -26,15 +26,15 @@ from build_site import (
 PAGES = {
     "language-distilled-segmentation": {
         "title": "Open-vocabulary segmentation and mapping",
-        "result": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step after them. Version 1 runs on production RT100 robots with TensorRT on Jetson Nano.",
+        "result": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step. Version 1 runs on production RT100 robots with TensorRT on Jetson Nano.",
         "desc": "Two versions of an open-vocabulary segmenter for the RT100 orchard platform, and the occupancy grid built from the masks. Version 1 runs on production RT100 with TensorRT on Jetson Nano.",
         "video": None,
-        "problem": "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map under embedded compute limits. A language teacher can supervise the model during training without adding inference cost.",
+        "problem": "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map under embedded compute limits.",
         "role": "I pre-trained a DINOv3 and SigLIP2 segmenter (Version 1), implemented and trained a second open-vocabulary segmenter (Version 2), and built the occupancy-grid mapping from the instance masks.",
         "method": [
             (
                 "Version 1",
-                "With the DINOv3 and SigLIP2 encoders frozen, I pre-trained the adapter, neck, and segmentation head on multiple datasets, with region-text alignment for instance and semantic segmentation. On top of that model I added text-prompt inference and fixed-vocabulary conversion, and adapted it to the orchard domain.",
+                "With the DINOv3 and SigLIP2 encoders frozen, I pre-trained the adapter, neck, and segmentation head on multiple datasets, with region-text alignment for instance and semantic segmentation. I added text-prompt inference and fixed-vocabulary conversion, and adapted it to the orchard domain.",
             ),
             (
                 "Version 2",
@@ -45,7 +45,7 @@ PAGES = {
                 "Point-cloud voxel centers were projected into the image and associated with the instance masks. I added virtual voxels from valid anchor depths, and obstacles were mapped into a navigable occupancy grid with decay, hysteresis, and cost inflation.",
             ),
         ],
-        "outcome": "Version 1 is integrated into the production RT100 perception pipeline. I deployed it on production RT100 platforms and optimized it with TensorRT on Jetson Nano. For Version 2, the detection model exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime. Full-dataset training and accuracy evaluation of Version 2 are pending.",
+        "outcome": "Version 1 is integrated into the production RT100 perception pipeline. I deployed it and optimized it with TensorRT on Jetson Nano. For Version 2, the detection model exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime. Full-dataset training and accuracy evaluation of Version 2 are pending.",
         "stack": "DINOv3, SigLIP2, DETR, a lightweight text encoder, a multi-scale feature projector, a three-layer decoder, TensorRT, and Jetson Nano.",
     },
     "auto-labeling": {
@@ -57,7 +57,6 @@ PAGES = {
         "role": "Besides building the video auto-labeling pipeline, I set the label taxonomy and the annotation guidelines and compiled the COCO-format training datasets.",
         "method": [
             "Point prompts and mask corrections were turned into tracked masks with consistent IDs across frames.",
-            "Image and video inputs share TensorRT engines, so the same computation is not run twice.",
             "Qwen-series vision-language models wrote the region-grounded object captions and checked them. I sent uncertain cases to a second review and linked the verified captions to the instance annotations.",
         ],
         "outcome": "Labeling one image cost about USD 1.05 before this pipeline and about USD 0.036 after it, a 96.6% reduction.",
@@ -73,7 +72,7 @@ PAGES = {
         "method": [
             "GoPro RGB and IMU data were collected, and I calibrated the camera to the IMU.",
             "ORB-SLAM3 visual-inertial SLAM trajectories were turned into training sets.",
-            "Diffusion Policy was trained with RGB features and robot state as global conditioning, and I compared U-Net and ViT configurations.",
+            "Diffusion Policy was trained with RGB features and robot state as global conditioning.",
         ],
         "outcome": "Across 1,000 trials in a fixed lab, transplanting succeeded 93.8% of the time, flower thinning 87.5%, and runner handling 65%. The work was exhibited at CES 2025.",
         "stack": "UMI, GoPro, IMU, ORB-SLAM3, Diffusion Policy, U-Net, and ViT.",
@@ -86,8 +85,7 @@ PAGES = {
         "problem": "Assembly needs a target 6D tool pose when the part has no CAD model. At run time the sensor is a 2D camera.",
         "role": "I prototyped a two-view baseline and built the final pose pipeline.",
         "method": [
-            "A two-view RGB baseline came first. It matched a reference image to a target image with learned features, estimated the essential matrix with USAC, recovered the relative pose, and ran triangulation.",
-            "The final pipeline matches the live 2D image to a stored reference RGB-D capture with LightGlue, so each match carries depth. Matches with no depth are removed.",
+            "The final pipeline matches the live 2D image to a stored reference RGB-D capture with LightGlue, so each match carries depth.",
             "From the 3D-2D matches, solvePnP with RANSAC recovers the camera pose, which I chain with the hand-eye calibration and the stored reference pose to get the target 6D tool pose.",
         ],
         "outcome": "93% of 1,000 in-house trials succeeded. This work is the basis of Korean Patent 10-2694987.",
@@ -101,31 +99,27 @@ PAGES = {
         "problem": "Picking poses for objects with known CAD geometry come from RGB-D images of a bin.",
         "role": "I trained the segmenter and aligned visible-surface CAD templates to the segmented points.",
         "method": [
-            "The segmenter was an instance segmentation model, trained with separate unoccluded and hole classes. Hole masks were subtracted from object masks, and the remaining instance masks segmented the point cloud.",
+            "The instance segmentation model was trained with separate unoccluded and hole classes. Hole masks were subtracted from object masks, and the remaining instance masks segmented the point cloud.",
             "For each pick pose, I built a visible-surface CAD template by hidden-point removal and aligned it to the segmented points with PCA initialization and point-to-point ICP.",
-            "Each fit was checked model-to-scene and scene-to-model, and poses were filtered by registration fitness, inlier RMSE, and a combined score. The remaining candidates were ranked, and their poses were transformed into the robot base with the camera extrinsics.",
+            "Poses were filtered by registration fitness and inlier RMSE, then ranked and transformed into the robot base with the camera extrinsics.",
         ],
         "outcome": "In 1,000 in-house, fixed-environment trials, the robot moved five object types into an empty container with 89% task success.",
         "stack": "An instance segmentation model, PCA, and point-to-point ICP.",
     },
     "ros-6d-vision": {
         "title": "ROS 6D vision server",
-        "result": "Wrote the ROS server that returns camera and robot-base poses on each request from Zivid, RealSense, or recorded data, plus eye-to-hand calibration tools that report residual error.",
+        "result": "Wrote the ROS server that returns camera and robot-base poses on each request, plus eye-to-hand calibration tools that report residual error.",
         "desc": "Capture, segmentation, and pose estimation run on each request and return poses with matching scores. The eye-to-hand tools report residual error.",
         "video": None,
-        "problem": "Each request returns an object pose in the robot base frame and in the camera frame, so the camera has to be calibrated to the robot.",
+        "problem": "Each request returns an object pose in the robot base frame, so the camera has to be calibrated to the robot.",
         "role": "I wrote the ROS action server and the eye-to-hand calibration tools.",
-        "method": [
-            "On each request, the server runs capture, segmentation, and pose estimation.",
-            "A configuration file selects the camera (Zivid, RealSense, or recorded data), the model, and the pipeline.",
-            "The eye-to-hand transform is computed from ArUco board poses with the OpenCV Park method and a batch AX = YB solver that reports residual error. I also added a validation tool and ROS dynamic_reconfigure for runtime parameters.",
-        ],
+        "method": [],
         "outcome": "Each request returns the pose in the camera frame and in the robot base, with a matching score.",
         "stack": "ROS, Zivid, RealSense, ArUco, OpenCV, and dynamic_reconfigure.",
     },
     "license-plate": {
         "title": "License plate recognition",
-        "result": "Built the plate recognition pipeline end to end: detection finds the plate, OCR reads it.",
+        "result": "Built the plate recognition pipeline end to end.",
         "desc": "Object detection locates a car license plate, and OCR reads the letters and digits.",
         "video": None,
         "problem": "Reading the letters and digits on a car license plate meant first finding the plate in the image.",
@@ -134,7 +128,7 @@ PAGES = {
             "A detection model finds the plate.",
             "OCR reads the letters and digits.",
         ],
-        "outcome": "The output is the plate's letters and digits.",
+        "outcome": "",
         "stack": "Object detection and OCR.",
     },
 }
@@ -289,7 +283,7 @@ def home_page():
 <div class="who">
 <h1>Jaewoo Choi</h1>
 <p class="role">Senior AI Researcher, Daedong AILab</p>
-<p class="interest">I work on perception for real robots: open-vocabulary RGB-D segmentation, point-cloud-image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. This work was developed and tested on deployed orchard robots and on manipulation robots. Next, I want to extend it toward vision-language-action models that connect what a robot sees with how it acts.</p>
+<p class="interest">I work on perception for real robots: open-vocabulary RGB-D segmentation, point-cloud-image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. It was tested on deployed orchard robots and on manipulation robots. Next, I want to extend it toward vision-language-action models.</p>
 <p class="contacts"><a href="mailto:{esc(EMAIL)}">Email</a><a href="{esc(GITHUB)}" rel="me">GitHub</a><a href="{esc(KAGGLE)}" rel="me">Kaggle</a><a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a></p>
 </div>
 <p class="evidence">Production RT100. 1,000-trial robot evaluations. Patent 10-2694987. 3 Kaggle medals.</p>
@@ -467,28 +461,16 @@ ARCH = {
 EXTRA_SECTIONS = {
     "auto-labeling": """<section>
 <h2>Model: a tracker built on SAM 3</h2>
-<p>The labeling tracker is based on the SAM 3 video tracker, compiled to TensorRT engines and driven by clicks and seed masks. Class names and track IDs come from the labeling backend, so the model only has to produce masks. The engines follow an open-source TensorRT build of that tracker. It keeps SAM 3's weights and changes how the work is divided between engines and where memory lives on the GPU.</p>
-</section>
-<section>
-<h2>Model structure</h2>
-<p>The tracker runs as separate engines. A ViT image encoder runs once per frame, and a neck turns its output into multi-scale features. Two prompt paths can start an object. The point-prompt decoder predicts a mask from the first positive or negative click and refines it with each later click. The mask-prompt init takes a seed mask and writes it into the memory bank. On every later frame, a step engine runs memory attention over that bank of past mask memories and object pointers, predicts the object's mask and encodes the new memory. Each path returns mask logits with an IoU estimate and an object score.</p>
+<p>The labeling tracker is based on the SAM 3 video tracker, compiled to TensorRT engines and driven by clicks and seed masks. Class names and track IDs come from the labeling backend, so the model only has to produce masks. The engines follow an open-source TensorRT build of that tracker.</p>
 <figure class="arch"><img src="/assets/figures/video-tracker.png" width="2040" height="900" alt="SAM 3 tracker path: a frozen image encoder and neck feed a point-prompt decoder, a mask-prompt init, and a memory-attention step that reads and writes a memory bank. Mask logits go to the CPU service that writes COCO polygons and RLE masks."><figcaption>The GPU service runs the tracker. A CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
-<h3>What the TensorRT build changes</h3>
-<p>Splitting the graph lets the costly part run once. The encoder's output buffer is bound directly as the neck's input, and the neck's three feature maps feed the init and step engines without any copy. A frame with many objects still pays for one encoder pass.</p>
-<p>The step engine takes memory as a gathered list of key tokens with a valid-key count per object, not as a fixed stack of frames. Each key carries its own rotary position index and keeps its place in the frame when other keys are dropped. Object pointers sit before the memory keys, so the count mask never cuts a pointer in a mixed batch. With the full memory, the computation matches the original tracker. The difference is per-object key pruning: only keys near the object's last mask survive, plus a coarse background grid for global context. Attention cost follows the number of keys, so each object pays only for the keys around it.</p>
-<p>Memory stays on the GPU as FP16 token rows in a reusable buffer pool. Before each step, the CPU writes a short table of row addresses and a small CUDA kernel gathers those rows into the step's input. Only address tables, key counts, scores and low-resolution mask logits cross the bus. History is bounded, with a few conditioning memories, a recent window and a capped pointer list per object. Several objects advance in one batched step, and the first layer's self-attention over the frame is computed once for all of them. The neck, init and step engines run in FP16, while the point-prompt decoders and, in this pipeline's mode, the encoder layers stay in FP32.</p>
 </section>
 <section>
 <h2>How the pipeline uses it</h2>
 <p>On top of SAM 3, I built the prompting, serving and post-processing layer.</p>
 <ol>
 <li>Clicks on a video frame accumulate. Each new click refines the previous mask on the GPU, and the object's memory is committed only after the last click, so a half-finished mask never reaches the memory bank.</li>
-<li>For single images, point heads are cut out of the video point-prompt graphs. They keep the mask, IoU and object-score outputs and drop the memory outputs.</li>
 <li>Image and video requests share one image encoder and neck. Every engine is loaded once per process and shared by concurrent workers.</li>
-<li>Token pruning for memory and query tokens is reimplemented. Parity tests confirm it picks the same tokens as the original selection.</li>
-<li>A preview session snapshots its image features on the GPU. Later clicks on the same image restore that snapshot and skip the encoder.</li>
 <li>GPU inference and CPU post-processing run as separate services. The GPU side returns raw mask logits; the CPU side fills holes, resizes the masks and writes COCO polygons or RLE masks.</li>
-<li>A correction at a later frame enters as new clicks or a seed mask at that frame. The object keeps its track ID from there on.</li>
 </ol>
 </section>
 <section>
@@ -499,7 +481,6 @@ EXTRA_SECTIONS = {
 <li>Each mask also got a caption of its relationship to the image.</li>
 <li>The whole image got a caption of its own.</li>
 </ul>
-<p>The verified captions were linked to the instance annotations.</p>
 </section>
 """,
 }
@@ -528,14 +509,23 @@ def project_page(project):
             if figure:
                 blocks.append(figure)
         steps = "\n".join(blocks)
-    else:
+    elif method:
         items = "\n".join(f"<li>{esc(step)}</li>" for step in method)
         steps = f"<ol>\n{items}\n</ol>"
+    else:
+        steps = ""
     title = f"{page['title']}, Jaewoo Choi"
     path = project_href("en", project["slug"])
     extra = EXTRA_SECTIONS.get(project["slug"], "")
     if extra:
         extra = extra.strip() + "\n"
+    result = ""
+    if page["outcome"]:
+        result = f"""<section>
+<h2>Result</h2>
+<p>{esc(page["outcome"])}</p>
+</section>
+"""
     diagram = DIAGRAMS.get(project["slug"], "")
     if diagram:
         diagram = diagram.strip() + "\n"
@@ -558,11 +548,7 @@ def project_page(project):
 <h2>Method</h2>
 {diagram}{steps}
 </section>
-{extra}<section>
-<h2>Result</h2>
-<p>{esc(page["outcome"])}</p>
-</section>
-{pager(project)}
+{extra}{result}{pager(project)}
 </main>
 {SCRIPT}
 </body>

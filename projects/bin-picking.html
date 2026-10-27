@@ -42,9 +42,9 @@
 <section>
 <h2>Method</h2>
 <ol>
-<li>The segmenter was an instance segmentation model, trained with separate unoccluded and hole classes. Hole masks were subtracted from object masks, and the remaining instance masks segmented the point cloud.</li>
+<li>The instance segmentation model was trained with separate unoccluded and hole classes. Hole masks were subtracted from object masks, and the remaining instance masks segmented the point cloud.</li>
 <li>For each pick pose, I built a visible‑surface CAD template by hidden‑point removal and aligned it to the segmented points with PCA initialization and point‑to‑point ICP.</li>
-<li>Each fit was checked model‑to‑scene and scene‑to‑model, and poses were filtered by registration fitness, inlier RMSE, and a combined score. The remaining candidates were ranked, and their poses were transformed into the robot base with the camera extrinsics.</li>
+<li>Poses were filtered by registration fitness and inlier RMSE, then ranked and transformed into the robot base with the camera extrinsics.</li>
 </ol>
 </section>
 <section>

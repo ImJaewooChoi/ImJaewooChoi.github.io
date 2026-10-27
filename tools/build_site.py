@@ -172,7 +172,7 @@ PROJECTS = [
             "ko": "RT100 open-vocabulary segmentation and occupancy mapping",
         },
         "line": {
-            "en": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step after them. Version 1 runs on production RT100 robots with TensorRT on Jetson Nano.",
+            "en": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step. Version 1 runs on production RT100 robots with TensorRT on Jetson Nano.",
             "ko": "RT100용 open-vocabulary segmenter(Version 1), open-vocabulary DETR 계열 instance segmentation 모델(Version 2), mask로 만드는 occupancy grid입니다. Production RT100에서는 Version 1이 TensorRT, Jetson Nano로 돌아갑니다.",
         },
         "tools": {
@@ -186,7 +186,7 @@ PROJECTS = [
         "sections": {
             "en": [
                 ("Problem", P(
-                    "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set. A language teacher can supervise the model during training without adding inference cost.",
+                    "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set.",
                 )),
                 ("Approach", P(
                     "Version 2 is a DETR-style open-vocabulary instance segmentation model. The backbone is a frozen DINOv3. A MiniLM text encoder trains.",
@@ -242,8 +242,6 @@ PROJECTS = [
                 ("Problem", P(
                     "Manual annotation cost limits the supply of segmentation and region-grounded vision-language training data.",
                     "I built a video auto-labeling pipeline. Point prompts and mask corrections become tracked masks with consistent IDs across frames.",
-                    "Image and video share TensorRT engines.",
-                    "The same computation is not duplicated.",
                 )),
                 ("Approach", P(
                     "Qwen-series vision-language models generate region-grounded object captions and check them.",
@@ -305,7 +303,7 @@ PROJECTS = [
                 ("Approach", P(
                     "Demonstrations were collected with a Universal Manipulation Interface (UMI). I led the data pipeline and the policy training for all three tasks.",
                     "I collected GoPro RGB and IMU data, calibrated the camera to the IMU, and turned ORB-SLAM3 visual-inertial SLAM trajectories into training sets.",
-                    "Diffusion Policy was trained with RGB features and robot state as global conditioning. I compared U-Net and ViT configurations.",
+                    "Diffusion Policy was trained with RGB features and robot state as global conditioning.",
                 )),
                 ("Results", P(
                     "In a fixed lab environment, across 1,000 trials, success was 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. The robot was exhibited at CES 2025.",
@@ -356,8 +354,7 @@ PROJECTS = [
                     "Assembly needs a target 6D tool pose when the part has no CAD model. At run time the sensor is a 2D camera, not a 3D camera.",
                 )),
                 ("Approach", P(
-                    "I prototyped a two-view RGB baseline first: learned feature matching between a reference image and a target image, USAC essential-matrix estimation, relative pose recovery, and triangulation.",
-                    "In the final pipeline, LightGlue matches the live 2D image to a stored reference RGB-D capture, so each match carries depth. Matches with no depth are removed.",
+                    "In the final pipeline, LightGlue matches the live 2D image to a stored reference RGB-D capture, so each match carries depth.",
                     "solvePnP and RANSAC estimate the camera pose from the 3D-2D matches. That pose is chained with the hand-eye calibration and the stored reference pose. The result is the target 6D tool pose.",
                     "Task success was 93% across 1,000 in-house trials. This work is the basis of Korean Patent 10-2694987.",
                 )),
@@ -408,7 +405,7 @@ PROJECTS = [
                 ("Approach", P(
                     'I trained an instance segmentation model with separate "unoccluded" and "hole" classes. Hole masks are subtracted from object masks. The remaining instance masks segment the point cloud.',
                     "Visible-surface CAD templates for each pick pose are built by hidden-point removal, then fit to the segmented points with PCA initialization and point-to-point ICP.",
-                    "Each fit is checked model-to-scene and scene-to-model. Poses are filtered by registration fitness, inlier RMSE, and a combined score. Candidates are ranked. Poses are transformed into the robot base with the camera extrinsics.",
+                    "Poses are filtered by registration fitness and inlier RMSE, then ranked and transformed into the robot base with the camera extrinsics.",
                 )),
                 ("Results", P(
                     "Task success was 89% in 1,000 in-house, fixed-environment trials, moving five object types into an empty container.",
@@ -440,7 +437,7 @@ PROJECTS = [
             "ko": "ROS 6D Vision Server와 Hand-Eye Calibration 도구",
         },
         "line": {
-            "en": "Wrote the ROS server that returns camera and robot-base poses on each request from Zivid, RealSense, or recorded data, plus eye-to-hand calibration tools that report residual error.",
+            "en": "Wrote the ROS server that returns camera and robot-base poses on each request, plus eye-to-hand calibration tools that report residual error.",
             "ko": "요청마다 capture, segmentation, pose estimation을 실행하는 ROS action server입니다. Eye-to-hand calibration 도구를 같이 만들었습니다.",
         },
         "tools": {
@@ -454,7 +451,7 @@ PROJECTS = [
         "sections": {
             "en": [
                 ("Problem", P(
-                    "A caller needs the object pose in the robot base frame and in the camera frame. The camera also has to be calibrated to the robot.",
+                    "A caller needs the object pose in the robot base frame. The camera also has to be calibrated to the robot.",
                 )),
                 ("Approach", P(
                     "I wrote a ROS action server that runs capture, segmentation, and pose estimation per request. It returns robot-base and camera-frame poses with matching scores.",
@@ -488,7 +485,7 @@ PROJECTS = [
             "ko": "차량 번호판 인식",
         },
         "line": {
-            "en": "Built the plate recognition pipeline end to end: detection finds the plate, OCR reads it.",
+            "en": "Built the plate recognition pipeline end to end.",
             "ko": "Object detection으로 번호판 위치를 찾습니다. OCR로 문자와 숫자를 읽습니다.",
         },
         "tools": {

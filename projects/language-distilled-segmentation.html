@@ -33,7 +33,7 @@
 
 <section>
 <h2>Problem</h2>
-<p>RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map under embedded compute limits. A language teacher can supervise the model during training without adding inference cost.</p>
+<p>RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map under embedded compute limits.</p>
 </section>
 <section>
 <h2>My role</h2>
@@ -72,7 +72,7 @@
 <figcaption>Both versions write instance masks. On production RT100, the occupancy grid is built from the Version 1 masks.</figcaption>
 </figure>
 <h3>Version 1</h3>
-<p>With the DINOv3 and SigLIP2 encoders frozen, I pre‑trained the adapter, neck, and segmentation head on multiple datasets, with region‑text alignment for instance and semantic segmentation. On top of that model I added text‑prompt inference and fixed‑vocabulary conversion, and adapted it to the orchard domain.</p>
+<p>With the DINOv3 and SigLIP2 encoders frozen, I pre‑trained the adapter, neck, and segmentation head on multiple datasets, with region‑text alignment for instance and semantic segmentation. I added text‑prompt inference and fixed‑vocabulary conversion, and adapted it to the orchard domain.</p>
 <figure class="arch"><img src="/assets/figures/open-vocab-v1.png" width="1920" height="930" alt="Version 1: a frozen image encoder, an adapter, a PAN-FPN neck, instance and semantic heads, and a text encoder."><figcaption>Version 1. Frozen image and text encoders, a trained adapter and neck, and instance and semantic heads.</figcaption></figure>
 <h3>Version 2</h3>
 <p>Version 2 is a DETR‑style instance segmentation model. Its frozen DINOv3 backbone feeds a multi‑scale projector and a three‑layer decoder. A trainable MiniLM text encoder embeds category names, and a query‑based mask head predicts masks from the highest‑resolution features. Training uses category names, mask captions, and image captions. During training only, a precomputed language teacher aligns the captions with matched queries and pooled image features and reweights related negatives. Masks are matched and trained with BCE/Dice losses.</p>
@@ -82,7 +82,7 @@
 </section>
 <section>
 <h2>Result</h2>
-<p>Version 1 is integrated into the production RT100 perception pipeline. I deployed it on production RT100 platforms and optimized it with TensorRT on Jetson Nano. For Version 2, the detection model exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime. Full‑dataset training and accuracy evaluation of Version 2 are pending.</p>
+<p>Version 1 is integrated into the production RT100 perception pipeline. I deployed it and optimized it with TensorRT on Jetson Nano. For Version 2, the detection model exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime. Full‑dataset training and accuracy evaluation of Version 2 are pending.</p>
 </section>
 <nav class="pager" aria-label="Adjacent projects"><span></span><a href="/#work">All work</a><a href="/projects/auto-labeling.html"><span class="dir quiet">Next</span>Auto‑labeling pipeline</a></nav>
 </main>

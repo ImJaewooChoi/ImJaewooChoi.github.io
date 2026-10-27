@@ -33,7 +33,7 @@
 
 <section>
 <h2>Problem</h2>
-<p>Each request returns an object pose in the robot base frame and in the camera frame, so the camera has to be calibrated to the robot.</p>
+<p>Each request returns an object pose in the robot base frame, so the camera has to be calibrated to the robot.</p>
 </section>
 <section>
 <h2>My role</h2>
@@ -77,11 +77,7 @@
 </div>
 <figcaption>The action server runs the request chain. Calibration is a separate tool.</figcaption>
 </figure>
-<ol>
-<li>On each request, the server runs capture, segmentation, and pose estimation.</li>
-<li>A configuration file selects the camera (Zivid, RealSense, or recorded data), the model, and the pipeline.</li>
-<li>The eye‑to‑hand transform is computed from ArUco board poses with the OpenCV Park method and a batch AX = YB solver that reports residual error. I also added a validation tool and ROS dynamic_reconfigure for runtime parameters.</li>
-</ol>
+
 </section>
 <section>
 <h2>Result</h2>
