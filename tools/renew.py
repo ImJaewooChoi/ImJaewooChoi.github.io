@@ -256,7 +256,7 @@ def nav(home):
 def slot(page):
     video = page["video"]
     if not video:
-        return '<div class="slot slot-empty" aria-hidden="true"></div>'
+        return ""
     clip = CLIPS[video]
     label = esc(clip["label"])
     return (
@@ -273,8 +273,9 @@ def home_page():
     for project in PROJECTS:
         page = PAGES[project["slug"]]
         href = project_href("en", project["slug"])
+        kind = "proj" if page["video"] else "proj proj-plain"
         rows.append(
-            f'<article class="proj" id="{esc(project["slug"])}">'
+            f'<article class="{kind}" id="{esc(project["slug"])}">'
             f"{slot(page)}"
             '<div class="proj-copy">'
             f'<h2><a href="{href}">{esc(page["title"])}</a></h2>'
@@ -372,6 +373,78 @@ def pager(project):
     )
 
 
+DIAGRAMS = {
+    "language-distilled-segmentation": """<figure class="flow">
+<div class="flow-step">
+<p class="flow-k">RGB-D input</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Open-vocabulary instance segmentation</p>
+</div>
+<div class="flow-fork">
+<div>
+<p class="flow-k">Version 1</p>
+<p>Frozen DINOv2 + SigLIP2 encoders, trained adapter, neck, segmentation head.</p>
+</div>
+<div>
+<p class="flow-k">Version 2</p>
+<p>DETR-based, frozen DINOv3 backbone, lightweight text encoder, language-teacher supervision during training only.</p>
+</div>
+</div>
+<div class="flow-step">
+<p class="flow-k">Instance masks</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Associate the masks</p>
+<p>Point-cloud voxel centers projected into the image. Virtual voxels from valid anchor depths.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Occupancy grid</p>
+<p>Decay, hysteresis, and cost inflation, for navigation.</p>
+</div>
+<figcaption>Both versions write instance masks. The occupancy grid is built from those masks.</figcaption>
+</figure>
+""",
+    "ros-6d-vision": """<figure class="flow">
+<p class="flow-k">Per request, config-driven</p>
+<div class="flow-step">
+<p class="flow-k">Input</p>
+<p>Zivid, RealSense, or recorded data</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Capture</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Segmentation</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Pose estimation</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Return</p>
+<p>Robot-base and camera-frame poses, with matching scores</p>
+</div>
+<div class="flow-side">
+<p class="flow-k">Eye-to-hand calibration</p>
+<div class="flow-step">
+<p>ArUco board poses</p>
+</div>
+<div class="flow-step">
+<p>Batch AX = YB solve, OpenCV Park method</p>
+</div>
+<div class="flow-step">
+<p>Camera-robot transform and residual error</p>
+</div>
+<div class="flow-step">
+<p>Validation tool and dynamic_reconfigure tuning</p>
+</div>
+</div>
+<figcaption>The action server runs the request chain. Calibration is a separate tool.</figcaption>
+</figure>
+""",
+}
+
+
 def project_page(project):
     page = PAGES[project["slug"]]
     method = page["method"]
@@ -384,6 +457,9 @@ def project_page(project):
         steps = f"<ol>\n{items}\n</ol>"
     title = f"{page['title']}, Jaewoo Choi"
     path = project_href("en", project["slug"])
+    diagram = DIAGRAMS.get(project["slug"], "")
+    if diagram:
+        diagram = diagram.strip() + "\n"
     body = f"""{head(title, page["desc"], path)}
 <body class="page">
 {nav(False)}
@@ -401,7 +477,7 @@ def project_page(project):
 </section>
 <section>
 <h2>Method</h2>
-{steps}
+{diagram}{steps}
 </section>
 <section>
 <h2>Result</h2>

@@ -41,6 +41,36 @@
 </section>
 <section>
 <h2>Method</h2>
+<figure class="flow">
+<div class="flow-step">
+<p class="flow-k">RGB‑D input</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Open‑vocabulary instance segmentation</p>
+</div>
+<div class="flow-fork">
+<div>
+<p class="flow-k">Version 1</p>
+<p>Frozen DINOv2 + SigLIP2 encoders, trained adapter, neck, segmentation head.</p>
+</div>
+<div>
+<p class="flow-k">Version 2</p>
+<p>DETR‑based, frozen DINOv3 backbone, lightweight text encoder, language‑teacher supervision during training only.</p>
+</div>
+</div>
+<div class="flow-step">
+<p class="flow-k">Instance masks</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Associate the masks</p>
+<p>Point‑cloud voxel centers projected into the image. Virtual voxels from valid anchor depths.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Occupancy grid</p>
+<p>Decay, hysteresis, and cost inflation, for navigation.</p>
+</div>
+<figcaption>Both versions write instance masks. The occupancy grid is built from those masks.</figcaption>
+</figure>
 <h3>Version 1</h3>
 <p>I pre‑trained the adapter, neck, and segmentation head on multiple datasets over frozen DINOv2 and SigLIP2 encoders, with region‑text alignment for instance and semantic segmentation. I added text‑prompt inference and fixed‑vocabulary conversion, and I adapted the model to the orchard domain.</p>
 <h3>Version 2</h3>

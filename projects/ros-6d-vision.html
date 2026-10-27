@@ -41,6 +41,42 @@
 </section>
 <section>
 <h2>Method</h2>
+<figure class="flow">
+<p class="flow-k">Per request, config‑driven</p>
+<div class="flow-step">
+<p class="flow-k">Input</p>
+<p>Zivid, RealSense, or recorded data</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Capture</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Segmentation</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Pose estimation</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Return</p>
+<p>Robot‑base and camera‑frame poses, with matching scores</p>
+</div>
+<div class="flow-side">
+<p class="flow-k">Eye‑to‑hand calibration</p>
+<div class="flow-step">
+<p>ArUco board poses</p>
+</div>
+<div class="flow-step">
+<p>Batch AX = YB solve, OpenCV Park method</p>
+</div>
+<div class="flow-step">
+<p>Camera‑robot transform and residual error</p>
+</div>
+<div class="flow-step">
+<p>Validation tool and dynamic_reconfigure tuning</p>
+</div>
+</div>
+<figcaption>The action server runs the request chain. Calibration is a separate tool.</figcaption>
+</figure>
 <ol>
 <li>I wrote the server to run capture, segmentation, and pose estimation on each request.</li>
 <li>I used a configuration file to select the camera (Zivid, RealSense, or recorded data), the model, and the pipeline.</li>

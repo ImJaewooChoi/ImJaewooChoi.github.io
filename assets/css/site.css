@@ -2,8 +2,9 @@
    Paper #ffffff, ink #1a1a1a, quiet #3e4a56, link #234e6d, slot #f3f4f5.
    Source Serif 4, self-hosted. The name is the only display size.
    Order: identity, one evidence line, equal project rows, then the lists.
-   A filmed row has a 16:9 clip on the left. A row without footage has the
-   same slot, empty. Project pages are one column. Portrait footage keeps
+   A filmed row has a 16:9 clip on the left. A row without footage is text
+   only, and its copy starts on the same edge as the copy beside a clip.
+   Project pages are one column. Portrait footage keeps
    its own ratio, capped so a 540×960 frame does not become a full-height tower. */
 
 @font-face {
@@ -194,6 +195,57 @@ p {
   color: var(--link);
 }
 
+.proj-plain .proj-copy {
+  grid-column: 2;
+}
+
+.flow {
+  margin: 14px 0 2px;
+  max-width: 40rem;
+  hyphens: none;
+}
+
+.page .flow p {
+  max-width: none;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.flow-k {
+  font-weight: 600;
+}
+
+.flow-step {
+  border-top: 1px solid var(--ink); /* taste-skill-ignore: the flow diagram is a sequence of thin rules */
+  padding: 7px 0 8px;
+}
+
+.flow-fork {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 20px;
+  border-top: 1px solid var(--ink); /* taste-skill-ignore: the flow diagram is a sequence of thin rules */
+}
+
+.flow-fork > div {
+  padding: 7px 0 8px;
+}
+
+.flow-fork > div + div {
+  border-left: 1px solid var(--quiet); /* taste-skill-ignore: the flow diagram is a sequence of thin rules */
+  padding-left: 14px;
+}
+
+.flow-side {
+  margin-top: 10px;
+  padding-left: 14px;
+  border-left: 1px solid var(--ink); /* taste-skill-ignore: the flow diagram is a sequence of thin rules */
+}
+
+.flow figcaption {
+  margin-top: 6px;
+}
+
 .contacts a:hover,
 .bar a:hover,
 .proj a:hover,
@@ -354,6 +406,20 @@ p {
 
   .slot {
     max-width: 220px;
+  }
+
+  .proj-plain .proj-copy {
+    grid-column: auto;
+  }
+
+  .flow-fork {
+    grid-template-columns: 1fr;
+  }
+
+  .flow-fork > div + div {
+    border-left: 0;
+    padding-left: 0;
+    border-top: 1px solid var(--quiet); /* taste-skill-ignore: the flow diagram is a sequence of thin rules */
   }
 
   .pager {
