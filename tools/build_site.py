@@ -168,20 +168,20 @@ PROJECTS = [
         "group": "daedong",
         "video": None,
         "title": {
-            "en": "Language-Distilled Open-Vocabulary Instance Segmentation for Orchard Robots",
-            "ko": "과수원 로봇용 Language-Distilled Open-Vocabulary Instance Segmentation",
+            "en": "Open-vocabulary segmentation and mapping",
+            "ko": "RT100 open-vocabulary segmentation and occupancy mapping",
         },
         "line": {
-            "en": "Open-vocabulary instance segmenter for the RT100 orchard platform. Language-teacher supervision is used in training only, so inference cost does not go up.",
-            "ko": "RT100용 open-vocabulary instance segmenter입니다. 학습에만 language-teacher supervision을 써서 추론 비용은 그대로 둡니다.",
+            "en": "Two versions of an open-vocabulary segmenter for RT100. Obstacle mapping is the occupancy grid built from the masks. The work runs on production RT100, with TensorRT on Jetson Nano.",
+            "ko": "RT100용 open-vocabulary segmenter 두 버전과, mask로 만드는 occupancy grid입니다. Production RT100에서 TensorRT, Jetson Nano로 돌아갑니다.",
         },
         "tools": {
-            "en": "Open-vocabulary segmentation, DETR, DINOv3",
-            "ko": "Open-vocabulary segmentation, DETR, DINOv3",
+            "en": "Open-vocabulary segmentation, DETR, DINOv3, DINOv2, SigLIP2, TensorRT",
+            "ko": "Open-vocabulary segmentation, DETR, DINOv3, DINOv2, SigLIP2, TensorRT",
         },
         "desc": {
-            "en": "Open-vocabulary instance segmenter for the RT100 orchard platform, trained with a language teacher and no added inference cost.",
-            "ko": "RT100용 open-vocabulary instance segmenter. 학습에 language teacher를 쓰고 추론 비용은 그대로입니다.",
+            "en": "Two versions of an open-vocabulary segmenter for RT100, and the occupancy-grid mapping that uses the masks. Deployed on production RT100.",
+            "ko": "RT100용 open-vocabulary segmenter 두 버전과 occupancy grid. Production RT100에 배포했습니다.",
         },
         "sections": {
             "en": [
@@ -213,56 +213,6 @@ PROJECTS = [
                 )),
                 ("기술", P(
                     "DETR, frozen DINOv3, lightweight text encoder, multi-scale feature projector, three-layer decoder.",
-                )),
-            ],
-        },
-    },
-    {
-        "slug": "orchard-obstacle-mapping",
-        "group": "daedong",
-        "video": None,
-        "title": {
-            "en": "Open-Vocabulary 3D Obstacle Perception and Occupancy Mapping for Autonomous Orchard Robots",
-            "ko": "자율 과수원 로봇의 Open-Vocabulary 3D Obstacle Perception과 Occupancy Mapping",
-        },
-        "line": {
-            "en": "Open-set obstacles are segmented and written into an occupancy grid. The pipeline runs on production RT100 robots with TensorRT on Jetson Nano.",
-            "ko": "과수원 로봇은 open-set 장애물을 인식해 occupancy grid로 만들고, production RT100에서 TensorRT와 Jetson Nano로 돌립니다.",
-        },
-        "tools": {
-            "en": "3D perception, TensorRT, Jetson Nano",
-            "ko": "3D perception, TensorRT, Jetson Nano",
-        },
-        "desc": {
-            "en": "Open-set obstacle perception for orchard robots, mapped to an occupancy grid and deployed on RT100 with TensorRT on Jetson Nano.",
-            "ko": "과수원 로봇의 open-set 장애물 perception. Occupancy grid로 만들고 RT100에 TensorRT, Jetson Nano로 배포했습니다.",
-        },
-        "sections": {
-            "en": [
-                ("Problem", P(
-                    "Orchard robots must recognize open-set obstacles and turn them into a navigable map under embedded compute limits.",
-                )),
-                ("Approach", P(
-                    "I pre-trained the adapter, neck, and segmentation head on multiple datasets over frozen DINOv2 and SigLIP2 encoders, with region-text alignment for instance and semantic segmentation.",
-                    "The model takes text prompts at inference and can run with a fixed vocabulary. I adapted it to the orchard domain.",
-                    "Point-cloud voxel centers are projected into the image and tied to instance masks. Virtual voxels are added from valid anchor depths. Obstacles go into an occupancy grid with decay, hysteresis, and cost inflation.",
-                )),
-                ("Results", P(
-                    "The complete pipeline is deployed on production RT100 platforms and optimized with TensorRT on Jetson Nano.",
-                )),
-                ("Stack", P(
-                    "DINOv2, SigLIP2, TensorRT, Jetson Nano.",
-                )),
-            ],
-            "ko": [
-                ("문제", P(
-                    "과수원 로봇은 open-set 장애물을 인식하고, embedded compute 한계 안에서 주행에 쓸 지도로 바꿔야 합니다. Frozen DINOv2와 SigLIP2 encoder 위에 adapter, neck, segmentation head를 여러 데이터셋으로 pre-train했습니다. Instance segmentation과 semantic segmentation에 region-text alignment를 썼습니다. Text-prompt inference와 fixed-vocabulary conversion이 있고, 과수원 도메인에 맞췄습니다.",
-                )),
-                ("방법", P(
-                    "Point cloud voxel center를 이미지에 projection해서 instance mask와 연결합니다. 유효한 anchor depth로 virtual voxel을 더한 뒤, 장애물은 decay, hysteresis, cost inflation이 있는 occupancy grid에 기록합니다. 전체 pipeline은 production RT100에 올라가 있습니다. Jetson Nano에서 TensorRT로 최적화했습니다.",
-                )),
-                ("기술", P(
-                    "DINOv2, SigLIP2, TensorRT, Jetson Nano.",
                 )),
             ],
         },
@@ -696,29 +646,16 @@ DISPLAY = {
         "stack": ["Mask R-CNN", "ResNet-101", "PCA", "point-to-point ICP"],
     },
     "language-distilled-segmentation": {
-        "nav": "Orchard segmentation",
-        "pitch": "Segmenting orchard objects on RT100 without extra inference cost.",
-        "dek": "A language teacher is used only while training.",
+        "nav": "RT100 segmentation",
+        "pitch": "Segmenting orchard objects on RT100 and mapping the masks.",
+        "dek": "Two segmenter versions, then an occupancy grid.",
         "notes": [],
-        "blurb": "I adapted a DETR segmenter for the RT100 orchard platform. The language teacher is training-only, so inference cost does not go up.",
+        "blurb": "I built two versions of an open-vocabulary segmenter for RT100 and the occupancy-grid mapping that uses the masks.",
         "results": [
             ("Where it runs", "Production RT100 perception pipeline"),
-            ("Inference cost", "No added cost"),
-            ("Downstream", "Masks feed point-cloud projection and occupancy-grid mapping"),
+            ("Deployment", "Production RT100, TensorRT on Jetson Nano"),
         ],
-        "stack": ["DETR", "frozen DINOv3", "lightweight text encoder", "multi-scale feature projector", "three-layer decoder"],
-    },
-    "orchard-obstacle-mapping": {
-        "nav": "Obstacle mapping",
-        "pitch": "Mapping open-set obstacles on RT100 with TensorRT on Jetson Nano.",
-        "dek": "An occupancy grid on the production robots.",
-        "notes": [],
-        "blurb": "Open-set obstacles go into an occupancy grid. The pipeline runs on production RT100, with TensorRT on Jetson Nano.",
-        "results": [
-            ("Deployment", "Production RT100"),
-            ("Runtime", "TensorRT on Jetson Nano"),
-        ],
-        "stack": ["DINOv2", "SigLIP2", "TensorRT", "Jetson Nano"],
+        "stack": ["DINOv2", "SigLIP2", "DETR", "frozen DINOv3", "lightweight text encoder", "TensorRT", "Jetson Nano"],
     },
     "auto-labeling": {
         "nav": "Auto-labeling",

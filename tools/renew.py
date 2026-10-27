@@ -25,34 +25,28 @@ from build_site import (
 # The strawberry ownership sentence is stated once, under My role.
 PAGES = {
     "language-distilled-segmentation": {
-        "title": "Open-vocabulary segmentation",
-        "result": "Instance masks run in the production RT100 pipeline. The language teacher is used only during training.",
-        "desc": "Open-vocabulary instance masks for the RT100 orchard platform. The language teacher is used only during training.",
+        "title": "Open-vocabulary segmentation and mapping",
+        "result": "Instance masks and an occupancy grid run on production RT100, with TensorRT on Jetson Nano.",
+        "desc": "Two versions of an open-vocabulary segmenter for RT100, and the occupancy-grid mapping that uses the masks. Deployed on production RT100.",
         "video": None,
-        "problem": "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set. A language teacher is available during training. The deployed model does not add inference cost.",
-        "role": "I adapted a DETR-based segmenter for the RT100 orchard platform.",
+        "problem": "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map under embedded compute limits. A language teacher is available during training. The deployed model does not add inference cost.",
+        "role": "I pre-trained one segmentation stack, adapted a DETR-based segmenter for the RT100 orchard platform, and built the occupancy-grid mapping from the instance masks.",
         "method": [
-            "The backbone is a frozen DINOv3, and a lightweight text encoder trains.",
-            "A multi-scale feature projector feeds a three-layer decoder. The decoder predicts masks from dot products between queries and refined spatial features.",
-            "During training only, object queries and pooled image features are matched to precomputed language-teacher embeddings of object and image descriptions. Semantically related negatives are reweighted so they are not pushed apart.",
+            (
+                "Version 1",
+                "I pre-trained the adapter, neck, and segmentation head on multiple datasets over frozen DINOv2 and SigLIP2 encoders, with region-text alignment for instance and semantic segmentation. The model takes text prompts at inference and can run with a fixed vocabulary. I adapted it to the orchard domain.",
+            ),
+            (
+                "Version 2",
+                "A DETR-based segmenter uses a frozen DINOv3 backbone, a trainable lightweight text encoder, a multi-scale feature projector, and a three-layer decoder. The decoder predicts masks from dot products between queries and refined spatial features. During training only, object queries and pooled image features are matched to precomputed language-teacher embeddings of object and image descriptions. Semantically related negatives are reweighted so they are not pushed apart. The language teacher adds no inference cost.",
+            ),
+            (
+                "Post-processing",
+                "Point-cloud voxel centers are projected into the image and tied to the instance masks. Virtual voxels are added from valid anchor depths. Obstacles go into a navigable occupancy grid with decay, hysteresis, and cost inflation.",
+            ),
         ],
-        "outcome": "Instance masks feed point-cloud projection and occupancy-grid mapping. The model runs in the production RT100 perception pipeline, and the language teacher is used only during training.",
-        "stack": "DETR, a frozen DINOv3 backbone, a lightweight text encoder, a multi-scale feature projector, and a three-layer decoder.",
-    },
-    "orchard-obstacle-mapping": {
-        "title": "Obstacle mapping",
-        "result": "The occupancy grid runs on production RT100, with TensorRT on Jetson Nano.",
-        "desc": "Open-set obstacles mapped to an occupancy grid on production RT100, with TensorRT on Jetson Nano.",
-        "video": None,
-        "problem": "Orchard robots have to recognize open-set obstacles and turn them into a navigable map under embedded compute limits.",
-        "role": "I pre-trained the segmentation stack, adapted it to orchards, and built the occupancy-grid mapping.",
-        "method": [
-            "I pre-trained the adapter, neck, and segmentation head on multiple datasets over frozen DINOv2 and SigLIP2 encoders, with region-text alignment for instance and semantic segmentation.",
-            "The model takes text prompts at inference and can run with a fixed vocabulary. I adapted it to the orchard domain.",
-            "Point-cloud voxel centers are projected into the image and tied to instance masks. Virtual voxels are added from valid anchor depths. Obstacles go into an occupancy grid with decay, hysteresis, and cost inflation.",
-        ],
-        "outcome": "The pipeline runs on production RT100 platforms and is optimized with TensorRT on Jetson Nano.",
-        "stack": "DINOv2, SigLIP2, TensorRT, and Jetson Nano.",
+        "outcome": "The work runs in the production RT100 perception pipeline. It is deployed on production RT100 platforms and optimized with TensorRT on Jetson Nano.",
+        "stack": "DINOv2, SigLIP2, DETR, a frozen DINOv3 backbone, a lightweight text encoder, a multi-scale feature projector, a three-layer decoder, TensorRT, and Jetson Nano.",
     },
     "auto-labeling": {
         "title": "Auto-labeling pipeline",
@@ -369,7 +363,14 @@ def pager(project):
 
 def project_page(project):
     page = PAGES[project["slug"]]
-    steps = "\n".join(f"<li>{esc(step)}</li>" for step in page["method"])
+    method = page["method"]
+    if method and isinstance(method[0], tuple):
+        steps = "\n".join(
+            f"<h3>{esc(label)}</h3>\n<p>{esc(text)}</p>" for label, text in method
+        )
+    else:
+        items = "\n".join(f"<li>{esc(step)}</li>" for step in method)
+        steps = f"<ol>\n{items}\n</ol>"
     title = f"{page['title']}, Jaewoo Choi"
     path = project_href("en", project["slug"])
     body = f"""{head(title, page["desc"], path)}
@@ -389,9 +390,7 @@ def project_page(project):
 </section>
 <section>
 <h2>Method</h2>
-<ol>
 {steps}
-</ol>
 </section>
 <section>
 <h2>Result</h2>
