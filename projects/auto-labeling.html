@@ -74,6 +74,16 @@
 </ol>
 </section>
 <section>
+<h2>Captioning after labeling</h2>
+<p>After auto‑labeling finished, Qwen‑series vision‑language models captioned the labeled data in three stages:</p>
+<ul>
+<li>Each mask got a description of the object it covers.</li>
+<li>Each mask also got a caption of its relationship to the image.</li>
+<li>The whole image got a caption of its own.</li>
+</ul>
+<p>The verified captions were linked to the instance annotations.</p>
+</section>
+<section>
 <h2>Result</h2>
 <p>Labeling one image cost about USD 1.05 before this pipeline and about USD 0.036 after it, a 96.6% reduction.</p>
 </section>

@@ -491,6 +491,16 @@ EXTRA_SECTIONS = {
 <li>A correction at a later frame enters as new clicks or a seed mask at that frame. The object keeps its track ID from there on.</li>
 </ol>
 </section>
+<section>
+<h2>Captioning after labeling</h2>
+<p>After auto-labeling finished, Qwen-series vision-language models captioned the labeled data in three stages:</p>
+<ul>
+<li>Each mask got a description of the object it covers.</li>
+<li>Each mask also got a caption of its relationship to the image.</li>
+<li>The whole image got a caption of its own.</li>
+</ul>
+<p>The verified captions were linked to the instance annotations.</p>
+</section>
 """,
 }
 
