@@ -246,6 +246,22 @@ p {
   margin-top: 6px;
 }
 
+.page .arch {
+  margin: 10px 0 2px;
+  max-width: 100%;
+}
+
+.page .arch img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+.page .arch figcaption {
+  margin-top: 6px;
+}
+
 .contacts a:hover,
 .bar a:hover,
 .proj a:hover,

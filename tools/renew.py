@@ -445,13 +445,47 @@ DIAGRAMS = {
 }
 
 
+ARCH = {
+    ("language-distilled-segmentation", "Version 1"): {
+        "src": "/assets/figures/open-vocab-v1.png",
+        "w": 1920,
+        "h": 930,
+        "alt": "Version 1: a frozen image encoder, an adapter, a PAN-FPN neck, instance and semantic heads, and a text encoder.",
+        "caption": "Version 1. Frozen image and text encoders, a trained adapter and neck, and instance and semantic heads.",
+    },
+    ("language-distilled-segmentation", "Version 2"): {
+        "src": "/assets/figures/open-vocab-v2.png",
+        "w": 1920,
+        "h": 860,
+        "alt": "Version 2: a multi-scale projector, a three-layer decoder, and a teacher-alignment branch that runs only during training.",
+        "caption": "Version 2. Multi-scale features and a three-layer decoder. The teacher branch runs only during training.",
+    },
+}
+
+
+def arch_figure(slug, label):
+    item = ARCH.get((slug, label))
+    if not item:
+        return ""
+    return (
+        '<figure class="arch">'
+        f'<img src="{item["src"]}" width="{item["w"]}" height="{item["h"]}" alt="{esc(item["alt"])}">'
+        f"<figcaption>{esc(item['caption'])}</figcaption>"
+        "</figure>"
+    )
+
+
 def project_page(project):
     page = PAGES[project["slug"]]
     method = page["method"]
     if method and isinstance(method[0], tuple):
-        steps = "\n".join(
-            f"<h3>{esc(label)}</h3>\n<p>{esc(text)}</p>" for label, text in method
-        )
+        blocks = []
+        for label, text in method:
+            blocks.append(f"<h3>{esc(label)}</h3>\n<p>{esc(text)}</p>")
+            figure = arch_figure(project["slug"], label)
+            if figure:
+                blocks.append(figure)
+        steps = "\n".join(blocks)
     else:
         items = "\n".join(f"<li>{esc(step)}</li>" for step in method)
         steps = f"<ol>\n{items}\n</ol>"
