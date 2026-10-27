@@ -445,35 +445,6 @@ DIAGRAMS = {
 }
 
 
-MODELS = {
-    "language-distilled-segmentation": {
-        "src": "/assets/model/open-vocab-v2.gif",
-        "alt": "An animated diagram shows an image going through a frozen DINOv3 backbone, a multi-scale projector and a 3-layer decoder that a MiniLM text encoder conditions, then a mask head that multiplies 300 queries with pixel features to make masks; a dashed training-only branch aligns queries and image features to cached 1152-d teacher embeddings and then fades away.",
-        "caption": "Version 2 model, read from the training code. The dashed branch runs only during training.",
-    },
-    "bin-picking": {
-        "src": "/assets/model/bin-picking.gif",
-        "alt": "An animated diagram shows an RGB-D frame going through a ResNet-101 FPN Mask R-CNN with object and hole classes; each mask with holes removed becomes a point cloud that is PCA-initialised, ICP-aligned point-to-point to CAD parts, scored as (fitness minus 10 times RMSE) times 100, sorted, and returned as poses in the robot base frame.",
-        "caption": "Bin-picking model and pose pipeline, read from the vision-server code.",
-    },
-}
-
-
-def model_section(slug):
-    item = MODELS.get(slug)
-    if not item:
-        return ""
-    return (
-        "<section>\n"
-        "<h2>Model architecture</h2>\n"
-        '<figure class="model">'
-        f'<img src="{item["src"]}" width="960" height="540" loading="lazy" alt="{esc(item["alt"])}">'
-        f"<figcaption>{esc(item['caption'])}</figcaption>"
-        "</figure>\n"
-        "</section>\n"
-    )
-
-
 def project_page(project):
     page = PAGES[project["slug"]]
     method = page["method"]
@@ -508,7 +479,7 @@ def project_page(project):
 <h2>Method</h2>
 {diagram}{steps}
 </section>
-{model_section(project["slug"])}<section>
+<section>
 <h2>Result</h2>
 <p>{esc(page["outcome"])}</p>
 </section>
