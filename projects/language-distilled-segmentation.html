@@ -37,7 +37,7 @@
 </section>
 <section>
 <h2>My role</h2>
-<p>I pre‑trained a DINOv2 and SigLIP2 segmenter, adapted a DETR‑based segmenter for the RT100 orchard platform, and built the occupancy‑grid mapping from the instance masks.</p>
+<p>I pre‑trained a DINOv3 and SigLIP2 segmenter and adapted a DETR‑based segmenter for the RT100 orchard platform. The occupancy‑grid mapping built from the instance masks is also my work.</p>
 </section>
 <section>
 <h2>Method</h2>
@@ -51,7 +51,7 @@
 <div class="flow-fork">
 <div>
 <p class="flow-k">Version 1</p>
-<p>Frozen DINOv2 + SigLIP2 encoders, trained adapter, neck, segmentation head.</p>
+<p>Frozen DINOv3 + SigLIP2 encoders, trained adapter, neck, segmentation head.</p>
 </div>
 <div>
 <p class="flow-k">Version 2</p>
@@ -72,13 +72,13 @@
 <figcaption>Both versions write instance masks. The occupancy grid is built from those masks.</figcaption>
 </figure>
 <h3>Version 1</h3>
-<p>I pre‑trained the adapter, neck, and segmentation head on multiple datasets over frozen DINOv2 and SigLIP2 encoders, with region‑text alignment for instance and semantic segmentation. I added text‑prompt inference and fixed‑vocabulary conversion, and I adapted the model to the orchard domain.</p>
+<p>With the DINOv3 and SigLIP2 encoders frozen, I pre‑trained the adapter, neck, and segmentation head on multiple datasets, with region‑text alignment for instance and semantic segmentation. On top of that model I added text‑prompt inference and fixed‑vocabulary conversion, and adapted it to the orchard domain.</p>
 <figure class="arch"><img src="/assets/figures/open-vocab-v1.png" width="1920" height="930" alt="Version 1: a frozen image encoder, an adapter, a PAN-FPN neck, instance and semantic heads, and a text encoder."><figcaption>Version 1. Frozen image and text encoders, a trained adapter and neck, and instance and semantic heads.</figcaption></figure>
 <h3>Version 2</h3>
-<p>I adapted a DETR‑based segmenter with a frozen DINOv3 backbone, a trainable lightweight text encoder, a multi‑scale feature projector, and a three‑layer decoder that predicts masks from dot products of queries and refined spatial features. During training only, I aligned object queries and pooled image features with precomputed language‑teacher embeddings of object and image descriptions, and I reweighted semantically related negatives so they are not pushed apart.</p>
+<p>The second segmenter is a DETR‑based model I adapted, with a frozen DINOv3 backbone, a trainable lightweight text encoder, a multi‑scale feature projector, and a three‑layer decoder that predicts masks from dot products of queries and refined spatial features. During training only, object queries and pooled image features are aligned with precomputed language‑teacher embeddings of object and image descriptions, and semantically related negatives are reweighted so they are not pushed apart.</p>
 <figure class="arch"><img src="/assets/figures/open-vocab-v2.png" width="1920" height="860" alt="Version 2: a multi-scale projector, a three-layer decoder, and a teacher-alignment branch that runs only during training."><figcaption>Version 2. Multi‑scale features and a three‑layer decoder. The teacher branch runs only during training.</figcaption></figure>
 <h3>Post‑processing</h3>
-<p>I projected point‑cloud voxel centers into the image and associated them with the instance masks. I added virtual voxels from valid anchor depths, and I mapped obstacles into a navigable occupancy grid with decay, hysteresis, and cost inflation.</p>
+<p>Point‑cloud voxel centers were projected into the image and associated with the instance masks. I added virtual voxels from valid anchor depths, and obstacles were mapped into a navigable occupancy grid with decay, hysteresis, and cost inflation.</p>
 </section>
 <section>
 <h2>Result</h2>
@@ -86,7 +86,7 @@
 </section>
 <section>
 <h2>Stack</h2>
-<p>DINOv2, SigLIP2, DETR, a frozen DINOv3 backbone, a lightweight text encoder, a multi‑scale feature projector, a three‑layer decoder, TensorRT, and Jetson Nano.</p>
+<p>DINOv3, SigLIP2, DETR, a lightweight text encoder, a multi‑scale feature projector, a three‑layer decoder, TensorRT, and Jetson Nano.</p>
 </section>
 <nav class="pager" aria-label="Adjacent projects"><span></span><a href="/#work">All work</a><a href="/projects/auto-labeling.html"><span class="dir quiet">Next</span>Auto‑labeling pipeline</a></nav>
 </main>

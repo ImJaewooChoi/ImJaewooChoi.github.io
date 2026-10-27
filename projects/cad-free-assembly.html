@@ -42,9 +42,9 @@
 <section>
 <h2>Method</h2>
 <ol>
-<li>I prototyped a two‑view RGB baseline that matched a reference image to a target image with learned features, estimated the essential matrix with USAC, recovered the relative pose, and ran triangulation.</li>
-<li>In the final pipeline, I matched the live 2D image to a stored reference RGB‑D capture with LightGlue, so each match carries depth. I removed matches with no depth.</li>
-<li>I recovered the camera pose with solvePnP and RANSAC on the 3D‑2D matches, and I chained that pose with the hand‑eye calibration and the stored reference pose to get the target 6D tool pose.</li>
+<li>A two‑view RGB baseline came first. It matched a reference image to a target image with learned features, estimated the essential matrix with USAC, recovered the relative pose, and ran triangulation.</li>
+<li>The final pipeline matches the live 2D image to a stored reference RGB‑D capture with LightGlue, so each match carries depth. Matches with no depth are removed.</li>
+<li>From the 3D‑2D matches, solvePnP with RANSAC recovers the camera pose, which I chain with the hand‑eye calibration and the stored reference pose to get the target 6D tool pose.</li>
 </ol>
 </section>
 <section>

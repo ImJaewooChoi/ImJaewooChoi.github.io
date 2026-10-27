@@ -137,8 +137,8 @@ VIDEOS = {
             "ko": "무음. CAD-based bin picking",
         },
         "cap": {
-            "en": "A ring-scan close-up, then a Doosan cobot picking, then a green-bin close-up.",
-            "ko": "세 장면입니다. Ring-scan close-up, Doosan cobot picking, green-bin close-up.",
+            "en": "A ring-scan close-up, then a cobot picking, then a green-bin close-up.",
+            "ko": "세 장면입니다. Ring-scan close-up, cobot picking, green-bin close-up.",
         },
     },
     "strawberry": {
@@ -176,8 +176,8 @@ PROJECTS = [
             "ko": "RT100용 open-vocabulary segmenter 두 버전과, mask로 만드는 occupancy grid입니다. Production RT100에서 TensorRT, Jetson Nano로 돌아갑니다.",
         },
         "tools": {
-            "en": "Open-vocabulary segmentation, DETR, DINOv3, DINOv2, SigLIP2, TensorRT",
-            "ko": "Open-vocabulary segmentation, DETR, DINOv3, DINOv2, SigLIP2, TensorRT",
+            "en": "Open-vocabulary segmentation, DETR, DINOv3, SigLIP2, TensorRT",
+            "ko": "Open-vocabulary segmentation, DETR, DINOv3, SigLIP2, TensorRT",
         },
         "desc": {
             "en": "Two versions of an open-vocabulary segmenter for RT100, and the occupancy-grid mapping that uses the masks. Deployed on production RT100.",
@@ -392,8 +392,8 @@ PROJECTS = [
             "ko": "RGB-D와 CAD geometry로 picking pose를 구합니다. 사내 고정 환경에서 object type 5종을 빈 용기로 옮긴 1,000회 시험의 task success는 89%입니다.",
         },
         "tools": {
-            "en": "6D pose, bin picking, Mask R-CNN",
-            "ko": "6D pose, bin picking, Mask R-CNN",
+            "en": "6D pose, bin picking, instance segmentation model",
+            "ko": "6D pose, bin picking, instance segmentation model",
         },
         "desc": {
             "en": "Picking poses from RGB-D and CAD geometry. 89% task success in 1,000 in-house, fixed-environment trials on five object types.",
@@ -406,7 +406,7 @@ PROJECTS = [
                     "The source is RGB-D images of a bin.",
                 )),
                 ("Approach", P(
-                    'I trained Mask R-CNN (ResNet-101) with separate "unoccluded" and "hole" classes. Hole masks are subtracted from object masks. The remaining instance masks segment the point cloud.',
+                    'I trained an instance segmentation model with separate "unoccluded" and "hole" classes. Hole masks are subtracted from object masks. The remaining instance masks segment the point cloud.',
                     "Visible-surface CAD templates for each pick pose are built by hidden-point removal, then fit to the segmented points with PCA initialization and point-to-point ICP.",
                     "Each fit is checked model-to-scene and scene-to-model. Poses are filtered by registration fitness, inlier RMSE, and a combined score. Candidates are ranked. Poses are transformed into the robot base with the camera extrinsics.",
                 )),
@@ -414,7 +414,7 @@ PROJECTS = [
                     "Task success was 89% in 1,000 in-house, fixed-environment trials, moving five object types into an empty container.",
                 )),
                 ("Stack", P(
-                    "Mask R-CNN, ResNet-101, PCA, point-to-point ICP.",
+                    "Instance segmentation model, PCA, point-to-point ICP.",
                 )),
             ],
             "ko": [
@@ -422,11 +422,11 @@ PROJECTS = [
                     "CAD geometry를 아는 물체는 bin의 RGB-D image에서 picking pose를 추정합니다.",
                 )),
                 ("방법", P(
-                    'Mask R-CNN(ResNet-101)을 class "unoccluded"와 "hole"로 나눠 학습했습니다. Object mask에서 hole mask를 빼고, 남은 instance mask로 point cloud를 나눕니다.',
+                    'Instance segmentation model을 class "unoccluded"와 "hole"로 나눠 학습했습니다. Object mask에서 hole mask를 빼고, 남은 instance mask로 point cloud를 나눕니다.',
                     "각 pick pose의 visible-surface CAD template은 hidden-point removal로 만들고, PCA initialization 다음 point-to-point ICP로 segmented point에 맞춥니다. Fit은 model-to-scene과 scene-to-model 양쪽을 보고, registration fitness, inlier RMSE, combined score로 pose를 거릅니다. Candidate를 순위화한 뒤 camera extrinsic으로 pose를 robot base에 옮깁니다. 빈 용기로 object type 5종을 옮기는 사내 고정 환경 시험 1,000회에서 task success 89%를 기록했습니다.",
                 )),
                 ("기술", P(
-                    "Mask R-CNN, ResNet-101, PCA, point-to-point ICP.",
+                    "Instance segmentation model, PCA, point-to-point ICP.",
                 )),
             ],
         },
@@ -643,7 +643,7 @@ DISPLAY = {
             ("Trials", "1,000, in-house, fixed environment"),
             ("Objects", "Five types, into an empty container"),
         ],
-        "stack": ["Mask R-CNN", "ResNet-101", "PCA", "point-to-point ICP"],
+        "stack": ["Instance segmentation model", "PCA", "point-to-point ICP"],
     },
     "language-distilled-segmentation": {
         "nav": "RT100 segmentation",
@@ -655,7 +655,7 @@ DISPLAY = {
             ("Where it runs", "Production RT100 perception pipeline"),
             ("Deployment", "Production RT100, TensorRT on Jetson Nano"),
         ],
-        "stack": ["DINOv2", "SigLIP2", "DETR", "frozen DINOv3", "lightweight text encoder", "TensorRT", "Jetson Nano"],
+        "stack": ["DINOv3", "SigLIP2", "DETR", "lightweight text encoder", "TensorRT", "Jetson Nano"],
     },
     "auto-labeling": {
         "nav": "Auto-labeling",

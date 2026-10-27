@@ -42,9 +42,9 @@
 <section>
 <h2>Method</h2>
 <ol>
-<li>I trained Mask R‑CNN (ResNet‑101) with separate unoccluded and hole classes, subtracted hole masks from object masks, and segmented the point cloud with the remaining instance masks.</li>
-<li>I built visible‑surface CAD templates for each pick pose by hidden‑point removal, and I aligned them to the segmented points with PCA initialization and point‑to‑point ICP.</li>
-<li>I checked each fit model‑to‑scene and scene‑to‑model, filtered poses by registration fitness, inlier RMSE, and a combined score, then ranked the candidates and transformed the poses into the robot base with the camera extrinsics.</li>
+<li>The segmenter was an instance segmentation model, trained with separate unoccluded and hole classes. Hole masks were subtracted from object masks, and the remaining instance masks segmented the point cloud.</li>
+<li>For each pick pose, I built a visible‑surface CAD template by hidden‑point removal and aligned it to the segmented points with PCA initialization and point‑to‑point ICP.</li>
+<li>Each fit was checked model‑to‑scene and scene‑to‑model, and poses were filtered by registration fitness, inlier RMSE, and a combined score. The remaining candidates were ranked, and their poses were transformed into the robot base with the camera extrinsics.</li>
 </ol>
 </section>
 <section>
@@ -53,7 +53,7 @@
 </section>
 <section>
 <h2>Stack</h2>
-<p>Mask R‑CNN, ResNet‑101, PCA, and point‑to‑point ICP.</p>
+<p>An instance segmentation model, PCA, and point‑to‑point ICP.</p>
 </section>
 <nav class="pager" aria-label="Adjacent projects"><a href="/projects/cad-free-assembly.html"><span class="dir quiet">Previous</span>CAD‑free assembly</a><a href="/#work">All work</a><a href="/projects/ros-6d-vision.html"><span class="dir quiet">Next</span>ROS 6D vision server</a></nav>
 </main>

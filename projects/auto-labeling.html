@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Auto-labeling pipeline, Jaewoo Choi</title>
-<meta name="description" content="I built a video auto-labeling pipeline that writes region-grounded captions and reduced the cost of labeling one image by 96.6%, from about USD 1.05 to about USD 0.036.">
+<meta name="description" content="A video auto-labeling pipeline I built writes region-grounded captions and reduced the cost of labeling one image by 96.6%, from about USD 1.05 to about USD 0.036.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="Auto-labeling pipeline, Jaewoo Choi">
-<meta property="og:description" content="I built a video auto-labeling pipeline that writes region-grounded captions and reduced the cost of labeling one image by 96.6%, from about USD 1.05 to about USD 0.036.">
+<meta property="og:description" content="A video auto-labeling pipeline I built writes region-grounded captions and reduced the cost of labeling one image by 96.6%, from about USD 1.05 to about USD 0.036.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -37,14 +37,35 @@
 </section>
 <section>
 <h2>My role</h2>
-<p>I built the video auto‑labeling pipeline, set the label taxonomy and the annotation guidelines, and compiled the COCO‑format training datasets.</p>
+<p>Besides building the video auto‑labeling pipeline, I set the label taxonomy and the annotation guidelines and compiled the COCO‑format training datasets.</p>
 </section>
 <section>
 <h2>Method</h2>
 <ol>
-<li>I turned point prompts and mask corrections into tracked masks with consistent IDs across frames.</li>
-<li>I shared TensorRT engines between image and video inputs, so the same computation is not run twice.</li>
-<li>I used Qwen‑series vision‑language models to write region‑grounded object descriptions and to check them. I sent uncertain cases to a second review and linked the verified descriptions to the instance annotations.</li>
+<li>Point prompts and mask corrections were turned into tracked masks with consistent IDs across frames.</li>
+<li>Image and video inputs share TensorRT engines, so the same computation is not run twice.</li>
+<li>Qwen‑series vision‑language models wrote the region‑grounded object descriptions and checked them. I sent uncertain cases to a second review and linked the verified descriptions to the instance annotations.</li>
+</ol>
+</section>
+<section>
+<h2>Model: SAM3 tracker via DART</h2>
+<p>DART (Detect Anything in Real Time), by Mehmet Kerem Turkcan (<a href="https://github.com/mkturkcan/dart">github.com/mkturkcan/dart</a>, paper <a href="https://arxiv.org/abs/2603.11441">arXiv:2603.11441</a>), runs SAM3 with TensorRT. This pipeline uses its TensorRT build of the SAM3 video tracker, prompted with clicks and masks. DART's multi‑class text detector is not used here.</p>
+</section>
+<section>
+<h2>Model structure</h2>
+<p>The image encoder, a ViT, runs once per frame. A neck turns its output into multi‑scale features. A point‑prompt decoder predicts a mask from the first positive or negative click and refines it with each later click. A mask‑prompt step starts an object from a seed mask instead and encodes it into memory. On later video frames, a memory‑attention step conditions the frame's features on a memory bank of earlier mask memories and object pointers. It predicts the object's mask under the same track ID and writes the result back to the bank. The point decoder and the tracker step both return mask logits with an IoU estimate and an object score.</p>
+<figure class="arch"><img src="/assets/figures/dart-tracker.png" width="2040" height="900" alt="SAM3 tracker path: a frozen image encoder and neck feed a point-prompt decoder, a mask-prompt step, and a memory-attention step that reads and writes a memory bank. Mask logits go to a CPU decoder that writes COCO polygons and RLE masks."><figcaption>Redrawn from the DART code and the pipeline code.</figcaption></figure>
+</section>
+<section>
+<h2>How the pipeline adapts it</h2>
+<ol>
+<li>On video, clicks on a frame accumulate, and each new click refines the previous mask on the GPU. The object's memory is committed after the last click, so intermediate clicks never enter the memory bank.</li>
+<li>Image requests use point heads cut from the video point‑prompt graphs, which keep the mask, IoU, and object‑score outputs and drop the memory outputs.</li>
+<li>Image and video requests share one image encoder and neck. Each engine is loaded once and shared by concurrent workers, and each worker keeps its own execution context.</li>
+<li>Selection of memory and query tokens is reimplemented to pick the same tokens as the original without building full‑size mask temporaries.</li>
+<li>Each preview session keeps a snapshot of its image features, so later clicks on the same image do not rerun the image encoder.</li>
+<li>GPU inference runs in one service and returns mask logits; a separate CPU service fills holes, resizes the masks, and writes COCO polygons or run‑length masks.</li>
+<li>A correction at a later frame enters as new clicks or a seed mask at that frame, and the object keeps its track ID.</li>
 </ol>
 </section>
 <section>
