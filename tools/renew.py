@@ -466,24 +466,25 @@ ARCH = {
 # Extra sections placed after Method. Raw HTML; harden_html adds the text hyphen handling.
 EXTRA_SECTIONS = {
     "auto-labeling": """<section>
-<h2>Model: SAM3 tracker via DART</h2>
-<p>DART (Detect Anything in Real Time), by Mehmet Kerem Turkcan (<a href="https://github.com/mkturkcan/dart">github.com/mkturkcan/dart</a>, paper <a href="https://arxiv.org/abs/2603.11441">arXiv:2603.11441</a>), runs SAM3 with TensorRT. This pipeline uses its TensorRT build of the SAM3 video tracker, prompted with clicks and masks. DART's multi-class text detector is not used here.</p>
+<h2>Model: a tracker built on SAM3</h2>
+<p>The labeling tracker is based on the SAM3 video tracker, compiled to TensorRT engines and driven by clicks and seed masks. Class names and track IDs come from the labeling backend, so the model only has to produce masks.</p>
 </section>
 <section>
 <h2>Model structure</h2>
-<p>The image encoder, a ViT, runs once per frame. A neck turns its output into multi-scale features. A point-prompt decoder predicts a mask from the first positive or negative click and refines it with each later click. A mask-prompt step starts an object from a seed mask instead and encodes it into memory. On later video frames, a memory-attention step conditions the frame's features on a memory bank of earlier mask memories and object pointers. It predicts the object's mask under the same track ID and writes the result back to the bank. The point decoder and the tracker step both return mask logits with an IoU estimate and an object score.</p>
-<figure class="arch"><img src="/assets/figures/dart-tracker.png" width="2040" height="900" alt="SAM3 tracker path: a frozen image encoder and neck feed a point-prompt decoder, a mask-prompt step, and a memory-attention step that reads and writes a memory bank. Mask logits go to a CPU decoder that writes COCO polygons and RLE masks."><figcaption>Redrawn from the DART code and the pipeline code.</figcaption></figure>
+<p>A ViT image encoder runs once per frame, and a neck turns its output into multi-scale features. Two prompt paths can start an object. The point-prompt decoder predicts a mask from the first positive or negative click and refines it with each later click. The mask-prompt init takes a seed mask and writes it into the memory bank. On every later frame, memory attention conditions the frame features on that bank of past mask memories and object pointers, predicts the object's mask and writes the new memory back. Each path returns mask logits with an IoU estimate and an object score.</p>
+<figure class="arch"><img src="/assets/figures/video-tracker.png" width="2040" height="900" alt="SAM3 tracker path: a frozen image encoder and neck feed a point-prompt decoder, a mask-prompt init, and a memory-attention step that reads and writes a memory bank. Mask logits go to the CPU service that writes COCO polygons and RLE masks."><figcaption>The GPU service runs the tracker. A CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
 </section>
 <section>
-<h2>How the pipeline adapts it</h2>
+<h2>How the pipeline uses it</h2>
+<p>On top of SAM3, I built the prompting, serving and post-processing layer.</p>
 <ol>
-<li>On video, clicks on a frame accumulate, and each new click refines the previous mask on the GPU. The object's memory is committed after the last click, so intermediate clicks never enter the memory bank.</li>
-<li>Image requests use point heads cut from the video point-prompt graphs, which keep the mask, IoU, and object-score outputs and drop the memory outputs.</li>
-<li>Image and video requests share one image encoder and neck. Each engine is loaded once and shared by concurrent workers, and each worker keeps its own execution context.</li>
-<li>Selection of memory and query tokens is reimplemented to pick the same tokens as the original without building full-size mask temporaries.</li>
-<li>Each preview session keeps a snapshot of its image features, so later clicks on the same image do not rerun the image encoder.</li>
-<li>GPU inference runs in one service and returns mask logits; a separate CPU service fills holes, resizes the masks, and writes COCO polygons or run-length masks.</li>
-<li>A correction at a later frame enters as new clicks or a seed mask at that frame, and the object keeps its track ID.</li>
+<li>Clicks on a video frame accumulate. Each new click refines the previous mask on the GPU, and the object's memory is committed only after the last click, so a half-finished mask never reaches the memory bank.</li>
+<li>For single images, point heads are cut out of the video point-prompt graphs. They keep the mask, IoU and object-score outputs and drop the memory outputs.</li>
+<li>Image and video requests share one image encoder and neck. Every engine is loaded once per process and shared by concurrent workers.</li>
+<li>Token pruning for memory and query tokens is reimplemented. Parity tests confirm it picks the same tokens as the original selection.</li>
+<li>A preview session snapshots its image features on the GPU. Later clicks on the same image restore that snapshot and skip the encoder.</li>
+<li>GPU inference and CPU post-processing run as separate services. The GPU side returns raw mask logits; the CPU side fills holes, resizes the masks and writes COCO polygons or RLE masks.</li>
+<li>A correction at a later frame enters as new clicks or a seed mask at that frame. The object keeps its track ID from there on.</li>
 </ol>
 </section>
 """,
