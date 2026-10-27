@@ -48,6 +48,10 @@
 </ol>
 </section>
 <section>
+<h2>Model architecture</h2>
+<figure class="model"><img src="/assets/model/bin-picking.gif" width="960" height="540" loading="lazy" alt="An animated diagram shows an RGB-D frame going through a ResNet-101 FPN Mask R-CNN with object and hole classes; each mask with holes removed becomes a point cloud that is PCA-initialised, ICP-aligned point-to-point to CAD parts, scored as (fitness minus 10 times RMSE) times 100, sorted, and returned as poses in the robot base frame."><figcaption>Bin‑picking model and pose pipeline, read from the vision‑server code.</figcaption></figure>
+</section>
+<section>
 <h2>Result</h2>
 <p>In 1,000 in‑house, fixed‑environment trials, the robot moved five object types into an empty container with 89% task success.</p>
 </section>
