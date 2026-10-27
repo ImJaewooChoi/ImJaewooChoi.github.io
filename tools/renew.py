@@ -282,7 +282,7 @@ def home_page():
 <div class="who">
 <h1>Jaewoo Choi</h1>
 <p class="role">Senior AI Researcher, Daedong AILab</p>
-<p class="interest">I work on perception for real robots: open-vocabulary RGB-D segmentation, point-cloud-image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. This work was tested on deployed orchard robots and on manipulation robots. Next, I want to extend it toward vision-language-action models.</p>
+<p class="interest">I work on perception for real robots: open-vocabulary segmentation, point-cloud-image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation. This work was tested on deployed orchard robots and on manipulation robots. Next, I want to extend it toward vision-language-action models.</p>
 <p class="contacts"><a href="mailto:{esc(EMAIL)}">Email</a><a href="{esc(GITHUB)}" rel="me">GitHub</a><a href="{esc(KAGGLE)}" rel="me">Kaggle</a><a href="{esc(LINKEDIN)}" rel="me">LinkedIn</a></p>
 </div>
 <p class="evidence">Production RT100. 1,000-trial robot evaluations. Patent 10-2694987. 3 Kaggle medals.</p>
@@ -369,7 +369,7 @@ def pager(project):
 DIAGRAMS = {
     "language-distilled-segmentation": """<figure class="flow">
 <div class="flow-step">
-<p class="flow-k">RGB-D input</p>
+<p class="flow-k">RGB image input</p>
 </div>
 <div class="flow-step">
 <p class="flow-k">Open-vocabulary instance segmentation</p>

@@ -994,14 +994,14 @@ def evidence_html(lang):
 def research_html(lang):
     if lang == "en":
         parts = [
-            "I work on open-vocabulary RGB-D segmentation, point-cloud and image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation.",
+            "I work on open-vocabulary segmentation, point-cloud and image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation.",
             "I tested this on deployed orchard robots.",
             "I also tested it on manipulation robots.",
         ]
         heading = "Research interests"
     else:
         parts = [
-            "실제 로봇의 perception을 다룹니다. 주제는 open-vocabulary RGB-D segmentation, 장애물 매핑을 위한 point cloud와 image의 fusion, 6D pose estimation, manipulation을 위한 imitation learning입니다.",
+            "실제 로봇의 perception을 다룹니다. 주제는 open-vocabulary segmentation, 장애물 매핑을 위한 point cloud와 image의 fusion, 6D pose estimation, manipulation을 위한 imitation learning입니다.",
             "배치된 과수원 로봇과 manipulation 로봇에서 이 작업을 개발하고 시험했습니다.",
         ]
         heading = UI[lang]["research"]
