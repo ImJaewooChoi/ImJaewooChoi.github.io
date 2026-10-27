@@ -52,7 +52,7 @@ PAGES = {
         "title": "Auto-labeling pipeline",
         "result": "Per-image labeling cost fell from about USD 1.05 to about USD 0.036 (96.6%).",
         "desc": "I built a video auto-labeling pipeline that writes region-grounded captions and reduced the cost of labeling one image by 96.6%, from about USD 1.05 to about USD 0.036.",
-        "video": None,
+        "video": "auto",
         "problem": "Segmentation data and region-grounded vision-language data were labeled by hand.",
         "role": "I built the video auto-labeling pipeline, set the label taxonomy and the annotation guidelines, and compiled the COCO-format training datasets.",
         "method": [
@@ -140,6 +140,17 @@ PAGES = {
 }
 
 CLIPS = {
+    "auto": {
+        "home": "/assets/video/home/auto-labeling.mp4",
+        "full": "/assets/video/auto-labeling.mp4",
+        "poster": "/assets/frames/auto-labeling-canvas.jpg",
+        "home_w": 720,
+        "home_h": 404,
+        "full_w": 1280,
+        "full_h": 678,
+        "orient": "landscape",
+        "label": "Orchard video in the labeling tool, with masks carried to the next frames.",
+    },
     "strawberry": {
         "home": "/assets/video/home/strawberry.mp4",
         "full": "/assets/video/strawberry-ces2025.mp4",
