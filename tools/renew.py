@@ -63,8 +63,8 @@ PAGES = {
     },
     "strawberry-cultivation": {
         "title": "Strawberry cultivation tasks",
-        "result": "Transplanting 93.8%, flower thinning 87.5%, and runner handling 65% across 1,000 fixed-lab trials. Shown at CES 2025.",
-        "desc": "I trained Diffusion Policy on UMI demonstrations for transplanting, flower thinning, and runner handling. In 1,000 fixed-lab trials, success was 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. The work was exhibited at CES 2025.",
+        "result": "Transplanting 93.8%, flower thinning 87.5%, and runner handling 65% across 1,000 work cycles in a fixed lab. Shown at CES 2025.",
+        "desc": "I trained Diffusion Policy on UMI demonstrations for transplanting, flower thinning, and runner handling. In 1,000 work cycles in a fixed lab, success was 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. The work was exhibited at CES 2025.",
         "video": "strawberry",
         "problem": "Transplanting, flower thinning, and runner handling are learned from human demonstrations collected with a Universal Manipulation Interface (UMI).",
         "role": "I led the data pipeline and the policy training for all three tasks, and built everything except the robot-side post-processing.",
@@ -73,7 +73,7 @@ PAGES = {
             "ORB-SLAM3 visual-inertial SLAM trajectories were turned into training sets.",
             "Diffusion Policy was trained with RGB features and robot state as global conditioning.",
         ],
-        "outcome": "Across 1,000 trials in a fixed lab, transplanting succeeded 93.8% of the time, flower thinning 87.5%, and runner handling 65%. The work was exhibited at CES 2025.",
+        "outcome": "Across 1,000 work cycles in a fixed lab, transplanting succeeded 93.8% of the time, flower thinning 87.5%, and runner handling 65%. The work was exhibited at CES 2025.",
         "stack": "UMI, GoPro, IMU, ORB-SLAM3, Diffusion Policy, U-Net, and ViT.",
     },
     "cad-free-assembly": {
