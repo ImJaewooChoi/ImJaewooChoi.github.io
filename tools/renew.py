@@ -48,12 +48,13 @@ PAGES = {
         "outcome": "Version 1 is integrated into the production RT100 perception pipeline. I deployed it and optimized it with TensorRT on Jetson Orin Nano. For Version 2, the detection model exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime. Full-dataset training and accuracy evaluation of Version 2 are pending.",
     },
     "auto-labeling": {
-        "title": "Auto-labeling pipeline",
-        "result": "Per-image labeling cost fell from about USD 1.05 to about USD 0.036 (96.6%).",
-        "desc": "A video auto-labeling pipeline I built writes region-grounded captions and reduced the cost of labeling one image by 96.6%, from about USD 1.05 to about USD 0.036.",
+        "title": "Prompt-guided image and video auto-labeling",
+        "nav_title": "Auto-labeling pipeline",
+        "result": "Shared visual features, prompt-guided mask correction, and temporal object memory support image previews and video label propagation. Per-image labeling cost fell from about USD 1.05 to about USD 0.036 (96.6%).",
+        "desc": "Prompt-guided image and video auto-labeling with shared visual features, mask correction, and temporal object memory. Labeling cost fell by 96.6%, from about USD 1.05 to about USD 0.036 per image.",
         "video": "auto",
         "problem": "Segmentation data and region-grounded vision-language data were labeled by hand.",
-        "role": "Besides building the video auto-labeling pipeline, I set the label taxonomy and the annotation guidelines and compiled the COCO-format training datasets.",
+        "role": "I adapted an existing segmentation model to the image and video annotation workflow, set the label taxonomy and annotation guidelines, and compiled the COCO-format training datasets.",
         "method": [
             "Point prompts and mask corrections were turned into tracked masks with consistent IDs across frames.",
             "Qwen-series vision-language models wrote the region-grounded object captions and checked them. I sent uncertain cases to a second review and linked the verified captions to the instance annotations.",
@@ -378,14 +379,14 @@ def pager(project):
         prev = (
             f'<a href="{project_href("en", item["slug"])}">'
             '<span class="dir quiet">Previous</span>'
-            f'{esc(PAGES[item["slug"]]["title"])}</a>'
+            f'{esc(PAGES[item["slug"]].get("nav_title", PAGES[item["slug"]]["title"]))}</a>'
         )
     if idx + 1 < len(PROJECTS):
         item = PROJECTS[idx + 1]
         nxt = (
             f'<a href="{project_href("en", item["slug"])}">'
             '<span class="dir quiet">Next</span>'
-            f'{esc(PAGES[item["slug"]]["title"])}</a>'
+            f'{esc(PAGES[item["slug"]].get("nav_title", PAGES[item["slug"]]["title"]))}</a>'
         )
     return (
         '<nav class="pager" aria-label="Adjacent projects">'
@@ -489,17 +490,18 @@ ARCH = {
 # Extra sections placed after Method. Raw HTML; harden_html adds the text hyphen handling.
 EXTRA_SECTIONS = {
     "auto-labeling": """<section>
-<h2>Model: a tracker built on SAM 3</h2>
-<p>The labeling tracker is based on the SAM 3 video tracker, compiled to TensorRT engines and driven by clicks and seed masks. Class names and track IDs come from the labeling backend, so the model only has to produce masks. The engines follow an open-source TensorRT build of that tracker.</p>
-<figure class="arch"><img src="/assets/figures/video-tracker.png" width="2040" height="900" alt="SAM 3 tracker path: a frozen image encoder and neck feed a point-prompt decoder, a mask-prompt init, and a memory-attention step that reads and writes a memory bank. Mask logits go to the CPU service that writes COCO polygons and RLE masks."><figcaption>The GPU service runs the tracker. A CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
+<h2>Model structure</h2>
+<p>The pipeline builds on an existing prompt-conditioned segmentation model. A visual backbone and feature-projection stage provide shared image features, while point- and mask-conditioned decoding initializes or refines object masks. Temporal object memory carries information between frames for video tracking.</p>
+<figure class="arch"><img src="/assets/figures/video-tracker.png" width="2040" height="900" alt="Prompt-guided segmentation and tracking: an image encoder and feature-projection stage feed point- and mask-conditioned decoding. Temporal object memory carries information between frames. Mask logits go to CPU post-processing for COCO polygons and RLE masks."><figcaption>The GPU service runs the tracker. A CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
+<p>The model runtime uses an existing open-source TensorRT implementation.</p>
 </section>
 <section>
-<h2>How the pipeline uses it</h2>
-<p>On top of SAM 3, I built the prompting, serving and post-processing layer.</p>
+<h2>Adapting the model to annotation</h2>
+<p>My work focused on adapting this architecture to the annotation workflow:</p>
 <ol>
-<li>Clicks on a video frame accumulate. Each new click refines the previous mask on the GPU, and the object's memory is committed only after the last click, so a half-finished mask never reaches the memory bank.</li>
-<li>Image and video requests share one image encoder and neck. Every engine is loaded once per process and shared by concurrent workers.</li>
-<li>GPU inference and CPU post-processing run as separate services. The GPU side returns raw mask logits; the CPU side fills holes, resizes the masks and writes COCO polygons or RLE masks.</li>
+<li>I derived an image-only execution graph that excludes video-specific output branches without changing retained weights or operations.</li>
+<li>I reused visual features on the GPU and retained intermediate mask predictions on-device during iterative correction. Only the final correction is committed to persistent tracking memory.</li>
+<li>GPU inference and CPU post-processing run as separate services, supporting interactive previews and video label propagation within the same workflow.</li>
 </ol>
 </section>
 <section>

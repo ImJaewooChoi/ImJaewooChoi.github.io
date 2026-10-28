@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Auto-labeling pipeline, Jaewoo Choi</title>
-<meta name="description" content="A video auto-labeling pipeline I built writes region-grounded captions and reduced the cost of labeling one image by 96.6%, from about USD 1.05 to about USD 0.036.">
+<title>Prompt-guided image and video auto-labeling, Jaewoo Choi</title>
+<meta name="description" content="Prompt-guided image and video auto-labeling with shared visual features, mask correction, and temporal object memory. Labeling cost fell by 96.6%, from about USD 1.05 to about USD 0.036 per image.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
-<meta property="og:title" content="Auto-labeling pipeline, Jaewoo Choi">
-<meta property="og:description" content="A video auto-labeling pipeline I built writes region-grounded captions and reduced the cost of labeling one image by 96.6%, from about USD 1.05 to about USD 0.036.">
+<meta property="og:title" content="Prompt-guided image and video auto-labeling, Jaewoo Choi">
+<meta property="og:description" content="Prompt-guided image and video auto-labeling with shared visual features, mask correction, and temporal object memory. Labeling cost fell by 96.6%, from about USD 1.05 to about USD 0.036 per image.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -28,7 +28,7 @@
 </header>
 
 <main id="content">
-<h1>Auto‑labeling pipeline</h1>
+<h1>Prompt‑guided image and video auto‑labeling</h1>
 <p class="meta">Daedong AILab, Senior AI Researcher, May 2024–Present.</p>
 <figure class="film landscape"><video width="1280" height="678" muted playsinline controls preload="metadata" poster="/assets/frames/auto-labeling-canvas.jpg" aria-label="Orchard video in the labeling tool, with masks carried to the next frames."><source src="/assets/video/auto-labeling.mp4" type="video/mp4"></video><figcaption>Orchard video in the labeling tool, with masks carried to the next frames.</figcaption></figure>
 <section>
@@ -37,7 +37,7 @@
 </section>
 <section>
 <h2>My role</h2>
-<p>Besides building the video auto‑labeling pipeline, I set the label taxonomy and the annotation guidelines and compiled the COCO‑format training datasets.</p>
+<p>I adapted an existing segmentation model to the image and video annotation workflow, set the label taxonomy and annotation guidelines, and compiled the COCO‑format training datasets.</p>
 </section>
 <section>
 <h2>Method</h2>
@@ -47,17 +47,18 @@
 </ol>
 </section>
 <section>
-<h2>Model: a tracker built on SAM 3</h2>
-<p>The labeling tracker is based on the SAM 3 video tracker, compiled to TensorRT engines and driven by clicks and seed masks. Class names and track IDs come from the labeling backend, so the model only has to produce masks. The engines follow an open‑source TensorRT build of that tracker.</p>
-<figure class="arch"><img src="/assets/figures/video-tracker.png" width="2040" height="900" alt="SAM 3 tracker path: a frozen image encoder and neck feed a point-prompt decoder, a mask-prompt init, and a memory-attention step that reads and writes a memory bank. Mask logits go to the CPU service that writes COCO polygons and RLE masks."><figcaption>The GPU service runs the tracker. A CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
+<h2>Model structure</h2>
+<p>The pipeline builds on an existing prompt‑conditioned segmentation model. A visual backbone and feature‑projection stage provide shared image features, while point- and mask‑conditioned decoding initializes or refines object masks. Temporal object memory carries information between frames for video tracking.</p>
+<figure class="arch"><img src="/assets/figures/video-tracker.png" width="2040" height="900" alt="Prompt-guided segmentation and tracking: an image encoder and feature-projection stage feed point- and mask-conditioned decoding. Temporal object memory carries information between frames. Mask logits go to CPU post-processing for COCO polygons and RLE masks."><figcaption>The GPU service runs the tracker. A CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
+<p>The model runtime uses an existing open‑source TensorRT implementation.</p>
 </section>
 <section>
-<h2>How the pipeline uses it</h2>
-<p>On top of SAM 3, I built the prompting, serving and post‑processing layer.</p>
+<h2>Adapting the model to annotation</h2>
+<p>My work focused on adapting this architecture to the annotation workflow:</p>
 <ol>
-<li>Clicks on a video frame accumulate. Each new click refines the previous mask on the GPU, and the object's memory is committed only after the last click, so a half‑finished mask never reaches the memory bank.</li>
-<li>Image and video requests share one image encoder and neck. Every engine is loaded once per process and shared by concurrent workers.</li>
-<li>GPU inference and CPU post‑processing run as separate services. The GPU side returns raw mask logits; the CPU side fills holes, resizes the masks and writes COCO polygons or RLE masks.</li>
+<li>I derived an image‑only execution graph that excludes video‑specific output branches without changing retained weights or operations.</li>
+<li>I reused visual features on the GPU and retained intermediate mask predictions on‑device during iterative correction. Only the final correction is committed to persistent tracking memory.</li>
+<li>GPU inference and CPU post‑processing run as separate services, supporting interactive previews and video label propagation within the same workflow.</li>
 </ol>
 </section>
 <section>
