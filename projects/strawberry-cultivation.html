@@ -79,16 +79,12 @@
 </div>
 <figcaption>The same pipeline runs once per task, and each task has its own policy.</figcaption>
 </figure>
-<ol>
-<li>GoPro RGB and IMU data were collected, and I calibrated the camera to the IMU.</li>
-<li>ORB‑SLAM3 visual‑inertial SLAM trajectories were turned into training sets.</li>
-<li>Diffusion Policy was trained with RGB features and robot state as global conditioning.</li>
-</ol>
+
 </section>
 <section>
 <h2>Model structure</h2>
 <p>The policy is Diffusion Policy. An image encoder turns the RGB frames into features. Those features and the robot state form the global conditioning. Starting from a noisy action sequence, the denoising network removes noise over repeated steps and returns an action sequence for the robot side. I compared U‑Net and ViT configurations.</p>
-<figure class="arch"><img src="/assets/figures/strawberry-policy.png" width="2040" height="700" alt="Diffusion Policy for the strawberry tasks. RGB frames go through an image encoder to RGB features. RGB features and robot state form the global conditioning of a trained denoising network, which turns a noisy action sequence into an action sequence over repeated denoising steps. The action sequence goes to the robot side."><figcaption>RGB features and robot state condition the denoising network, which outputs an action sequence.</figcaption></figure>
+<figure class="arch"><img src="/assets/figures/strawberry-policy.png" width="2040" height="700" alt="Diffusion Policy for the strawberry tasks. RGB frames go through an image encoder to RGB features. RGB features and robot state form the global conditioning of a trained denoising network, which turns a noisy action sequence into an action sequence over repeated denoising steps. The action sequence goes to the robot side."></figure>
 </section>
 <section>
 <h2>Result</h2>

@@ -49,14 +49,14 @@
 </section>
 <section>
 <h2>System diagram</h2>
-<p>Each request starts from one RGB‑D frame with color, points, and normals. An instance segmentation model segments the image into unoccluded objects and holes, and hole masks are removed from the object masks. For each instance, the masked points are downsampled and filtered by normal direction, and PCA gives the initial pose. Visible‑surface templates are built offline from the CAD mesh, one per pick pose. Point‑to‑point ICP aligns each template to the points, and a reverse check scores the fit in both directions. The kept pick poses are ranked, mapped from the camera frame to the robot base with the eye‑to‑hand calibration, and returned as a ROS action result. Robot motion is handled on the robot side.</p>
+<p>Each request starts from one RGB‑D frame with color, points, and normals. The masked points are downsampled and filtered by normal direction before PCA. Templates are built offline from the CAD mesh, and a reverse check scores each fit in both directions. The camera‑to‑base mapping uses the eye‑to‑hand calibration, and the kept poses return as a ROS action result. Robot motion is handled on the robot side.</p>
 <figure class="arch"><img src="/assets/figures/bin-picking-system.png" width="1900" height="1090" alt="CAD-based bin picking system. An RGB-D frame goes to an instance segmentation model that segments objects and holes. Hole masks are removed, and for each object the masked points get an initial pose from PCA. Point-to-point ICP aligns a visible-surface template, built offline from the CAD mesh by hidden-point removal, and a fit check ranks the poses. The kept pose is mapped from the camera frame to the robot base with the eye-to-hand calibration and returned as a ROS action result for robot motion."><figcaption>Only the instance segmentation model is trained. Templates are built once per object, offline.</figcaption></figure>
 </section>
 <section>
 <h2>Result</h2>
 <p>The system completed three PoC rounds. In 1,000 in‑house, fixed‑environment trials, the robot moved five object types into an empty container with 89% task success.</p>
 </section>
-<nav class="pager" aria-label="Adjacent projects"><a href="/projects/cad-free-assembly.html"><span class="dir quiet">Previous</span>CAD‑free assembly</a><a href="/#work">All work</a><a href="/projects/ros-6d-vision.html"><span class="dir quiet">Next</span>Hand‑eye calibration and 6D pose server</a></nav>
+<nav class="pager" aria-label="Adjacent projects"><a href="/projects/cad-free-assembly.html"><span class="dir quiet">Previous</span>CAD‑free assembly</a><a href="/#work">All work</a><a href="/projects/ros-6d-vision.html"><span class="dir quiet">Next</span>6D pose service and eye‑to‑hand calibration</a></nav>
 </main>
 <script>
 (function () {

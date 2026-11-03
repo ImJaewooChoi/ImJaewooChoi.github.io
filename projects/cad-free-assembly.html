@@ -48,7 +48,7 @@
 </section>
 <section>
 <h2>System diagram</h2>
-<p>A reference RGB‑D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, and LightGlue matches its keypoints to the reference RGB image. Each matched reference keypoint takes its 3D point from the reference depth, and PnP with RANSAC gives the camera pose relative to the reference. The hand‑eye calibration and the stored reference tool pose turn that camera pose into the target 6D tool pose.</p>
+<p>The reference RGB‑D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale before matching.</p>
 <figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly system. A reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, LightGlue matches its keypoints to the reference RGB image, the reference depth turns the matches into 2D-3D matches, and PnP with RANSAC gives the camera pose. A transform chain with the hand-eye calibration and the stored reference tool pose gives the target 6D tool pose for robot motion."><figcaption>Dashed boxes are drawn from the patent and my write‑up.</figcaption></figure>
 </section>
 <section>
