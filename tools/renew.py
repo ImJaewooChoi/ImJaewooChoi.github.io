@@ -108,7 +108,7 @@ PAGES = {
         "stack": "An instance segmentation model, PCA, and point-to-point ICP.",
     },
     "ros-6d-vision": {
-        "title": "6D pose service and eye-to-hand calibration",
+        "title": "6D Pose Estimation with Eye-to-Hand Calibration",
         "result": "Wrote the ROS action server, which returns object poses in the camera and robot-base frames on each request, and the eye-to-hand calibration tools, which report residual error.",
         "desc": "A deployed ROS action server runs capture, segmentation, and pose estimation on each request and returns poses with matching scores. The eye-to-hand calibration tools report residual error.",
         "video": None,
