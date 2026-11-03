@@ -344,7 +344,7 @@ def home_page():
 <section id="experience">
 <h2>Experience</h2>
 <ul>
-<li>Daedong AILab, Perception Engineer (official title: Senior AI Researcher), May 2024–Present.</li>
+<li>Daedong AILab, Senior AI Researcher, May 2024–Present.</li>
 <li>PLAIF, Computer Vision Engineer, Jan. 2023–Apr. 2024.</li>
 <li>FS Solution Co., Ltd., Computer Vision Engineer, May 2022–Dec. 2022.</li>
 </ul>
