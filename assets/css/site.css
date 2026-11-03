@@ -220,7 +220,7 @@ p {
 
 .flow {
   margin: 14px 0 2px;
-  max-width: 40rem;
+  max-width: 56rem;
   hyphens: none;
 }
 
@@ -318,7 +318,7 @@ p {
 
 .page .wrap,
 .page main {
-  width: min(64rem, calc(100% - 32px));
+  width: min(76rem, calc(100% - 32px));
 }
 
 .page .bar {
@@ -329,7 +329,7 @@ p {
 .page main li,
 .page .meta,
 .page figcaption {
-  max-width: 66ch;
+  max-width: 92ch;
 }
 
 .page main {
@@ -433,6 +433,11 @@ p {
 }
 
 @media (max-width: 700px) {
+  .page .wrap,
+  .page main {
+    width: calc(100% - 24px);
+  }
+
   .proj {
     grid-template-columns: minmax(0, 1fr);
     gap: 6px;

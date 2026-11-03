@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Prompt-guided image and video auto-labeling, Jaewoo Choi</title>
-<meta name="description" content="Prompt-guided image and video auto-labeling with shared visual features, mask correction, and temporal object memory. Labeling cost fell by 96.6%, from about USD 1.05 to about USD 0.036 per image.">
+<meta name="description" content="A deployed, prompt-guided auto-labeling pipeline for images and video. Labeling cost per image fell from USD 1.05 to USD 0.036 (96.6%) compared with Prolific.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="Prompt-guided image and video auto-labeling, Jaewoo Choi">
-<meta property="og:description" content="Prompt-guided image and video auto-labeling with shared visual features, mask correction, and temporal object memory. Labeling cost fell by 96.6%, from about USD 1.05 to about USD 0.036 per image.">
+<meta property="og:description" content="A deployed, prompt-guided auto-labeling pipeline for images and video. Labeling cost per image fell from USD 1.05 to USD 0.036 (96.6%) compared with Prolific.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -33,33 +33,40 @@
 <figure class="film landscape"><video width="1280" height="678" muted playsinline controls preload="metadata" poster="/assets/frames/auto-labeling-canvas.jpg" aria-label="Orchard video in the labeling tool, with masks carried to the next frames."><source src="/assets/video/auto-labeling.mp4" type="video/mp4"></video><figcaption>Orchard video in the labeling tool, with masks carried to the next frames.</figcaption></figure>
 <section>
 <h2>Problem</h2>
-<p>Segmentation data and region‑grounded vision‑language data were labeled by hand.</p>
+<p>Before this pipeline, segmentation data and region‑grounded vision‑language data were labeled by hand.</p>
 </section>
 <section>
 <h2>My role</h2>
-<p>I adapted an existing segmentation model to the image and video annotation workflow, set the label taxonomy and annotation guidelines, and compiled the COCO‑format training datasets.</p>
+<p>I built image and video annotation on an existing prompt‑guided video segmentation model: an image‑only decoder graph, a click‑refinement flow, selective memory writes, and one shared encoder for both paths. Beyond the annotation tool, I also set the label taxonomy, wrote the annotation guidelines, and built the COCO‑format training datasets.</p>
 </section>
 <section>
 <h2>Method</h2>
 <ol>
-<li>Point prompts and mask corrections were turned into tracked masks with consistent IDs across frames.</li>
+<li>Clicks and mask corrections become tracked masks that keep the same ID across frames.</li>
 <li>Qwen‑series vision‑language models wrote the region‑grounded object captions and checked them. I sent uncertain cases to a second review and linked the verified captions to the instance annotations.</li>
 </ol>
 </section>
 <section>
 <h2>Model structure</h2>
-<p>The pipeline builds on an existing prompt‑conditioned segmentation model. A visual backbone and feature‑projection stage provide shared image features, while point- and mask‑conditioned decoding initializes or refines object masks. Temporal object memory carries information between frames for video tracking.</p>
-<figure class="arch"><img src="/assets/figures/video-tracker.png" width="2040" height="900" alt="Prompt-guided segmentation and tracking: an image encoder and feature-projection stage feed point- and mask-conditioned decoding. Temporal object memory carries information between frames. Mask logits go to CPU post-processing for COCO polygons and RLE masks."><figcaption>The GPU service runs the tracker. A CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
-<p>The model runtime uses an existing open‑source TensorRT implementation.</p>
+<p>The pipeline builds on an existing prompt‑guided video segmentation model. A ViT image encoder turns each image or video frame into tokens, and a neck turns those tokens into a feature pyramid. A prompt encoder and mask decoder turn point or mask prompts into mask logits. Video adds a memory path. There, a memory encoder compresses each tracked mask into memory features and an object pointer, and four memory‑attention layers let the current frame attend to recent frames and up to four conditioning frames.</p>
+<figure class="arch"><img src="/assets/figures/auto-labeling-system.png" width="2040" height="1500" alt="Auto-labeling system. Top: an image encoder and neck feed point- and mask-prompt decoding, and memory attention with a memory bank carries tracked objects between frames. Mask logits go to a CPU service that writes COCO polygons and RLE masks. Bottom: the finished labels are captioned in three stages, an object caption per mask, a relation caption of each mask in the image, and an image caption. Captions are checked, with a second review for unsure cases, and linked to the instance annotations. Object and image captions feed training of the second-generation open-vocabulary detector. Relation captions are stored with the labels and not used in that training."><figcaption>The GPU service runs the model, and a CPU service turns its mask logits into COCO polygons and RLE masks. The captioning lane runs after labeling. Object and image captions feed training of the second‑generation open‑vocabulary detector.</figcaption></figure>
+<p>The model runs on an existing open‑source TensorRT export. That export split the model into separate graphs and made memory attention sparse. Those changes are its author's work. My changes are built on top of it and do not change the model weights.</p>
 </section>
 <section>
-<h2>Adapting the model to annotation</h2>
-<p>My work focused on adapting this architecture to the annotation workflow:</p>
-<ol>
-<li>I derived an image‑only execution graph that excludes video‑specific output branches without changing retained weights or operations.</li>
-<li>I reused visual features on the GPU and retained intermediate mask predictions on‑device during iterative correction. Only the final correction is committed to persistent tracking memory.</li>
-<li>GPU inference and CPU post‑processing run as separate services, supporting interactive previews and video label propagation within the same workflow.</li>
-</ol>
+<h2>Image labeling</h2>
+<p>A still image has no past frames, so the memory encoder and object pointer are not used. I extracted a subgraph of the point‑prompt decoder that keeps only the mask, object score and IoU outputs. Its operators and weights are the same as in the video graph. The encoder and neck run once per image. The first click goes to a first‑click decoder. Each later click goes to a refine decoder together with all earlier clicks and the previous mask logits, which act as a mask prompt.</p>
+</section>
+<section>
+<h2>Video labeling</h2>
+<p>Existing labels on the first frame are resized to the model input, turned into mask logits and entered as conditioning frames. Region classes such as ground are first trimmed by the union of object masks, so tracking never starts from overlapping labels. Clicks go on top as point prompts, and a new object must start with a positive click. While an annotator is still clicking on a frame, intermediate masks are not written to memory; only the final mask is encoded and stored. A correction on a later frame is added the same way, as a new conditioning frame with the same track ID.</p>
+</section>
+<section>
+<h2>Outputs</h2>
+<p>Mask logits are filled at low resolution, upsampled and thresholded. Cleanup keeps objects and region classes from overlapping and gives small stray islands of a region class to their neighbours. It also removes overlapping duplicates of one object class. Pieces disconnected from every positive click are dropped. Objects are saved as COCO polygons and region classes as masks.</p>
+</section>
+<section>
+<h2>Serving</h2>
+<p>The choices below affect serving only and do not change the model. The image and video paths share one encoder and neck on the GPU. Image features stay cached on the GPU between clicks, and so does the previous mask. The point‑prompt decoder is built in FP32 because the FP16 build failed the mask IoU check. GPU inference and CPU post‑processing run as two separate services.</p>
 </section>
 <section>
 <h2>Captioning after labeling</h2>
@@ -69,10 +76,11 @@
 <li>Each mask also got a caption of its relationship to the image.</li>
 <li>The whole image got a caption of its own.</li>
 </ul>
+<p>The second generation of the <a href="/projects/language-distilled-segmentation.html">open‑vocabulary model</a> trains on the object and image captions. It does not use the relationship captions, which are stored with the labels.</p>
 </section>
 <section>
 <h2>Result</h2>
-<p>Labeling one image cost about USD 1.05 before this pipeline and about USD 0.036 after it, a 96.6% reduction.</p>
+<p>Labeling one image cost USD 1.05 with crowdsourced labeling on Prolific and USD 0.036 with this pipeline, a 96.6% reduction. The pipeline is deployed at Daedong AILab, where it has produced 13.0M instance‑mask labels for 1.1M training records (662K images). Labels from my auto‑labeling system trained both generations of the open‑vocabulary model, which I deployed on Jetson Orin Nano.</p>
 </section>
 <nav class="pager" aria-label="Adjacent projects"><a href="/projects/language-distilled-segmentation.html"><span class="dir quiet">Previous</span>Open‑vocabulary segmentation and mapping</a><a href="/#work">All work</a><a href="/projects/strawberry-cultivation.html"><span class="dir quiet">Next</span>Strawberry cultivation tasks</a></nav>
 </main>

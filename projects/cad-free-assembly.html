@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CAD-free assembly, Jaewoo Choi</title>
-<meta name="description" content="I estimated 6D tool poses for assembly from a 2D camera at run time, with no CAD model of the part. Task success was 93% across 1,000 in-house trials.">
+<meta name="description" content="Deployed 6D tool-pose estimation for robot assembly from a 2D camera, with no CAD model of the part. Task success was 93% across 1,000 in-house trials.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="CAD-free assembly, Jaewoo Choi">
-<meta property="og:description" content="I estimated 6D tool poses for assembly from a 2D camera at run time, with no CAD model of the part. Task success was 93% across 1,000 in-house trials.">
+<meta property="og:description" content="Deployed 6D tool-pose estimation for robot assembly from a 2D camera, with no CAD model of the part. Task success was 93% across 1,000 in-house trials.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -33,22 +33,27 @@
 <figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/cad-room.jpg" aria-label="Robot arm with a gripper and wrist camera, assembling a part on a fixture."><source src="/assets/video/cad-free-assembly.mp4" type="video/mp4"></video><figcaption>Robot arm with a gripper and wrist camera, assembling a part on a fixture.</figcaption></figure>
 <section>
 <h2>Problem</h2>
-<p>Assembly needs a target 6D tool pose when the part has no CAD model. At run time the sensor is a 2D camera.</p>
+<p>The robot has to assemble a part that has no CAD model, using only a 2D camera at run time, so it needs the target 6D tool pose from that image.</p>
 </section>
 <section>
 <h2>My role</h2>
-<p>I prototyped a two‑view baseline and built the final pose pipeline.</p>
+<p>I built the deployed pose pipeline, from image matching to the target 6D tool pose.</p>
 </section>
 <section>
 <h2>Method</h2>
 <ol>
-<li>The final pipeline matches the live 2D image to a stored reference RGB‑D capture with LightGlue, so each match carries depth.</li>
+<li>The pipeline matches the live 2D image to a stored reference RGB‑D capture with LightGlue, so each match carries depth.</li>
 <li>From the 3D‑2D matches, solvePnP with RANSAC recovers the camera pose, which I chain with the hand‑eye calibration and the stored reference pose to get the target 6D tool pose.</li>
 </ol>
 </section>
 <section>
+<h2>System diagram</h2>
+<p>A reference RGB‑D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, and LightGlue matches its keypoints to the reference RGB image. Each matched reference keypoint takes its 3D point from the reference depth, and PnP with RANSAC gives the camera pose relative to the reference. The hand‑eye calibration and the stored reference tool pose turn that camera pose into the target 6D tool pose.</p>
+<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly system. A reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, LightGlue matches its keypoints to the reference RGB image, the reference depth turns the matches into 2D-3D matches, and PnP with RANSAC gives the camera pose. A transform chain with the hand-eye calibration and the stored reference tool pose gives the target 6D tool pose for robot motion."><figcaption>Dashed boxes are drawn from the patent and my write‑up.</figcaption></figure>
+</section>
+<section>
 <h2>Result</h2>
-<p>93% of 1,000 in‑house trials succeeded. This work is the basis of Korean Patent 10‑2694987.</p>
+<p>The pipeline is deployed for assembly. 93% of 1,000 in‑house trials succeeded. This work is the basis of Korean Patent 10‑2694987, on which I am a co‑inventor.</p>
 </section>
 <nav class="pager" aria-label="Adjacent projects"><a href="/projects/strawberry-cultivation.html"><span class="dir quiet">Previous</span>Strawberry cultivation tasks</a><a href="/#work">All work</a><a href="/projects/bin-picking.html"><span class="dir quiet">Next</span>CAD‑based bin picking</a></nav>
 </main>

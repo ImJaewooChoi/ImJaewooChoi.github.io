@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hand-eye calibration and 6D pose server, Jaewoo Choi</title>
-<meta name="description" content="Capture, segmentation, and pose estimation run on each request and return poses with matching scores. The eye-to-hand tools report residual error.">
+<meta name="description" content="A deployed ROS action server runs capture, segmentation, and pose estimation on each request and returns poses with matching scores. The eye-to-hand calibration tools report residual error.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="Hand-eye calibration and 6D pose server, Jaewoo Choi">
-<meta property="og:description" content="Capture, segmentation, and pose estimation run on each request and return poses with matching scores. The eye-to-hand tools report residual error.">
+<meta property="og:description" content="A deployed ROS action server runs capture, segmentation, and pose estimation on each request and returns poses with matching scores. The eye-to-hand calibration tools report residual error.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -42,7 +42,7 @@
 <section>
 <h2>Method</h2>
 <figure class="flow">
-<p class="flow-k">Per request, config‑driven</p>
+<p class="flow-k">Per request; camera, model, and pipeline set in a config file</p>
 <div class="flow-step">
 <p class="flow-k">Input</p>
 <p>Zivid, RealSense, or recorded data</p>
@@ -81,7 +81,7 @@
 </section>
 <section>
 <h2>Result</h2>
-<p>Each request returns the pose in the camera frame and in the robot base, with a matching score.</p>
+<p>Each request returns the pose in the camera frame and in the robot base, with a matching score. The server and the calibration tools are deployed and in use.</p>
 </section>
 <nav class="pager" aria-label="Adjacent projects"><a href="/projects/bin-picking.html"><span class="dir quiet">Previous</span>CAD‑based bin picking</a><a href="/#work">All work</a><a href="/projects/license-plate.html"><span class="dir quiet">Next</span>License plate recognition</a></nav>
 </main>

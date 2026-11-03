@@ -26,109 +26,113 @@ from build_site import (
 PAGES = {
     "language-distilled-segmentation": {
         "title": "Open-vocabulary segmentation and mapping",
-        "result": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step. Version 1 runs on production RT100 robots with TensorRT on Jetson Orin Nano.",
-        "desc": "Two versions of an open-vocabulary segmenter for the RT100 orchard platform, and the occupancy grid built from the masks. Version 1 runs on production RT100 with TensorRT on Jetson Orin Nano.",
+        "result": "Built two generations of open-vocabulary perception, a class-name open-vocabulary segmenter for semantic and instance segmentation and then a caption-trained open-vocabulary detector, both of which output boxes and instance masks, plus the obstacle-mapping step. Both generations are deployed on production RT100 robots with TensorRT on Jetson Orin Nano.",
+        "desc": "Two generations of open-vocabulary perception for the RT100 orchard platform, a class-name open-vocabulary segmenter for semantic and instance segmentation and a caption-trained open-vocabulary detector, and the occupancy grid built from their instance masks. Both generations are deployed on production RT100 with TensorRT on Jetson Orin Nano.",
         "video": None,
-        "problem": "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map under embedded compute limits.",
-        "role": "I pre-trained a DINOv3 and SigLIP2 segmenter (Version 1), implemented and trained a second open-vocabulary segmenter (Version 2), and built the occupancy-grid mapping from the instance masks.",
+        "problem": "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map on a Jetson Orin Nano.",
+        "role": "I pre-trained the first generation, a class-name open-vocabulary segmenter for semantic and instance segmentation, on frozen DINOv3 and SigLIP2 encoders, then developed the second, a caption-trained open-vocabulary detector with a mask head. On RT100, I deployed both generations and built the occupancy-grid mapping from their instance masks.",
         "method": [
             (
-                "Version 1",
-                "With the DINOv3 and SigLIP2 encoders frozen, I pre-trained the image adapter, PAN-FPN neck, text adapter, and instance and semantic heads on multiple datasets. The two heads were trained together on alternating batches. A region-text alignment loss supervised the instance head, and the semantic head classified each pixel against the class-name text embeddings. I added text-prompt inference and fixed-vocabulary conversion, and adapted the model to the orchard domain.",
+                "First generation: class-name segmenter",
+                "With the DINOv3 and SigLIP2 encoders frozen, I pre-trained the image adapter, PAN-FPN neck, text adapter, and instance and semantic heads on multiple datasets. The two heads were trained together on alternating batches. A region-text alignment loss supervised the instance head, which outputs boxes and instance masks, and the semantic head classified each pixel against the class-name text embeddings. I added text-prompt inference and fixed-vocabulary conversion, and adapted the model to the orchard domain.",
             ),
             (
-                "Version 2",
-                "Version 2 is a DETR-style instance segmentation model. Its frozen DINOv3 backbone feeds a multi-scale projector and a three-layer decoder. A trainable MiniLM text encoder embeds category names, and a query-based mask head predicts masks from the highest-resolution features. Training uses category names, mask captions, and image captions. During training only, a precomputed language teacher aligns the captions with matched queries and pooled image features and reweights related negatives. Masks are matched and trained with BCE/Dice losses.",
+                "Why a second generation",
+                "The first generation learned only from class names, and its SigLIP2 text encoder stayed frozen. On a validation subset it missed thin structures such as streetlights and small objects such as books, and it confused similar classes. Its semantic head picks the best class from a fixed list and cannot reject an unknown object, so on RT100 images some white reflectors were labeled as snow. I built the second generation, a caption-trained open-vocabulary detector, to learn from richer text than class names. Its compact text encoder is trained with object and image captions, which are used only during training and add no inference cost. The occupancy grid needs instance masks, so the detector has a mask head and outputs them along with boxes. The deployed system has two known limitations: small objects, and rejecting objects that match none of the given category names.",
             ),
             (
-                "Post-processing",
-                "Point-cloud voxel centers were projected into the image and associated with the instance masks. I added virtual voxels from valid anchor depths, and obstacles were mapped into a navigable occupancy grid with decay, hysteresis, and cost inflation.",
+                "Second generation: caption-trained detector",
+                "The second generation uses a query-based transformer architecture. Its frozen DINOv3 backbone feeds a multi-scale projector and a three-layer decoder. A trainable compact text encoder embeds category names. At inference it takes any list of category names, and those embeddings select the decoder queries and score each class. The mask head reads the highest-resolution features together with the decoder queries, and masks are returned at the original image resolution. Training uses category names, object captions, and image captions. During training only, a precomputed language teacher aligns the captions with matched queries and pooled image features and reweights related negatives. Masks are matched and trained with BCE/Dice losses. The deployed model outputs boxes and instance masks.",
+            ),
+            (
+                "Mapping masks into the occupancy grid",
+                "The same mapping step serves both generations. The point cloud is reduced to voxels, and each voxel center is projected into the camera image. A voxel that lands inside an instance mask takes that mask's object and class. I added virtual voxels from valid anchor depths. The labeled voxels are then written into a navigable occupancy grid. Decay lets cells that are no longer observed fade out, hysteresis keeps a cell from flipping between free and occupied, and cost inflation keeps planned paths clear of obstacle edges. Navigation reads this grid.",
             ),
         ],
-        "outcome": "Version 1 is integrated into the production RT100 perception pipeline. I deployed it and optimized it with TensorRT on Jetson Orin Nano. For Version 2, the detection model exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime. Full-dataset training and accuracy evaluation of Version 2 are pending.",
+        "outcome": "Labels from my auto-labeling system trained both generations of the open-vocabulary model, which I deployed on Jetson Orin Nano. Both are in use in the production RT100 perception pipeline. Both output boxes and instance masks, and the first generation also gives semantic masks. I optimized both with TensorRT. The second generation exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime.",
     },
     "auto-labeling": {
         "title": "Prompt-guided image and video auto-labeling",
         "nav_title": "Auto-labeling pipeline",
-        "result": "Shared visual features, prompt-guided mask correction, and temporal object memory support image previews and video label propagation. Per-image labeling cost fell from about USD 1.05 to about USD 0.036 (96.6%).",
-        "desc": "Prompt-guided image and video auto-labeling with shared visual features, mask correction, and temporal object memory. Labeling cost fell by 96.6%, from about USD 1.05 to about USD 0.036 per image.",
+        "result": "The deployed labeling pipeline turns clicks into image masks and tracks them across video frames. Per-image labeling cost fell from USD 1.05 to USD 0.036 (96.6%) compared with Prolific. Its labels trained both generations of my open-vocabulary model, which I deployed on Jetson Orin Nano.",
+        "desc": "A deployed, prompt-guided auto-labeling pipeline for images and video. Labeling cost per image fell from USD 1.05 to USD 0.036 (96.6%) compared with Prolific.",
         "video": "auto",
-        "problem": "Segmentation data and region-grounded vision-language data were labeled by hand.",
-        "role": "I adapted an existing segmentation model to the image and video annotation workflow, set the label taxonomy and annotation guidelines, and compiled the COCO-format training datasets.",
+        "problem": "Before this pipeline, segmentation data and region-grounded vision-language data were labeled by hand.",
+        "role": "I built image and video annotation on an existing prompt-guided video segmentation model: an image-only decoder graph, a click-refinement flow, selective memory writes, and one shared encoder for both paths. Beyond the annotation tool, I also set the label taxonomy, wrote the annotation guidelines, and built the COCO-format training datasets.",
         "method": [
-            "Point prompts and mask corrections were turned into tracked masks with consistent IDs across frames.",
+            "Clicks and mask corrections become tracked masks that keep the same ID across frames.",
             "Qwen-series vision-language models wrote the region-grounded object captions and checked them. I sent uncertain cases to a second review and linked the verified captions to the instance annotations.",
         ],
-        "outcome": "Labeling one image cost about USD 1.05 before this pipeline and about USD 0.036 after it, a 96.6% reduction.",
+        "outcome": "Labeling one image cost USD 1.05 with crowdsourced labeling on Prolific and USD 0.036 with this pipeline, a 96.6% reduction. The pipeline is deployed at Daedong AILab, where it has produced 13.0M instance-mask labels for 1.1M training records (662K images). Labels from my auto-labeling system trained both generations of the open-vocabulary model, which I deployed on Jetson Orin Nano.",
         "stack": "TensorRT, Qwen-series vision-language models, and COCO.",
     },
     "strawberry-cultivation": {
         "title": "Strawberry cultivation tasks",
-        "result": "Transplanting 93.8%, flower thinning 87.5%, and runner handling 65% across 1,000 work cycles in a fixed lab. Shown at CES 2025.",
-        "desc": "I trained Diffusion Policy on UMI demonstrations for transplanting, flower thinning, and runner handling. In 1,000 work cycles in a fixed lab, success was 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. The work was exhibited at CES 2025.",
+        "result": "Transplanting 93.8%, flower thinning 87.5%, and runner handling 65% over 1,000 work cycles in a fixed lab environment. Exhibited at CES 2025.",
+        "desc": "Deployed Diffusion Policy controllers for transplanting, flower thinning, and runner handling, trained on UMI demonstrations. Task-level success rates measured over 1,000 work cycles in a fixed lab environment were 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. The work was exhibited at CES 2025.",
         "video": "strawberry",
-        "problem": "Transplanting, flower thinning, and runner handling are learned from human demonstrations collected with a Universal Manipulation Interface (UMI).",
+        "problem": "A strawberry cultivation robot has to transplant seedlings, thin flowers, and handle runners. Each task policy is learned from human demonstrations collected with a Universal Manipulation Interface (UMI).",
         "role": "I led the data pipeline and the policy training for all three tasks, and built everything except the robot-side post-processing.",
         "method": [
             "GoPro RGB and IMU data were collected, and I calibrated the camera to the IMU.",
             "ORB-SLAM3 visual-inertial SLAM trajectories were turned into training sets.",
             "Diffusion Policy was trained with RGB features and robot state as global conditioning.",
         ],
-        "outcome": "Across 1,000 work cycles in a fixed lab, transplanting succeeded 93.8% of the time, flower thinning 87.5%, and runner handling 65%. The work was exhibited at CES 2025.",
+        "outcome": "The three task policies are deployed on the cultivation robot. Task-level success rates measured over 1,000 work cycles in a fixed lab environment were 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. The work was exhibited at CES 2025.",
         "stack": "UMI, GoPro, IMU, ORB-SLAM3, Diffusion Policy, U-Net, and ViT.",
     },
     "cad-free-assembly": {
         "title": "CAD-free assembly",
         "result": "93% task success across 1,000 in-house trials, with no CAD model of the part.",
-        "desc": "I estimated 6D tool poses for assembly from a 2D camera at run time, with no CAD model of the part. Task success was 93% across 1,000 in-house trials.",
+        "desc": "Deployed 6D tool-pose estimation for robot assembly from a 2D camera, with no CAD model of the part. Task success was 93% across 1,000 in-house trials.",
         "video": "cad",
-        "problem": "Assembly needs a target 6D tool pose when the part has no CAD model. At run time the sensor is a 2D camera.",
-        "role": "I prototyped a two-view baseline and built the final pose pipeline.",
+        "problem": "The robot has to assemble a part that has no CAD model, using only a 2D camera at run time, so it needs the target 6D tool pose from that image.",
+        "role": "I built the deployed pose pipeline, from image matching to the target 6D tool pose.",
         "method": [
-            "The final pipeline matches the live 2D image to a stored reference RGB-D capture with LightGlue, so each match carries depth.",
+            "The pipeline matches the live 2D image to a stored reference RGB-D capture with LightGlue, so each match carries depth.",
             "From the 3D-2D matches, solvePnP with RANSAC recovers the camera pose, which I chain with the hand-eye calibration and the stored reference pose to get the target 6D tool pose.",
         ],
-        "outcome": "93% of 1,000 in-house trials succeeded. This work is the basis of Korean Patent 10-2694987.",
-        "stack": "LightGlue, USAC, solvePnP, RANSAC, and hand-eye calibration.",
+        "outcome": "The pipeline is deployed for assembly. 93% of 1,000 in-house trials succeeded. This work is the basis of Korean Patent 10-2694987, on which I am a co-inventor.",
+        "stack": "LightGlue, solvePnP with RANSAC, and hand-eye calibration.",
     },
     "bin-picking": {
         "title": "CAD-based bin picking",
-        "result": "89% task success across 1,000 in-house trials on five object types.",
-        "desc": "I estimated picking poses from RGB-D images for objects with known CAD geometry. Task success was 89% in 1,000 in-house, fixed-environment trials.",
+        "result": "89% task success across 1,000 in-house, fixed-environment trials on five object types.",
+        "desc": "Deployed RGB-D bin picking for objects with known CAD geometry. Task success was 89% in 1,000 in-house, fixed-environment trials on five object types.",
         "video": "bin",
-        "problem": "Picking poses for objects with known CAD geometry come from RGB-D images of a bin.",
-        "role": "I trained the segmenter and aligned visible-surface CAD templates to the segmented points.",
+        "problem": "The robot has to pick objects with known CAD geometry out of a bin, so it needs a pick pose for each object from an RGB-D image of the bin.",
+        "role": "I trained the instance segmentation model and built the step that aligns visible-surface CAD templates to the segmented points.",
         "method": [
             "The instance segmentation model was trained with separate unoccluded and hole classes. Hole masks were subtracted from object masks, and the remaining instance masks segmented the point cloud.",
             "For each pick pose, I built a visible-surface CAD template by hidden-point removal and aligned it to the segmented points with PCA initialization and point-to-point ICP.",
-            "Poses were filtered by registration fitness and inlier RMSE, then ranked and transformed into the robot base with the camera extrinsics.",
+            "Poses with low registration fitness or high inlier RMSE were dropped. The rest were ranked and transformed into the robot base frame with the camera extrinsics.",
         ],
-        "outcome": "In 1,000 in-house, fixed-environment trials, the robot moved five object types into an empty container with 89% task success.",
+        "outcome": "The system is deployed for bin picking. In 1,000 in-house, fixed-environment trials, the robot moved five object types into an empty container with 89% task success.",
         "stack": "An instance segmentation model, PCA, and point-to-point ICP.",
     },
     "ros-6d-vision": {
         "title": "Hand-eye calibration and 6D pose server",
-        "result": "Wrote the ROS server that returns camera and robot-base poses on each request, plus eye-to-hand calibration tools that report residual error.",
-        "desc": "Capture, segmentation, and pose estimation run on each request and return poses with matching scores. The eye-to-hand tools report residual error.",
+        "result": "Wrote the ROS action server, which returns object poses in the camera and robot-base frames on each request, and the eye-to-hand calibration tools, which report residual error.",
+        "desc": "A deployed ROS action server runs capture, segmentation, and pose estimation on each request and returns poses with matching scores. The eye-to-hand calibration tools report residual error.",
         "video": None,
         "problem": "A caller needs each object pose in the robot base frame, so the camera has to be calibrated to the robot.",
         "role": "I wrote the ROS action server and the eye-to-hand calibration tools.",
         "method": [],
-        "outcome": "Each request returns the pose in the camera frame and in the robot base, with a matching score.",
+        "outcome": "Each request returns the pose in the camera frame and in the robot base, with a matching score. The server and the calibration tools are deployed and in use.",
         "stack": "ROS, Zivid, RealSense, ArUco, OpenCV, and dynamic_reconfigure.",
     },
     "license-plate": {
         "title": "License plate recognition",
-        "result": "Built the plate recognition pipeline end to end.",
+        "result": "Built the plate recognition pipeline: plate detection, then OCR.",
         "desc": "Object detection locates a car license plate, and OCR reads the letters and digits.",
         "video": None,
-        "problem": "Reading the letters and digits on a car license plate meant first finding the plate in the image.",
-        "role": "I built the recognition pipeline.",
+        "problem": "To read a license plate, the system first has to find the plate in the image.",
+        "role": "I built the deployed recognition pipeline.",
         "method": [
             "A detection model finds the plate.",
             "OCR reads the letters and digits.",
         ],
-        "outcome": "",
+        "outcome": "The recognition pipeline is deployed and in use.",
         "stack": "Object detection and OCR.",
     },
 }
@@ -264,9 +268,9 @@ def slot(page):
 
 # Home intro, version A in out/r15_for_slop.md.
 INTRO = (
-    "I build perception for real robots, covering image segmentation, point-cloud perception for obstacle mapping, "
-    "object pose estimation, and imitation learning for manipulation. This work has been tested on robots deployed "
-    "in orchards and on robot arms. Next, I want to move toward vision-language-action models."
+    "I build perception for robots: image segmentation, point-cloud obstacle mapping, "
+    "object pose estimation, and imitation learning for manipulation. Every system below is deployed "
+    "and in use."
 )
 
 # Monochrome 24x24 paths. GitHub, Kaggle, and LinkedIn are Simple Icons (CC0); Email is an envelope.
@@ -324,7 +328,7 @@ def home_page():
 <section id="record">
 <h2>Patent and awards</h2>
 <ul>
-<li>Korean Patent 10-2694987, registered Aug. 2024. Applicant PLAIF. Co-inventor. {esc(PATENT_TITLE)} The basis is the <a href="{project_href("en", "cad-free-assembly")}">CAD-free assembly</a> work.</li>
+<li>Korean Patent 10-2694987, registered Aug. 2024. Applicant PLAIF. Co-inventor. {esc(PATENT_TITLE)} My <a href="{project_href("en", "cad-free-assembly")}">CAD-free assembly</a> work is the basis of the patent.</li>
 <li>Kaggle UBC-OCEAN: bronze medal, team rank 83/1,326, Jan. 2024.</li>
 <li>Kaggle Image Matching Challenge 2022: silver medal, team rank 50/642, June 2022. <a href="{esc(MATCH)}">Code</a>.</li>
 <li>Kaggle Happywhale (Whale and Dolphin Identification): bronze medal, team rank 127/1,588, Apr. 2022. <a href="{esc(WHALE)}">Code</a>.</li>
@@ -399,38 +403,85 @@ def pager(project):
 
 DIAGRAMS = {
     "language-distilled-segmentation": """<figure class="flow">
+<p class="flow-k">System flow on RT100</p>
 <div class="flow-step">
-<p class="flow-k">RGB image input</p>
+<p class="flow-k">Inputs</p>
+<p>RGB image, and a point cloud of the same scene.</p>
 </div>
 <div class="flow-step">
-<p class="flow-k">Open-vocabulary instance segmentation</p>
+<p class="flow-k">Open-vocabulary segmentation</p>
+<p>Category names are given as text, so the class list can change without retraining.</p>
 </div>
 <div class="flow-fork">
 <div>
-<p class="flow-k">Version 1</p>
-<p>Frozen DINOv3 + SigLIP2 encoders. Trained image and text adapters, PAN-FPN neck, instance and semantic heads.</p>
+<p class="flow-k">First generation: class-name segmenter</p>
+<p>Frozen DINOv3 and SigLIP2 encoders. Trained image and text adapters, PAN-FPN neck, instance and semantic heads.</p>
 </div>
 <div>
-<p class="flow-k">Version 2</p>
-<p>DETR-style model. Language-teacher supervision during training only.</p>
+<p class="flow-k">Second generation: caption-trained detector</p>
+<p>Frozen DINOv3 backbone, multi-scale projector, three-layer decoder, trainable compact text encoder, mask head. Object and image captions are used in training only.</p>
 </div>
 </div>
 <div class="flow-step">
-<p class="flow-k">Instance masks</p>
+<p class="flow-k">Boxes and instance masks</p>
+<p>Both generations. The first also outputs semantic masks.</p>
 </div>
 <div class="flow-step">
-<p class="flow-k">Associate the masks</p>
-<p>Point-cloud voxel centers projected into the image. Virtual voxels from valid anchor depths.</p>
+<p class="flow-k">Voxels to masks</p>
+<p>Voxel centers projected into the image take the object and class of the mask they land in. Virtual voxels added from valid anchor depths.</p>
 </div>
 <div class="flow-step">
 <p class="flow-k">Occupancy grid</p>
-<p>Decay, hysteresis, and cost inflation, for navigation.</p>
+<p>Labeled voxels written into the grid with decay, hysteresis, and cost inflation.</p>
 </div>
-<figcaption>Both versions write instance masks. On production RT100, the occupancy grid is built from the Version 1 masks.</figcaption>
+<div class="flow-step">
+<p class="flow-k">Navigation</p>
+<p>Reads the occupancy grid.</p>
+</div>
+<figcaption>I built the second generation after validation exposed errors in the first. Both generations are deployed on production RT100 with TensorRT on Jetson Orin Nano and feed the same mapping step.</figcaption>
+</figure>
+""",
+    "strawberry-cultivation": """<figure class="flow">
+<p class="flow-k">Whole system, per task</p>
+<div class="flow-step">
+<p class="flow-k">Demonstrations</p>
+<p>A person performs the task with a hand-held UMI gripper. Its GoPro records RGB video and IMU data.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Calibration</p>
+<p>The camera is calibrated to the IMU.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Trajectories</p>
+<p>ORB-SLAM3 visual-inertial SLAM recovers the gripper trajectory from the video and IMU data.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Training sets</p>
+<p>The trajectories and video frames are turned into training sets.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Policy</p>
+<p>Diffusion Policy, conditioned on RGB features and robot state, outputs an action sequence.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Robot side</p>
+<p>Robot-side post-processing passes the actions to robot control.</p>
+</div>
+<div class="flow-fork">
+<div>
+<p class="flow-k">Tasks</p>
+<p>Transplanting, flower thinning, and runner handling.</p>
+</div>
+<div>
+<p class="flow-k">Evaluation</p>
+<p>1,000 work cycles in a fixed lab environment.</p>
+</div>
+</div>
+<figcaption>The same pipeline runs once per task, and each task has its own policy.</figcaption>
 </figure>
 """,
     "ros-6d-vision": """<figure class="flow">
-<p class="flow-k">Per request, config-driven</p>
+<p class="flow-k">Per request; camera, model, and pipeline set in a config file</p>
 <div class="flow-step">
 <p class="flow-k">Input</p>
 <p>Zivid, RealSense, or recorded data</p>
@@ -470,39 +521,64 @@ DIAGRAMS = {
 
 
 ARCH = {
-    ("language-distilled-segmentation", "Version 1"): {
+    ("language-distilled-segmentation", "First generation: class-name segmenter"): {
         "src": "/assets/figures/open-vocab-v1.png",
         "w": 1920,
         "h": 930,
-        "alt": "Version 1: frozen DINOv3 image and SigLIP2 text encoders, with a trained image adapter, PAN-FPN neck, text adapter, and instance and semantic heads.",
-        "caption": "Version 1. DINOv3 and SigLIP2 stay frozen. The image adapter, PAN-FPN neck, text adapter, and instance and semantic heads are trained.",
+        "alt": "First generation, the class-name open-vocabulary segmenter: frozen DINOv3 image and SigLIP2 text encoders, with a trained image adapter, PAN-FPN neck, text adapter, and instance and semantic heads.",
+        "caption": "First generation. DINOv3 and SigLIP2 stay frozen. The image adapter, PAN-FPN neck, text adapter, and instance and semantic heads are trained.",
     },
-    ("language-distilled-segmentation", "Version 2"): {
+    ("language-distilled-segmentation", "Second generation: caption-trained detector"): {
         "src": "/assets/figures/open-vocab-v2.png",
         "w": 2000,
         "h": 1230,
-        "alt": "Diagram of Version 2. A frozen image encoder feeds a multi-scale projector and a three-layer decoder with 300 queries, which drive mask, box and class heads. Category names pass through a trainable text encoder to select queries and score classes. In a training-only branch, mask and image captions pass through a frozen teacher text encoder and are aligned with matched queries and pooled image features.",
-        "caption": "Version 2: open-vocabulary instance segmentation model. Category names (teal) are used at inference. Mask captions (magenta) and image captions (gold) are used only in training.",
+        "alt": "Diagram of the second generation, the caption-trained open-vocabulary detector. A frozen image encoder feeds a multi-scale projector and a three-layer decoder with 300 queries, which drive mask, box and class heads. Category names pass through a trainable text encoder to select queries and score classes. In a training-only branch, object and image captions pass through a frozen teacher text encoder and are aligned with matched queries and pooled image features.",
+        "caption": "Second generation: a query-based transformer detector with a mask head. Category names (teal) are used at inference. Object captions (magenta) and image captions (gold) are used only in training.",
     },
 }
 
 
 # Extra sections placed after Method. Raw HTML; harden_html adds the text hyphen handling.
 EXTRA_SECTIONS = {
+    "cad-free-assembly": """<section>
+<h2>System diagram</h2>
+<p>A reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, and LightGlue matches its keypoints to the reference RGB image. Each matched reference keypoint takes its 3D point from the reference depth, and PnP with RANSAC gives the camera pose relative to the reference. The hand-eye calibration and the stored reference tool pose turn that camera pose into the target 6D tool pose.</p>
+<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly system. A reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, LightGlue matches its keypoints to the reference RGB image, the reference depth turns the matches into 2D-3D matches, and PnP with RANSAC gives the camera pose. A transform chain with the hand-eye calibration and the stored reference tool pose gives the target 6D tool pose for robot motion."><figcaption>Dashed boxes are drawn from the patent and my write-up.</figcaption></figure>
+</section>
+""",
+    "bin-picking": """<section>
+<h2>System diagram</h2>
+<p>Each request starts from one RGB-D frame with color, points, and normals. An instance segmentation model segments the image into unoccluded objects and holes, and hole masks are removed from the object masks. For each instance, the masked points are downsampled and filtered by normal direction, and PCA gives the initial pose. Visible-surface templates are built offline from the CAD mesh, one per pick pose. Point-to-point ICP aligns each template to the points, and a reverse check scores the fit in both directions. The kept pick poses are ranked, mapped from the camera frame to the robot base with the eye-to-hand calibration, and returned as a ROS action result. Robot motion is handled on the robot side.</p>
+<figure class="arch"><img src="/assets/figures/bin-picking-system.png" width="1900" height="1090" alt="CAD-based bin picking system. An RGB-D frame goes to an instance segmentation model that segments objects and holes. Hole masks are removed, and for each object the masked points get an initial pose from PCA. Point-to-point ICP aligns a visible-surface template, built offline from the CAD mesh by hidden-point removal, and a fit check ranks the poses. The kept pose is mapped from the camera frame to the robot base with the eye-to-hand calibration and returned as a ROS action result for robot motion."><figcaption>Only the instance segmentation model is trained. Templates are built once per object, offline.</figcaption></figure>
+</section>
+""",
+    "strawberry-cultivation": """<section>
+<h2>Model structure</h2>
+<p>The policy is Diffusion Policy. An image encoder turns the RGB frames into features. Those features and the robot state form the global conditioning. Starting from a noisy action sequence, the denoising network removes noise over repeated steps and returns an action sequence for the robot side. I compared U-Net and ViT configurations.</p>
+<figure class="arch"><img src="/assets/figures/strawberry-policy.png" width="2040" height="700" alt="Diffusion Policy for the strawberry tasks. RGB frames go through an image encoder to RGB features. RGB features and robot state form the global conditioning of a trained denoising network, which turns a noisy action sequence into an action sequence over repeated denoising steps. The action sequence goes to the robot side."><figcaption>RGB features and robot state condition the denoising network, which outputs an action sequence.</figcaption></figure>
+</section>
+""",
     "auto-labeling": """<section>
 <h2>Model structure</h2>
-<p>The pipeline builds on an existing prompt-conditioned segmentation model. A visual backbone and feature-projection stage provide shared image features, while point- and mask-conditioned decoding initializes or refines object masks. Temporal object memory carries information between frames for video tracking.</p>
-<figure class="arch"><img src="/assets/figures/video-tracker.png" width="2040" height="900" alt="Prompt-guided segmentation and tracking: an image encoder and feature-projection stage feed point- and mask-conditioned decoding. Temporal object memory carries information between frames. Mask logits go to CPU post-processing for COCO polygons and RLE masks."><figcaption>The GPU service runs the tracker. A CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
-<p>The model runtime uses an existing open-source TensorRT implementation.</p>
+<p>The pipeline builds on an existing prompt-guided video segmentation model. A ViT image encoder turns each image or video frame into tokens, and a neck turns those tokens into a feature pyramid. A prompt encoder and mask decoder turn point or mask prompts into mask logits. Video adds a memory path. There, a memory encoder compresses each tracked mask into memory features and an object pointer, and four memory-attention layers let the current frame attend to recent frames and up to four conditioning frames.</p>
+<figure class="arch"><img src="/assets/figures/auto-labeling-system.png" width="2040" height="1500" alt="Auto-labeling system. Top: an image encoder and neck feed point- and mask-prompt decoding, and memory attention with a memory bank carries tracked objects between frames. Mask logits go to a CPU service that writes COCO polygons and RLE masks. Bottom: the finished labels are captioned in three stages, an object caption per mask, a relation caption of each mask in the image, and an image caption. Captions are checked, with a second review for unsure cases, and linked to the instance annotations. Object and image captions feed training of the second-generation open-vocabulary detector. Relation captions are stored with the labels and not used in that training."><figcaption>The GPU service runs the model, and a CPU service turns its mask logits into COCO polygons and RLE masks. The captioning lane runs after labeling. Object and image captions feed training of the second-generation open-vocabulary detector.</figcaption></figure>
+<p>The model runs on an existing open-source TensorRT export. That export split the model into separate graphs and made memory attention sparse. Those changes are its author's work. My changes are built on top of it and do not change the model weights.</p>
 </section>
 <section>
-<h2>Adapting the model to annotation</h2>
-<p>My work focused on adapting this architecture to the annotation workflow:</p>
-<ol>
-<li>I derived an image-only execution graph that excludes video-specific output branches without changing retained weights or operations.</li>
-<li>I reused visual features on the GPU and retained intermediate mask predictions on-device during iterative correction. Only the final correction is committed to persistent tracking memory.</li>
-<li>GPU inference and CPU post-processing run as separate services, supporting interactive previews and video label propagation within the same workflow.</li>
-</ol>
+<h2>Image labeling</h2>
+<p>A still image has no past frames, so the memory encoder and object pointer are not used. I extracted a subgraph of the point-prompt decoder that keeps only the mask, object score and IoU outputs. Its operators and weights are the same as in the video graph. The encoder and neck run once per image. The first click goes to a first-click decoder. Each later click goes to a refine decoder together with all earlier clicks and the previous mask logits, which act as a mask prompt.</p>
+</section>
+<section>
+<h2>Video labeling</h2>
+<p>Existing labels on the first frame are resized to the model input, turned into mask logits and entered as conditioning frames. Region classes such as ground are first trimmed by the union of object masks, so tracking never starts from overlapping labels. Clicks go on top as point prompts, and a new object must start with a positive click. While an annotator is still clicking on a frame, intermediate masks are not written to memory; only the final mask is encoded and stored. A correction on a later frame is added the same way, as a new conditioning frame with the same track ID.</p>
+</section>
+<section>
+<h2>Outputs</h2>
+<p>Mask logits are filled at low resolution, upsampled and thresholded. Cleanup keeps objects and region classes from overlapping and gives small stray islands of a region class to their neighbours. It also removes overlapping duplicates of one object class. Pieces disconnected from every positive click are dropped. Objects are saved as COCO polygons and region classes as masks.</p>
+</section>
+<section>
+<h2>Serving</h2>
+<p>The choices below affect serving only and do not change the model. The image and video paths share one encoder and neck on the GPU. Image features stay cached on the GPU between clicks, and so does the previous mask. The point-prompt decoder is built in FP32 because the FP16 build failed the mask IoU check. GPU inference and CPU post-processing run as two separate services.</p>
 </section>
 <section>
 <h2>Captioning after labeling</h2>
@@ -512,6 +588,7 @@ EXTRA_SECTIONS = {
 <li>Each mask also got a caption of its relationship to the image.</li>
 <li>The whole image got a caption of its own.</li>
 </ul>
+<p>The second generation of the <a href="/projects/language-distilled-segmentation.html">open-vocabulary model</a> trains on the object and image captions. It does not use the relationship captions, which are stored with the labels.</p>
 </section>
 """,
 }

@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Open-vocabulary segmentation and mapping, Jaewoo Choi</title>
-<meta name="description" content="Two versions of an open-vocabulary segmenter for the RT100 orchard platform, and the occupancy grid built from the masks. Version 1 runs on production RT100 with TensorRT on Jetson Orin Nano.">
+<meta name="description" content="Two generations of open-vocabulary perception for the RT100 orchard platform, a class-name open-vocabulary segmenter for semantic and instance segmentation and a caption-trained open-vocabulary detector, and the occupancy grid built from their instance masks. Both generations are deployed on production RT100 with TensorRT on Jetson Orin Nano.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="Open-vocabulary segmentation and mapping, Jaewoo Choi">
-<meta property="og:description" content="Two versions of an open-vocabulary segmenter for the RT100 orchard platform, and the occupancy grid built from the masks. Version 1 runs on production RT100 with TensorRT on Jetson Orin Nano.">
+<meta property="og:description" content="Two generations of open-vocabulary perception for the RT100 orchard platform, a class-name open-vocabulary segmenter for semantic and instance segmentation and a caption-trained open-vocabulary detector, and the occupancy grid built from their instance masks. Both generations are deployed on production RT100 with TensorRT on Jetson Orin Nano.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/language-distilled-segmentation.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -33,56 +33,66 @@
 
 <section>
 <h2>Problem</h2>
-<p>RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map under embedded compute limits.</p>
+<p>RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map on a Jetson Orin Nano.</p>
 </section>
 <section>
 <h2>My role</h2>
-<p>I pre‑trained a DINOv3 and SigLIP2 segmenter (Version 1), implemented and trained a second open‑vocabulary segmenter (Version 2), and built the occupancy‑grid mapping from the instance masks.</p>
+<p>I pre‑trained the first generation, a class‑name open‑vocabulary segmenter for semantic and instance segmentation, on frozen DINOv3 and SigLIP2 encoders, then developed the second, a caption‑trained open‑vocabulary detector with a mask head. On RT100, I deployed both generations and built the occupancy‑grid mapping from their instance masks.</p>
 </section>
 <section>
 <h2>Method</h2>
 <figure class="flow">
+<p class="flow-k">System flow on RT100</p>
 <div class="flow-step">
-<p class="flow-k">RGB image input</p>
+<p class="flow-k">Inputs</p>
+<p>RGB image, and a point cloud of the same scene.</p>
 </div>
 <div class="flow-step">
-<p class="flow-k">Open‑vocabulary instance segmentation</p>
+<p class="flow-k">Open‑vocabulary segmentation</p>
+<p>Category names are given as text, so the class list can change without retraining.</p>
 </div>
 <div class="flow-fork">
 <div>
-<p class="flow-k">Version 1</p>
-<p>Frozen DINOv3 + SigLIP2 encoders. Trained image and text adapters, PAN‑FPN neck, instance and semantic heads.</p>
+<p class="flow-k">First generation: class‑name segmenter</p>
+<p>Frozen DINOv3 and SigLIP2 encoders. Trained image and text adapters, PAN‑FPN neck, instance and semantic heads.</p>
 </div>
 <div>
-<p class="flow-k">Version 2</p>
-<p>DETR‑style model. Language‑teacher supervision during training only.</p>
+<p class="flow-k">Second generation: caption‑trained detector</p>
+<p>Frozen DINOv3 backbone, multi‑scale projector, three‑layer decoder, trainable compact text encoder, mask head. Object and image captions are used in training only.</p>
 </div>
 </div>
 <div class="flow-step">
-<p class="flow-k">Instance masks</p>
+<p class="flow-k">Boxes and instance masks</p>
+<p>Both generations. The first also outputs semantic masks.</p>
 </div>
 <div class="flow-step">
-<p class="flow-k">Associate the masks</p>
-<p>Point‑cloud voxel centers projected into the image. Virtual voxels from valid anchor depths.</p>
+<p class="flow-k">Voxels to masks</p>
+<p>Voxel centers projected into the image take the object and class of the mask they land in. Virtual voxels added from valid anchor depths.</p>
 </div>
 <div class="flow-step">
 <p class="flow-k">Occupancy grid</p>
-<p>Decay, hysteresis, and cost inflation, for navigation.</p>
+<p>Labeled voxels written into the grid with decay, hysteresis, and cost inflation.</p>
 </div>
-<figcaption>Both versions write instance masks. On production RT100, the occupancy grid is built from the Version 1 masks.</figcaption>
+<div class="flow-step">
+<p class="flow-k">Navigation</p>
+<p>Reads the occupancy grid.</p>
+</div>
+<figcaption>I built the second generation after validation exposed errors in the first. Both generations are deployed on production RT100 with TensorRT on Jetson Orin Nano and feed the same mapping step.</figcaption>
 </figure>
-<h3>Version 1</h3>
-<p>With the DINOv3 and SigLIP2 encoders frozen, I pre‑trained the image adapter, PAN‑FPN neck, text adapter, and instance and semantic heads on multiple datasets. The two heads were trained together on alternating batches. A region‑text alignment loss supervised the instance head, and the semantic head classified each pixel against the class‑name text embeddings. I added text‑prompt inference and fixed‑vocabulary conversion, and adapted the model to the orchard domain.</p>
-<figure class="arch"><img src="/assets/figures/open-vocab-v1.png" width="1920" height="930" alt="Version 1: frozen DINOv3 image and SigLIP2 text encoders, with a trained image adapter, PAN-FPN neck, text adapter, and instance and semantic heads."><figcaption>Version 1. DINOv3 and SigLIP2 stay frozen. The image adapter, PAN‑FPN neck, text adapter, and instance and semantic heads are trained.</figcaption></figure>
-<h3>Version 2</h3>
-<p>Version 2 is a DETR‑style instance segmentation model. Its frozen DINOv3 backbone feeds a multi‑scale projector and a three‑layer decoder. A trainable MiniLM text encoder embeds category names, and a query‑based mask head predicts masks from the highest‑resolution features. Training uses category names, mask captions, and image captions. During training only, a precomputed language teacher aligns the captions with matched queries and pooled image features and reweights related negatives. Masks are matched and trained with BCE/Dice losses.</p>
-<figure class="arch"><img src="/assets/figures/open-vocab-v2.png" width="2000" height="1230" alt="Diagram of Version 2. A frozen image encoder feeds a multi-scale projector and a three-layer decoder with 300 queries, which drive mask, box and class heads. Category names pass through a trainable text encoder to select queries and score classes. In a training-only branch, mask and image captions pass through a frozen teacher text encoder and are aligned with matched queries and pooled image features."><figcaption>Version 2: open‑vocabulary instance segmentation model. Category names (teal) are used at inference. Mask captions (magenta) and image captions (gold) are used only in training.</figcaption></figure>
-<h3>Post‑processing</h3>
-<p>Point‑cloud voxel centers were projected into the image and associated with the instance masks. I added virtual voxels from valid anchor depths, and obstacles were mapped into a navigable occupancy grid with decay, hysteresis, and cost inflation.</p>
+<h3>First generation: class‑name segmenter</h3>
+<p>With the DINOv3 and SigLIP2 encoders frozen, I pre‑trained the image adapter, PAN‑FPN neck, text adapter, and instance and semantic heads on multiple datasets. The two heads were trained together on alternating batches. A region‑text alignment loss supervised the instance head, which outputs boxes and instance masks, and the semantic head classified each pixel against the class‑name text embeddings. I added text‑prompt inference and fixed‑vocabulary conversion, and adapted the model to the orchard domain.</p>
+<figure class="arch"><img src="/assets/figures/open-vocab-v1.png" width="1920" height="930" alt="First generation, the class-name open-vocabulary segmenter: frozen DINOv3 image and SigLIP2 text encoders, with a trained image adapter, PAN-FPN neck, text adapter, and instance and semantic heads."><figcaption>First generation. DINOv3 and SigLIP2 stay frozen. The image adapter, PAN‑FPN neck, text adapter, and instance and semantic heads are trained.</figcaption></figure>
+<h3>Why a second generation</h3>
+<p>The first generation learned only from class names, and its SigLIP2 text encoder stayed frozen. On a validation subset it missed thin structures such as streetlights and small objects such as books, and it confused similar classes. Its semantic head picks the best class from a fixed list and cannot reject an unknown object, so on RT100 images some white reflectors were labeled as snow. I built the second generation, a caption‑trained open‑vocabulary detector, to learn from richer text than class names. Its compact text encoder is trained with object and image captions, which are used only during training and add no inference cost. The occupancy grid needs instance masks, so the detector has a mask head and outputs them along with boxes. The deployed system has two known limitations: small objects, and rejecting objects that match none of the given category names.</p>
+<h3>Second generation: caption‑trained detector</h3>
+<p>The second generation uses a query‑based transformer architecture. Its frozen DINOv3 backbone feeds a multi‑scale projector and a three‑layer decoder. A trainable compact text encoder embeds category names. At inference it takes any list of category names, and those embeddings select the decoder queries and score each class. The mask head reads the highest‑resolution features together with the decoder queries, and masks are returned at the original image resolution. Training uses category names, object captions, and image captions. During training only, a precomputed language teacher aligns the captions with matched queries and pooled image features and reweights related negatives. Masks are matched and trained with BCE/Dice losses. The deployed model outputs boxes and instance masks.</p>
+<figure class="arch"><img src="/assets/figures/open-vocab-v2.png" width="2000" height="1230" alt="Diagram of the second generation, the caption-trained open-vocabulary detector. A frozen image encoder feeds a multi-scale projector and a three-layer decoder with 300 queries, which drive mask, box and class heads. Category names pass through a trainable text encoder to select queries and score classes. In a training-only branch, object and image captions pass through a frozen teacher text encoder and are aligned with matched queries and pooled image features."><figcaption>Second generation: a query‑based transformer detector with a mask head. Category names (teal) are used at inference. Object captions (magenta) and image captions (gold) are used only in training.</figcaption></figure>
+<h3>Mapping masks into the occupancy grid</h3>
+<p>The same mapping step serves both generations. The point cloud is reduced to voxels, and each voxel center is projected into the camera image. A voxel that lands inside an instance mask takes that mask&#x27;s object and class. I added virtual voxels from valid anchor depths. The labeled voxels are then written into a navigable occupancy grid. Decay lets cells that are no longer observed fade out, hysteresis keeps a cell from flipping between free and occupied, and cost inflation keeps planned paths clear of obstacle edges. Navigation reads this grid.</p>
 </section>
 <section>
 <h2>Result</h2>
-<p>Version 1 is integrated into the production RT100 perception pipeline. I deployed it and optimized it with TensorRT on Jetson Orin Nano. For Version 2, the detection model exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime. Full‑dataset training and accuracy evaluation of Version 2 are pending.</p>
+<p>Labels from my auto‑labeling system trained both generations of the open‑vocabulary model, which I deployed on Jetson Orin Nano. Both are in use in the production RT100 perception pipeline. Both output boxes and instance masks, and the first generation also gives semantic masks. I optimized both with TensorRT. The second generation exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime.</p>
 </section>
 <nav class="pager" aria-label="Adjacent projects"><span></span><a href="/#work">All work</a><a href="/projects/auto-labeling.html"><span class="dir quiet">Next</span>Auto‑labeling pipeline</a></nav>
 </main>

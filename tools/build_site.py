@@ -2,7 +2,7 @@
 """Facts for the personal site, from the CV.
 
 `python3 tools/build_site.py` writes the HTML through renew.write_all.
-The published design is the faculty skim (prototype A): Source Serif 4,
+The published design is the faculty skim (design A): Source Serif 4,
 white page, project rows with a clip or an empty slot.
 Korean copy stays in this file. PUBLISH_KO is false, so ko/ is not written.
 """
@@ -172,16 +172,16 @@ PROJECTS = [
             "ko": "RT100 open-vocabulary segmentation and occupancy mapping",
         },
         "line": {
-            "en": "Built two versions of an open-vocabulary segmenter and the obstacle-mapping step. Version 1 runs on production RT100 robots with TensorRT on Jetson Orin Nano.",
-            "ko": "RT100용 open-vocabulary segmenter(Version 1), open-vocabulary DETR 계열 instance segmentation 모델(Version 2), mask로 만드는 occupancy grid입니다. Production RT100에서는 Version 1이 TensorRT, Jetson Orin Nano로 돌아갑니다.",
+            "en": "Built two generations of open-vocabulary perception, a class-name open-vocabulary segmenter and then a caption-trained open-vocabulary detector with a mask head for instance masks alongside its boxes, plus the obstacle-mapping step. Both generations are deployed on production RT100 robots with TensorRT on Jetson Orin Nano.",
+            "ko": "RT100용 1세대 class-name open-vocabulary segmenter, 2세대 caption-trained open-vocabulary detector, mask로 만드는 occupancy grid입니다. 두 세대 모두 production RT100에 TensorRT, Jetson Orin Nano로 배포했습니다.",
         },
         "tools": {
-            "en": "Open-vocabulary segmentation, DETR, DINOv3, SigLIP2, TensorRT",
-            "ko": "Open-vocabulary segmentation, DETR, DINOv3, SigLIP2, TensorRT",
+            "en": "Open-vocabulary segmentation, query-based transformer detection, DINOv3, SigLIP2, TensorRT",
+            "ko": "Open-vocabulary segmentation, query-based transformer detection, DINOv3, SigLIP2, TensorRT",
         },
         "desc": {
-            "en": "Two versions of an open-vocabulary segmenter for RT100, and the occupancy-grid mapping that uses the masks. Version 1 is deployed on production RT100.",
-            "ko": "RT100용 open-vocabulary segmenter 두 버전과 occupancy grid. Production RT100에는 Version 1을 배포했습니다.",
+            "en": "Two generations of open-vocabulary perception for RT100, a class-name open-vocabulary segmenter and a caption-trained open-vocabulary detector, and the occupancy-grid mapping that uses their instance masks. Both generations are deployed on production RT100.",
+            "ko": "RT100용 1세대 class-name open-vocabulary segmenter, 2세대 caption-trained open-vocabulary detector와 occupancy grid. Production RT100에는 두 세대 모두 배포했습니다.",
         },
         "sections": {
             "en": [
@@ -189,12 +189,12 @@ PROJECTS = [
                     "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set.",
                 )),
                 ("Approach", P(
-                    "Version 2 is a DETR-style open-vocabulary instance segmentation model. The backbone is a frozen DINOv3. A MiniLM text encoder trains.",
+                    "The second generation, a caption-trained open-vocabulary detector, is a query-based transformer detector with a mask head that gives instance masks alongside boxes. The backbone is a frozen DINOv3. A compact text encoder trains.",
                     "A multi-scale feature projector feeds a three-layer decoder. The decoder predicts masks from dot products between queries and refined spatial features.",
                     "During training only, object queries and pooled image features are matched to precomputed language-teacher embeddings of object and image captions. Semantically related negatives are reweighted so they are not pushed apart.",
                 )),
                 ("Results", P(
-                    "Instance masks feed point-cloud projection and occupancy-grid mapping. Version 1 is in the production RT100 perception pipeline.",
+                    "Instance masks feed point-cloud projection and occupancy-grid mapping. Labels from my auto-labeling system trained both generations of the open-vocabulary model, which I deployed on Jetson Orin Nano. Both generations are in the production RT100 perception pipeline.",
                 )),
             ],
             "ko": [
@@ -202,14 +202,14 @@ PROJECTS = [
                     "RT100 자율 과수원 플랫폼은 고정된 label set 밖의 물체에도 instance mask가 필요합니다. 학습 중에만 language teacher를 써서 추론 비용을 늘리지 않습니다.",
                 )),
                 ("방법", P(
-                    "Version 2는 DETR 계열 open-vocabulary instance segmentation 모델입니다. Backbone은 frozen DINOv3이고, lightweight text encoder는 학습합니다. Multi-scale feature projector 뒤에 three-layer decoder가 있고, decoder는 query와 refined spatial feature의 dot product로 mask를 예측합니다.",
+                    "2세대 caption-trained open-vocabulary detector는 mask head가 있는 query-based transformer detector입니다. Backbone은 frozen DINOv3이고, lightweight text encoder는 학습합니다. Multi-scale feature projector 뒤에 three-layer decoder가 있고, decoder는 query와 refined spatial feature의 dot product로 mask를 예측합니다.",
                     "학습 중에만 object query와 pooled image feature를 language-teacher embedding에 맞춥니다. Embedding은 물체 caption과 이미지 caption입니다. 의미가 가까운 negative는 서로 밀리지 않게 가중치를 조정합니다.",
                 )),
                 ("결과", P(
-                    "Instance mask는 point cloud projection과 occupancy grid mapping으로 넘어갑니다. Production RT100 perception pipeline에는 Version 1이 들어가 있습니다.",
+                    "Instance mask는 point cloud projection과 occupancy grid mapping으로 넘어갑니다. 제 auto-labeling 시스템이 만든 label로 open-vocabulary model 두 세대를 모두 학습했고, Jetson Orin Nano에 배포했습니다. Production RT100 perception pipeline에는 두 세대 모두 들어가 있습니다.",
                 )),
                 ("기술", P(
-                    "DETR, frozen DINOv3, lightweight text encoder, multi-scale feature projector, three-layer decoder.",
+                    "Query-based transformer detector, frozen DINOv3, lightweight text encoder, multi-scale feature projector, three-layer decoder.",
                 )),
             ],
         },
@@ -223,16 +223,16 @@ PROJECTS = [
             "ko": "Auto-Labeling과 Data Captioning 시스템",
         },
         "line": {
-            "en": "Point prompts and mask corrections become tracked masks. Qwen-series models write region-grounded captions. Per-image labeling cost fell from about USD 1.05 to about USD 0.036.",
-            "ko": "Point prompt와 mask correction을 tracked mask로 바꿉니다. Qwen 계열 모델이 region caption을 답니다. 이미지당 비용은 약 USD 1.05에서 약 USD 0.036입니다.",
+            "en": "Point prompts and mask corrections become tracked masks. Qwen-series models write region-grounded captions. Per-image labeling cost fell from USD 1.05 to USD 0.036 compared with Prolific.",
+            "ko": "Point prompt와 mask correction을 tracked mask로 바꿉니다. Qwen 계열 모델이 region caption을 답니다. 이미지당 비용은 Prolific 대비 USD 1.05에서 USD 0.036입니다.",
         },
         "tools": {
             "en": "Auto-labeling, TensorRT, Qwen",
             "ko": "Auto-labeling, TensorRT, Qwen",
         },
         "desc": {
-            "en": "Video auto-labeling and region-grounded captioning. Per-image labeling cost fell from about USD 1.05 to about USD 0.036.",
-            "ko": "Video auto-labeling과 region caption. 이미지당 labeling 비용이 약 USD 1.05에서 약 USD 0.036으로 줄었습니다.",
+            "en": "Video auto-labeling and region-grounded captioning. Per-image labeling cost fell from USD 1.05 to USD 0.036 compared with Prolific.",
+            "ko": "Video auto-labeling과 region caption. 이미지당 labeling 비용이 Prolific 대비 USD 1.05에서 USD 0.036으로 줄었습니다.",
         },
         "sections": {
             "en": [
@@ -246,8 +246,8 @@ PROJECTS = [
                     "I set the label taxonomy and the annotation guidelines, and built COCO-format training datasets.",
                 )),
                 ("Results", P(
-                    "Cost per image was about USD 1.05.",
-                    "It fell to about USD 0.036.",
+                    "Cost per image with crowdsourced labeling on Prolific was USD 1.05.",
+                    "It fell to USD 0.036.",
                     "That is a 96.6% reduction.",
                 )),
                 ("Stack", P(
@@ -264,7 +264,7 @@ PROJECTS = [
                     "Label taxonomy와 annotation guideline을 정하고 COCO format 학습 데이터셋을 만들었습니다.",
                 )),
                 ("결과", P(
-                    "이미지당 labeling 비용은 약 USD 1.05였습니다. 약 USD 0.036으로 줄었고, 감소율은 96.6%입니다.",
+                    "Prolific crowdsourcing 기준 이미지당 labeling 비용은 USD 1.05였습니다. USD 0.036으로 줄었고, 감소율은 96.6%입니다.",
                 )),
                 ("기술", P(
                     "TensorRT, Qwen 계열 vision-language model, COCO.",
@@ -282,7 +282,7 @@ PROJECTS = [
         },
         "line": {
             "en": "Diffusion Policy trained on UMI demonstrations.||Fixed lab, 1,000 trials.||93.8% transplanting, 87.5% flower thinning, 65% runner handling.||Exhibited at CES 2025.",
-            "ko": "UMI 시연으로 Diffusion Policy를 학습했습니다. 고정 실험실, 1,000회 시험의 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%입니다. CES 2025에 전시했습니다.",
+            "ko": "UMI demonstration 데이터로 Diffusion Policy를 학습했고, 세 작업 policy는 재배 로봇에 배포되어 있습니다. 고정 실험실, 1,000회 시험의 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%입니다. CES 2025에 전시했습니다.",
         },
         "tools": {
             "en": "Imitation learning, UMI, Diffusion Policy",
@@ -290,7 +290,7 @@ PROJECTS = [
         },
         "desc": {
             "en": "UMI demonstrations and Diffusion Policy for three strawberry tasks. Fixed lab, 1,000 trials: 93.8% transplanting, 87.5% flower thinning, 65% runner handling. Exhibited at CES 2025.",
-            "ko": "딸기 재배 세 작업의 UMI 시연과 Diffusion Policy. 고정 실험실 1,000회: transplanting 93.8%, flower thinning 87.5%, runner handling 65%. CES 2025 전시.",
+            "ko": "딸기 재배 세 작업의 UMI demonstration 데이터와 Diffusion Policy. 고정 실험실 1,000회: transplanting 93.8%, flower thinning 87.5%, runner handling 65%. CES 2025 전시.",
         },
         "sections": {
             "en": [
@@ -311,7 +311,7 @@ PROJECTS = [
             ],
             "ko": [
                 ("문제", P(
-                    "사람 시연으로 딸기 재배 세 작업을 학습했습니다. Transplanting, flower thinning, runner handling입니다. 시연은 Universal Manipulation Interface(UMI)로 모았고, 세 작업 모두 data pipeline과 policy 학습을 맡았습니다.",
+                    "사람의 demonstration으로 딸기 재배 세 작업을 학습했습니다. Transplanting, flower thinning, runner handling입니다. Demonstration은 Universal Manipulation Interface(UMI)로 모았고, 세 작업 모두 data pipeline과 policy 학습을 맡았습니다.",
                 )),
                 ("방법", P(
                     "GoPro RGB와 IMU 데이터를 수집한 뒤 camera-IMU calibration을 했고, ORB-SLAM3 visual-inertial SLAM trajectory를 학습 데이터로 만들었습니다. RGB feature와 robot state를 global conditioning으로 Diffusion Policy를 학습했고, U-Net과 ViT 구성을 비교했습니다.",
@@ -351,12 +351,12 @@ PROJECTS = [
                     "Assembly needs a target 6D tool pose when the part has no CAD model. At run time the sensor is a 2D camera, not a 3D camera.",
                 )),
                 ("Approach", P(
-                    "In the final pipeline, LightGlue matches the live 2D image to a stored reference RGB-D capture, so each match carries depth.",
+                    "LightGlue matches the live 2D image to a stored reference RGB-D capture, so each match carries depth.",
                     "solvePnP and RANSAC estimate the camera pose from the 3D-2D matches. That pose is chained with the hand-eye calibration and the stored reference pose. The result is the target 6D tool pose.",
-                    "Task success was 93% across 1,000 in-house trials. This work is the basis of Korean Patent 10-2694987.",
+                    "The pipeline is deployed for assembly. Task success was 93% across 1,000 in-house trials. This work is the basis of Korean Patent 10-2694987.",
                 )),
                 ("Stack", P(
-                    "LightGlue, USAC, solvePnP, RANSAC, hand-eye calibration.",
+                    "LightGlue, solvePnP with RANSAC, hand-eye calibration.",
                 )),
             ],
             "ko": [
@@ -364,11 +364,10 @@ PROJECTS = [
                     "부품 CAD model이 없을 때 조립용 target 6D tool pose가 필요합니다. 실행 시점의 센서는 3D camera가 아니라 2D camera입니다.",
                 )),
                 ("방법", P(
-                    "먼저 two-view RGB baseline을 만들었습니다. Reference 이미지와 target 이미지 사이에서 learned feature matching, USAC essential-matrix estimation, relative pose recovery, triangulation을 썼습니다.",
-                    '최종 pipeline은 LightGlue로 live 2D image와 저장된 reference RGB-D capture를 맞춥니다. Match마다 depth가 붙고, depth가 없는 match는 제거합니다. 3D-2D match에 solvePnP와 RANSAC으로 camera pose를 구한 뒤, hand-eye calibration과 저장된 reference pose를 이어 target 6D tool pose를 얻습니다. 사내 시험 1,000회에서 task success 93%를 기록했습니다. 이 작업이 <a href="/ko/#patent">한국 특허 10-2694987</a>의 기반입니다.',
+                    '조립 현장에 배포된 pipeline은 LightGlue로 live 2D image와 저장된 reference RGB-D capture를 맞춥니다. Match마다 depth가 붙고, depth가 없는 match는 제거합니다. 3D-2D match에 solvePnP와 RANSAC으로 camera pose를 구한 뒤, hand-eye calibration과 저장된 reference pose를 이어 target 6D tool pose를 얻습니다. 사내 시험 1,000회에서 task success 93%를 기록했습니다. 이 작업이 <a href="/ko/#patent">한국 특허 10-2694987</a>의 기반입니다.',
                 )),
                 ("기술", P(
-                    "LightGlue, USAC, solvePnP, RANSAC, hand-eye calibration.",
+                    "LightGlue, solvePnP with RANSAC, hand-eye calibration.",
                 )),
             ],
         },
@@ -582,7 +581,7 @@ NAV_LINKS = {
     ],
 }
 
-WATCH = {"en": "Watch the demo", "ko": "데모 보기"}
+WATCH = {"en": "Watch the video", "ko": "영상 보기"}
 EMAIL_LABEL = {"en": "Email", "ko": "이메일"}
 
 # Home and project-page presentation. Numbers are the CV figures.
@@ -621,7 +620,7 @@ DISPLAY = {
             ("Sensor", "2D camera at run time"),
             ("Patent", "Korean Patent 10-2694987"),
         ],
-        "stack": ["LightGlue", "USAC", "solvePnP", "RANSAC", "hand-eye calibration"],
+        "stack": ["LightGlue", "solvePnP", "RANSAC", "hand-eye calibration"],
     },
     "bin-picking": {
         "nav": "Bin picking",
@@ -642,24 +641,24 @@ DISPLAY = {
     "language-distilled-segmentation": {
         "nav": "RT100 segmentation",
         "pitch": "Segmenting orchard objects on RT100 and mapping the masks.",
-        "dek": "Two segmenter versions, then an occupancy grid.",
+        "dek": "A segmenter, then a detector with masks, then an occupancy grid.",
         "notes": [],
-        "blurb": "I built two versions of an open-vocabulary segmenter for RT100 and the occupancy-grid mapping that uses the masks.",
+        "blurb": "I built an open-vocabulary segmenter and a query-based transformer detector with a mask head for RT100, and the occupancy-grid mapping that uses their masks.",
         "results": [
-            ("Where it runs", "Version 1: production RT100 perception pipeline"),
-            ("Deployment", "Version 1: production RT100, TensorRT on Jetson Orin Nano"),
+            ("Where it runs", "Versions 1 and 2: production RT100 perception pipeline"),
+            ("Deployment", "Versions 1 and 2: production RT100, TensorRT on Jetson Orin Nano"),
         ],
-        "stack": ["DINOv3", "SigLIP2", "DETR", "lightweight text encoder", "TensorRT", "Jetson Orin Nano"],
+        "stack": ["DINOv3", "SigLIP2", "query-based transformer detector", "lightweight text encoder", "TensorRT", "Jetson Orin Nano"],
     },
     "auto-labeling": {
         "nav": "Auto-labeling",
-        "pitch": "Cutting labeling cost from about USD 1.05 to about USD 0.036.",
+        "pitch": "Cutting labeling cost from USD 1.05 to USD 0.036 compared with Prolific.",
         "dek": "Tracked masks, then region-grounded captions.",
         "notes": [],
-        "blurb": "Point prompts become tracked masks. Per-image cost fell from about USD 1.05 to about USD 0.036, a 96.6% reduction.",
+        "blurb": "Point prompts become tracked masks. Per-image cost fell from USD 1.05 to USD 0.036 compared with Prolific, a 96.6% reduction.",
         "results": [
-            ("Cost before", "about USD 1.05 per image"),
-            ("Cost after", "about USD 0.036 per image"),
+            ("Cost before (Prolific)", "USD 1.05 per image"),
+            ("Cost after", "USD 0.036 per image"),
             ("Reduction", "96.6%"),
         ],
         "stack": ["TensorRT", "Qwen-series vision-language models", "COCO"],
@@ -915,16 +914,13 @@ def hero_html(lang):
     href = project_href(lang, project["slug"])
     src = f"/assets/video/{VIDEOS['strawberry']['file']}.mp4"
     if lang == "en":
-        first = "I build perception for robots that work outside the lab, on orchard platforms and factory arms."
-        second = "Next, I want to connect what a robot sees with how it acts."
+        first = "I build perception for deployed robots: orchard platforms and factory arms."
     else:
-        first = "실험실 밖에서 일하는 로봇의 perception을 만듭니다. 과수원 플랫폼과 공장 팔입니다."
-        second = "다음에는 로봇이 본 것과 행동을 잇고 싶습니다."
+        first = "현장에 배포되어 쓰이는 로봇의 perception을 만듭니다. 과수원 로봇과 공장 로봇 팔입니다."
     return f"""<section class="hero" id="work">
 {h("h1", "Jaewoo Choi")}
 <div class="lede-wrap">
 <p class="lede">{esc(first)}</p>
-<p class="lede">{esc(second)}</p>
 <p class="contact-row">{profile_links(lang)}</p>
 </div>
 {h_link("h2", info["pitch"], href, project["title"][lang])}
@@ -995,14 +991,13 @@ def research_html(lang):
     if lang == "en":
         parts = [
             "I work on open-vocabulary segmentation, point-cloud and image fusion for obstacle mapping, 6D pose estimation, and imitation learning for manipulation.",
-            "I tested this on deployed orchard robots.",
-            "I also tested it on manipulation robots.",
+            "Every system on this site is deployed and in use on orchard robots or manipulation robots.",
         ]
         heading = "Research interests"
     else:
         parts = [
             "실제 로봇의 perception을 다룹니다. 주제는 open-vocabulary segmentation, 장애물 매핑을 위한 point cloud와 image의 fusion, 6D pose estimation, manipulation을 위한 imitation learning입니다.",
-            "배치된 과수원 로봇과 manipulation 로봇에서 이 작업을 개발하고 시험했습니다.",
+            "이 사이트의 시스템은 모두 과수원 로봇과 manipulation 로봇에 배포되어 실제로 쓰이고 있습니다.",
         ]
         heading = UI[lang]["research"]
     body = "\n".join(f'<p class="measure">{esc(part)}</p>' for part in parts)
@@ -1119,10 +1114,10 @@ def home_page(lang):
     en_path, ko_path = "/", "/ko/"
     if lang == "en":
         title = "Jaewoo Choi, Senior AI Researcher"
-        desc = "I build perception for robots that work outside the lab, on orchard platforms and factory arms."
+        desc = "I build perception for deployed robots: orchard platforms and factory arms."
     else:
         title = "Jaewoo Choi, Senior AI Researcher"
-        desc = "실험실 밖에서 일하는 로봇의 perception."
+        desc = "현장에 배포된 로봇의 perception."
     featured_slugs = ["cad-free-assembly", "bin-picking"]
     themes = {"cad-free-assembly": "ink", "bin-picking": "white"}
     bands = []

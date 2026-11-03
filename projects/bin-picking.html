@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CAD-based bin picking, Jaewoo Choi</title>
-<meta name="description" content="I estimated picking poses from RGB-D images for objects with known CAD geometry. Task success was 89% in 1,000 in-house, fixed-environment trials.">
+<meta name="description" content="Deployed RGB-D bin picking for objects with known CAD geometry. Task success was 89% in 1,000 in-house, fixed-environment trials on five object types.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="CAD-based bin picking, Jaewoo Choi">
-<meta property="og:description" content="I estimated picking poses from RGB-D images for objects with known CAD geometry. Task success was 89% in 1,000 in-house, fixed-environment trials.">
+<meta property="og:description" content="Deployed RGB-D bin picking for objects with known CAD geometry. Task success was 89% in 1,000 in-house, fixed-environment trials on five object types.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/bin-picking.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -33,23 +33,28 @@
 <figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/bin-arm.jpg" aria-label="A cobot arm during CAD-based bin picking."><source src="/assets/video/bin-picking.mp4" type="video/mp4"></video><figcaption>A cobot arm during CAD‑based bin picking.</figcaption></figure>
 <section>
 <h2>Problem</h2>
-<p>Picking poses for objects with known CAD geometry come from RGB‑D images of a bin.</p>
+<p>The robot has to pick objects with known CAD geometry out of a bin, so it needs a pick pose for each object from an RGB‑D image of the bin.</p>
 </section>
 <section>
 <h2>My role</h2>
-<p>I trained the segmenter and aligned visible‑surface CAD templates to the segmented points.</p>
+<p>I trained the instance segmentation model and built the step that aligns visible‑surface CAD templates to the segmented points.</p>
 </section>
 <section>
 <h2>Method</h2>
 <ol>
 <li>The instance segmentation model was trained with separate unoccluded and hole classes. Hole masks were subtracted from object masks, and the remaining instance masks segmented the point cloud.</li>
 <li>For each pick pose, I built a visible‑surface CAD template by hidden‑point removal and aligned it to the segmented points with PCA initialization and point‑to‑point ICP.</li>
-<li>Poses were filtered by registration fitness and inlier RMSE, then ranked and transformed into the robot base with the camera extrinsics.</li>
+<li>Poses with low registration fitness or high inlier RMSE were dropped. The rest were ranked and transformed into the robot base frame with the camera extrinsics.</li>
 </ol>
 </section>
 <section>
+<h2>System diagram</h2>
+<p>Each request starts from one RGB‑D frame with color, points, and normals. An instance segmentation model segments the image into unoccluded objects and holes, and hole masks are removed from the object masks. For each instance, the masked points are downsampled and filtered by normal direction, and PCA gives the initial pose. Visible‑surface templates are built offline from the CAD mesh, one per pick pose. Point‑to‑point ICP aligns each template to the points, and a reverse check scores the fit in both directions. The kept pick poses are ranked, mapped from the camera frame to the robot base with the eye‑to‑hand calibration, and returned as a ROS action result. Robot motion is handled on the robot side.</p>
+<figure class="arch"><img src="/assets/figures/bin-picking-system.png" width="1900" height="1090" alt="CAD-based bin picking system. An RGB-D frame goes to an instance segmentation model that segments objects and holes. Hole masks are removed, and for each object the masked points get an initial pose from PCA. Point-to-point ICP aligns a visible-surface template, built offline from the CAD mesh by hidden-point removal, and a fit check ranks the poses. The kept pose is mapped from the camera frame to the robot base with the eye-to-hand calibration and returned as a ROS action result for robot motion."><figcaption>Only the instance segmentation model is trained. Templates are built once per object, offline.</figcaption></figure>
+</section>
+<section>
 <h2>Result</h2>
-<p>In 1,000 in‑house, fixed‑environment trials, the robot moved five object types into an empty container with 89% task success.</p>
+<p>The system is deployed for bin picking. In 1,000 in‑house, fixed‑environment trials, the robot moved five object types into an empty container with 89% task success.</p>
 </section>
 <nav class="pager" aria-label="Adjacent projects"><a href="/projects/cad-free-assembly.html"><span class="dir quiet">Previous</span>CAD‑free assembly</a><a href="/#work">All work</a><a href="/projects/ros-6d-vision.html"><span class="dir quiet">Next</span>Hand‑eye calibration and 6D pose server</a></nav>
 </main>
