@@ -29,7 +29,7 @@
 
 <main id="content">
 <h1>Open‑vocabulary segmentation and mapping</h1>
-<p class="meta">Daedong AILab, Senior AI Researcher, May 2024–Present.</p>
+<p class="meta">Daedong AILab, Perception Engineer (official title: Senior AI Researcher), May 2024–Present.</p>
 
 <section>
 <h2>Problem</h2>
@@ -77,7 +77,7 @@
 <p class="flow-k">Navigation</p>
 <p>Reads the occupancy grid.</p>
 </div>
-<figcaption>I built the second generation after validation exposed errors in the first. Both generations are deployed on production RT100 with TensorRT on Jetson Orin Nano and feed the same mapping step.</figcaption>
+<figcaption>I built the second generation after validation exposed errors in the first. Both feed the same mapping step.</figcaption>
 </figure>
 <h3>First generation: class‑name segmenter</h3>
 <p>With the DINOv3 and SigLIP2 encoders frozen, I pre‑trained the image adapter, PAN‑FPN neck, text adapter, and instance and semantic heads on multiple datasets. The two heads were trained together on alternating batches. A region‑text alignment loss supervised the instance head, which outputs boxes and instance masks, and the semantic head classified each pixel against the class‑name text embeddings. I added text‑prompt inference and fixed‑vocabulary conversion, and adapted the model to the orchard domain.</p>
@@ -92,7 +92,7 @@
 </section>
 <section>
 <h2>Result</h2>
-<p>Labels from my auto‑labeling system trained both generations of the open‑vocabulary model, which I deployed on Jetson Orin Nano. Both are in use in the production RT100 perception pipeline. Both output boxes and instance masks, and the first generation also gives semantic masks. I optimized both with TensorRT. The second generation exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime.</p>
+<p>Both generations run in the production RT100 perception pipeline on Jetson Orin Nano, optimized with TensorRT and trained on labels from my auto‑labeling system. Both output boxes and instance masks, and the first generation also gives semantic masks. The second generation exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime.</p>
 </section>
 <nav class="pager" aria-label="Adjacent projects"><span></span><a href="/#work">All work</a><a href="/projects/auto-labeling.html"><span class="dir quiet">Next</span>Auto‑labeling pipeline</a></nav>
 </main>

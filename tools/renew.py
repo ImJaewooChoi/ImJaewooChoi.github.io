@@ -26,7 +26,7 @@ from build_site import (
 PAGES = {
     "language-distilled-segmentation": {
         "title": "Open-vocabulary segmentation and mapping",
-        "result": "Built two generations of open-vocabulary perception, a class-name open-vocabulary segmenter for semantic and instance segmentation and then a caption-trained open-vocabulary detector, both of which output boxes and instance masks, plus the obstacle-mapping step. Both generations are deployed on production RT100 robots with TensorRT on Jetson Orin Nano.",
+        "result": "I built two generations of open-vocabulary perception, a class-name segmenter and then a caption-trained detector. Both output boxes and instance masks for the obstacle-mapping step I wrote, and both run on production RT100 robots with TensorRT on Jetson Orin Nano.",
         "desc": "Two generations of open-vocabulary perception for the RT100 orchard platform, a class-name open-vocabulary segmenter for semantic and instance segmentation and a caption-trained open-vocabulary detector, and the occupancy grid built from their instance masks. Both generations are deployed on production RT100 with TensorRT on Jetson Orin Nano.",
         "video": None,
         "problem": "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map on a Jetson Orin Nano.",
@@ -49,12 +49,12 @@ PAGES = {
                 "The same mapping step serves both generations. The point cloud is reduced to voxels, and each voxel center is projected into the camera image. A voxel that lands inside an instance mask takes that mask's object and class. I added virtual voxels from valid anchor depths. The labeled voxels are then written into a navigable occupancy grid. Decay lets cells that are no longer observed fade out, hysteresis keeps a cell from flipping between free and occupied, and cost inflation keeps planned paths clear of obstacle edges. Navigation reads this grid.",
             ),
         ],
-        "outcome": "Labels from my auto-labeling system trained both generations of the open-vocabulary model, which I deployed on Jetson Orin Nano. Both are in use in the production RT100 perception pipeline. Both output boxes and instance masks, and the first generation also gives semantic masks. I optimized both with TensorRT. The second generation exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime.",
+        "outcome": "Both generations run in the production RT100 perception pipeline on Jetson Orin Nano, optimized with TensorRT and trained on labels from my auto-labeling system. Both output boxes and instance masks, and the first generation also gives semantic masks. The second generation exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime.",
     },
     "auto-labeling": {
         "title": "Prompt-guided image and video auto-labeling",
         "nav_title": "Auto-labeling pipeline",
-        "result": "The deployed labeling pipeline turns clicks into image masks and tracks them across video frames. Per-image labeling cost fell from USD 1.05 to USD 0.036 (96.6%) compared with Prolific. Its labels trained both generations of my open-vocabulary model, which I deployed on Jetson Orin Nano.",
+        "result": "The deployed labeling pipeline turns clicks into image masks and tracks them across video frames. Per-image labeling cost fell from USD 1.05 to USD 0.036 (96.6%) compared with Prolific. Its labels trained both generations of my open-vocabulary model.",
         "desc": "A deployed, prompt-guided auto-labeling pipeline for images and video. Labeling cost per image fell from USD 1.05 to USD 0.036 (96.6%) compared with Prolific.",
         "video": "auto",
         "problem": "Before this pipeline, segmentation data and region-grounded vision-language data were labeled by hand.",
@@ -63,13 +63,13 @@ PAGES = {
             "Clicks and mask corrections become tracked masks that keep the same ID across frames.",
             "Qwen-series vision-language models wrote the region-grounded object captions and checked them. I sent uncertain cases to a second review and linked the verified captions to the instance annotations.",
         ],
-        "outcome": "Labeling one image cost USD 1.05 with crowdsourced labeling on Prolific and USD 0.036 with this pipeline, a 96.6% reduction. The pipeline is deployed at Daedong AILab, where it has produced 13.0M instance-mask labels for 1.1M training records (662K images). Labels from my auto-labeling system trained both generations of the open-vocabulary model, which I deployed on Jetson Orin Nano.",
+        "outcome": "Labeling one image cost USD 1.05 with crowdsourced labeling on Prolific and USD 0.036 with this pipeline, a 96.6% reduction. The pipeline is deployed at Daedong AILab, where it has produced 13.0M instance-mask labels for 1.1M training records (662K images). These labels trained both generations of the open-vocabulary model.",
         "stack": "TensorRT, Qwen-series vision-language models, and COCO.",
     },
     "strawberry-cultivation": {
         "title": "Strawberry cultivation tasks",
         "result": "Transplanting 93.8%, flower thinning 87.5%, and runner handling 65% over 1,000 work cycles in a fixed lab environment. Exhibited at CES 2025.",
-        "desc": "Deployed Diffusion Policy controllers for transplanting, flower thinning, and runner handling, trained on UMI demonstrations. Task-level success rates measured over 1,000 work cycles in a fixed lab environment were 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. The work was exhibited at CES 2025.",
+        "desc": "Diffusion Policy controllers for transplanting, flower thinning, and runner handling, trained on UMI demonstrations. Task-level success rates measured over 1,000 work cycles in a fixed lab environment were 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. The work was exhibited at CES 2025.",
         "video": "strawberry",
         "problem": "A strawberry cultivation robot has to transplant seedlings, thin flowers, and handle runners. Each task policy is learned from human demonstrations collected with a Universal Manipulation Interface (UMI).",
         "role": "I led the data pipeline and the policy training for all three tasks, and built everything except the robot-side post-processing.",
@@ -78,7 +78,7 @@ PAGES = {
             "ORB-SLAM3 visual-inertial SLAM trajectories were turned into training sets.",
             "Diffusion Policy was trained with RGB features and robot state as global conditioning.",
         ],
-        "outcome": "The three task policies are deployed on the cultivation robot. Task-level success rates measured over 1,000 work cycles in a fixed lab environment were 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. The work was exhibited at CES 2025.",
+        "outcome": "The three task policies run on the cultivation robot. Task-level success rates measured over 1,000 work cycles in a fixed lab environment were 93.8% for transplanting, 87.5% for flower thinning, and 65% for runner handling. The work was exhibited at CES 2025.",
         "stack": "UMI, GoPro, IMU, ORB-SLAM3, Diffusion Policy, U-Net, and ViT.",
     },
     "cad-free-assembly": {
@@ -269,8 +269,9 @@ def slot(page):
 # Home intro, version A in out/r15_for_slop.md.
 INTRO = (
     "I build perception for robots: image segmentation, point-cloud obstacle mapping, "
-    "object pose estimation, and imitation learning for manipulation. Every system below is deployed "
-    "and in use."
+    "object pose estimation, and imitation learning for manipulation. My open-vocabulary models run on "
+    "production orchard robots with Jetson Orin Nano. Their training labels come from my auto-labeling pipeline, "
+    "which has produced 13.0M instance-mask labels at 96.6% lower cost per image than Prolific."
 )
 
 # Monochrome 24x24 paths. GitHub, Kaggle, and LinkedIn are Simple Icons (CC0); Email is an envelope.
@@ -337,14 +338,13 @@ def home_page():
 <section id="education">
 <h2>Education</h2>
 <ul>
-<li>Bachelor of Engineering, Industrial Management Systems Engineering, Seokyeong University, Seoul, Mar. 2016–Aug. 2022. Multidisciplinary major: Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies). GPA 3.34/4.5 overall.</li>
-<li>Mandatory military service as a conscripted auxiliary police officer, Korean National Police Agency, 2017–2019.</li>
+<li>Bachelor of Engineering, Industrial Management Systems Engineering, Seokyeong University, Seoul, Mar. 2016–Aug. 2022. Multidisciplinary major: Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies).</li>
 </ul>
 </section>
 <section id="experience">
 <h2>Experience</h2>
 <ul>
-<li>Daedong AILab, Senior AI Researcher, May 2024–Present.</li>
+<li>Daedong AILab, Perception Engineer (official title: Senior AI Researcher), May 2024–Present.</li>
 <li>PLAIF, Computer Vision Engineer, Jan. 2023–Apr. 2024.</li>
 <li>FS Solution Co., Ltd., Computer Vision Engineer, May 2022–Dec. 2022.</li>
 </ul>
@@ -438,7 +438,7 @@ DIAGRAMS = {
 <p class="flow-k">Navigation</p>
 <p>Reads the occupancy grid.</p>
 </div>
-<figcaption>I built the second generation after validation exposed errors in the first. Both generations are deployed on production RT100 with TensorRT on Jetson Orin Nano and feed the same mapping step.</figcaption>
+<figcaption>I built the second generation after validation exposed errors in the first. Both feed the same mapping step.</figcaption>
 </figure>
 """,
     "strawberry-cultivation": """<figure class="flow">
@@ -578,7 +578,7 @@ EXTRA_SECTIONS = {
 </section>
 <section>
 <h2>Serving</h2>
-<p>The choices below affect serving only and do not change the model. The image and video paths share one encoder and neck on the GPU. Image features stay cached on the GPU between clicks, and so does the previous mask. The point-prompt decoder is built in FP32 because the FP16 build failed the mask IoU check. GPU inference and CPU post-processing run as two separate services.</p>
+<p>The image and video paths share one encoder and neck on the GPU. Image features stay cached on the GPU between clicks, and so does the previous mask. The point-prompt decoder is built in FP32 because the FP16 build failed the mask IoU check. GPU inference and CPU post-processing run as two separate services. None of these choices change the model.</p>
 </section>
 <section>
 <h2>Captioning after labeling</h2>

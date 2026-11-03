@@ -95,7 +95,7 @@ GROUPS = [
     {
         "id": "daedong",
         "org": "Daedong AILab",
-        "role": {"en": "Senior AI Researcher", "ko": "Senior AI Researcher"},
+        "role": {"en": "Perception Engineer (official title: Senior AI Researcher)", "ko": "Perception Engineer (official title: Senior AI Researcher)"},
         "when": {"en": "May 2024 to present", "ko": "2024년 5월부터 현재"},
     },
     {
