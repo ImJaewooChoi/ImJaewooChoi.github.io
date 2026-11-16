@@ -433,7 +433,7 @@ def below_en():
 <section id="education">
 <h2>Education</h2>
 <ul>
-<li>Bachelor of Engineering, Industrial Management Systems Engineering, Seokyeong University, Seoul, Mar. 2016–Aug. 2022. Multidisciplinary major: Big Data Business Intelligence (Bachelor of Multidisciplinary Studies).</li>
+<li>Bachelor of Engineering, Industrial Management Systems Engineering, Seokyeong University, Seoul, Mar. 2016–Aug. 2022. GPA {FACTS['gpa']}. Multidisciplinary major: Big Data.</li>
 </ul>
 </section>"""
 

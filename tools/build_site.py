@@ -37,6 +37,7 @@ FACTS = {
     "bin_success": "89%",
     "patent": "10-2694987",
     "queries": "300",
+    "gpa": "3.34/4.5",
 }
 SITE = "https://imjaewoochoi.github.io"
 EMAIL = "iam.jaewoochoi@gmail.com"
@@ -1063,7 +1064,7 @@ def education_html(lang):
             ("Place", "Seoul, South Korea"),
             (
                 "Degree",
-                "Bachelor of Engineering, Industrial Management Systems Engineering. Multidisciplinary major: Big Data Business Intelligence (Bachelor of Multidisciplinary Studies).",
+                "Bachelor of Engineering, Industrial Management Systems Engineering. Multidisciplinary major: Big Data.",
             ),
             (
                 "Patent",
@@ -1083,7 +1084,7 @@ def education_html(lang):
             ("장소", "서울, 대한민국"),
             (
                 "학위",
-                "Bachelor of Engineering, Industrial Management Systems Engineering. 융합전공은 Big Data Business Intelligence (Bachelor of Multidisciplinary Studies)입니다.",
+                "Bachelor of Engineering, Industrial Management Systems Engineering. 복수전공은 Big Data입니다.",
             ),
             ("특허", "한국 특허 10-2694987. 2024년 8월 등록. 출원인은 PLAIF입니다. 공동 발명자입니다."),
             ("명칭", f'<span lang="en">{esc(PATENT_TITLE)}</span>'),
