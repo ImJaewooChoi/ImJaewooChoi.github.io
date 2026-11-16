@@ -26,9 +26,15 @@ from build_site import (
 PAGES = {
     "language-distilled-segmentation": {
         "title": "Open-vocabulary segmentation and mapping",
-        "result": "I built two generations of open-vocabulary perception, a class-name segmenter and then a caption-trained detector. Both output boxes and instance masks for the obstacle-mapping step I wrote, and both run on production RT100 robots with TensorRT on Jetson Orin Nano.",
+        "result": "I built two generations of open-vocabulary perception, a class-name segmenter and then a caption-trained detector, and trained both on labels from my auto-labeling pipeline. Both output boxes and instance masks for the obstacle-mapping step I wrote, and both run on production RT100 robots with TensorRT on Jetson Orin Nano.",
         "desc": "Two generations of open-vocabulary perception for the RT100 orchard platform, a class-name open-vocabulary segmenter for semantic and instance segmentation and a caption-trained open-vocabulary detector, and the occupancy grid built from their instance masks. Both generations are deployed on production RT100 with TensorRT on Jetson Orin Nano.",
         "video": None,
+        "thumb": {
+            "src": "/assets/figures/open-vocab-v2.png",
+            "w": 2000,
+            "h": 1230,
+            "alt": "Diagram of the second-generation caption-trained open-vocabulary detector.",
+        },
         "problem": "RT100, an autonomous orchard platform, needs instance masks for objects outside a fixed label set, and those masks have to become a navigable map on a Jetson Orin Nano.",
         "role": "I pre-trained the first generation, a class-name open-vocabulary segmenter for semantic and instance segmentation, on frozen DINOv3 and SigLIP2 encoders, then developed the second, a caption-trained open-vocabulary detector with a mask head. On RT100, I deployed both generations and built the occupancy-grid mapping from their instance masks.",
         "method": [
@@ -38,7 +44,7 @@ PAGES = {
             ),
             (
                 "Why a second generation",
-                "The first generation learned only from class names, and its SigLIP2 text encoder stayed frozen. On a validation subset it missed thin structures such as streetlights and small objects such as books, and it confused similar classes. Its semantic head picks the best class from a fixed list and cannot reject an unknown object, so on RT100 images some white reflectors were labeled as snow. I built the second generation, a caption-trained open-vocabulary detector, to learn from richer text than class names. Its compact text encoder is trained with object and image captions, which are used only during training and add no inference cost. The occupancy grid needs instance masks, so the detector has a mask head and outputs them along with boxes. The deployed system has two known limitations: small objects, and rejecting objects that match none of the given category names.",
+                "The first generation learned only from class names, and its SigLIP2 text encoder stayed frozen. On a validation subset it missed thin structures such as streetlights and small objects such as books, and it confused similar classes. Its semantic head picks the best class from a fixed list and cannot reject an unknown object, so on RT100 images some white reflectors were labeled as snow. I built the second generation, a caption-trained open-vocabulary detector, to learn from richer text than class names. Its compact text encoder is trained with object and image captions, which are used only during training and add no inference cost. The occupancy grid needs instance masks, so the detector has a mask head and outputs them along with boxes.",
             ),
             (
                 "Second generation: caption-trained detector",
@@ -49,7 +55,7 @@ PAGES = {
                 "The same mapping step serves both generations. The point cloud is reduced to voxels, and each voxel center is projected into the camera image. A voxel that lands inside an instance mask takes that mask's object and class. I added virtual voxels from valid anchor depths. The labeled voxels are then written into a navigable occupancy grid. Decay lets cells that are no longer observed fade out, hysteresis keeps a cell from flipping between free and occupied, and cost inflation keeps planned paths clear of obstacle edges. Navigation reads this grid.",
             ),
         ],
-        "outcome": "Both generations run in the production RT100 perception pipeline on Jetson Orin Nano, optimized with TensorRT and trained on labels from my auto-labeling system. Both output boxes and instance masks, and the first generation also gives semantic masks. The second generation exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime.",
+        "outcome": "Both generations run in the production RT100 perception pipeline on Jetson Orin Nano, optimized with TensorRT and trained on labels from my auto-labeling system. Both output boxes and instance masks, and the first generation also gives semantic masks. The second generation exports to ONNX and TensorRT with parity checks against PyTorch and ONNX Runtime. Small objects and rejecting objects that match none of the given category names are still open problems after the second generation.",
     },
     "auto-labeling": {
         "title": "Prompt-guided image and video auto-labeling",
@@ -61,10 +67,10 @@ PAGES = {
         "role": "I built image and video annotation on an existing prompt-guided video segmentation model: an image-only decoder graph, a click-refinement flow, selective memory writes, and one shared encoder for both paths. Beyond the annotation tool, I also set the label taxonomy, wrote the annotation guidelines, and built the COCO-format training datasets.",
         "method": [
             "Clicks and mask corrections become tracked masks that keep the same ID across frames.",
-            "Qwen-series vision-language models wrote the region-grounded object captions and checked them. I sent uncertain cases to a second review and linked the verified captions to the instance annotations.",
+            "Open-weight vision-language models wrote the region-grounded object captions and checked them. I sent uncertain cases to a second review and linked the verified captions to the instance annotations.",
         ],
         "outcome": "Labeling one image cost USD 1.05 with crowdsourced labeling on Prolific and USD 0.036 with this pipeline, a 96.6% reduction. The pipeline is deployed at Daedong AILab, where it has produced 13.0M instance-mask labels for 1.1M training records (662K images). These labels trained both generations of the open-vocabulary model.",
-        "stack": "TensorRT, Qwen-series vision-language models, and COCO.",
+        "stack": "TensorRT, open-weight vision-language models, and COCO.",
     },
     "strawberry-cultivation": {
         "title": "Strawberry cultivation tasks",
@@ -108,7 +114,7 @@ PAGES = {
         "stack": "An instance segmentation model, PCA, and point-to-point ICP.",
     },
     "ros-6d-vision": {
-        "title": "6D Pose Estimation with Eye-to-Hand Calibration",
+        "title": "6D pose estimation with eye-to-hand calibration",
         "result": "Wrote the ROS action server, which returns object poses in the camera and robot-base frames on each request, and the eye-to-hand calibration tools, which report residual error.",
         "desc": "A deployed ROS action server runs capture, segmentation, and pose estimation on each request and returns poses with matching scores. The eye-to-hand calibration tools report residual error.",
         "video": None,
@@ -242,8 +248,8 @@ def nav(home):
 <header class="bar wrap">
 <a href="{prefix}#work">Work</a>
 <a href="{prefix}#record">Patent and awards</a>
-<a href="{prefix}#education">Education</a>
 <a href="{prefix}#experience">Experience</a>
+<a href="{prefix}#education">Education</a>
 </header>
 """
 
@@ -251,7 +257,14 @@ def nav(home):
 def slot(page):
     video = page["video"]
     if not video:
-        return ""
+        thumb = page.get("thumb")
+        if not thumb:
+            return ""
+        return (
+            '<div class="slot slot-fig">'
+            f'<img src="{thumb["src"]}" alt="{esc(thumb["alt"])}" width="{thumb["w"]}" height="{thumb["h"]}" loading="lazy">'
+            "</div>"
+        )
     clip = CLIPS[video]
     label = esc(clip["label"])
     return (
@@ -300,7 +313,7 @@ def home_page():
     for project in PROJECTS:
         page = PAGES[project["slug"]]
         href = project_href("en", project["slug"])
-        kind = "proj" if page["video"] else "proj proj-plain"
+        kind = "proj" if page["video"] or page.get("thumb") else "proj proj-plain"
         rows.append(
             f'<article class="{kind}" id="{esc(project["slug"])}">'
             f"{slot(page)}"
@@ -332,18 +345,18 @@ def home_page():
 <li>Kaggle Happywhale (Whale and Dolphin Identification): bronze medal, team rank 127/1,588, Apr. 2022. <a href="{esc(WHALE)}">Code</a>.</li>
 </ul>
 </section>
-<section id="education">
-<h2>Education</h2>
-<ul>
-<li>Bachelor of Engineering, Industrial Management Systems Engineering, Seokyeong University, Seoul, Mar. 2016–Aug. 2022. Multidisciplinary major: Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies).</li>
-</ul>
-</section>
 <section id="experience">
 <h2>Experience</h2>
 <ul>
 <li>Daedong AILab, Senior AI Researcher, May 2024–Present.</li>
 <li>PLAIF, Computer Vision Engineer, Jan. 2023–Apr. 2024.</li>
 <li>FS Solution Co., Ltd., Computer Vision Engineer, May 2022–Dec. 2022.</li>
+</ul>
+</section>
+<section id="education">
+<h2>Education</h2>
+<ul>
+<li>Bachelor of Engineering, Industrial Management Systems Engineering, Seokyeong University, Seoul, Mar. 2016–Aug. 2022. Multidisciplinary major: Big Data Business Intelligence (Bachelor of Multidisciplinary Studies).</li>
 </ul>
 </section>
 </div>
@@ -540,7 +553,7 @@ EXTRA_SECTIONS = {
     "cad-free-assembly": """<section>
 <h2>System diagram</h2>
 <p>The reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale before matching.</p>
-<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly system. A reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, LightGlue matches its keypoints to the reference RGB image, the reference depth turns the matches into 2D-3D matches, and PnP with RANSAC gives the camera pose. A transform chain with the hand-eye calibration and the stored reference tool pose gives the target 6D tool pose for robot motion."><figcaption>Dashed boxes are drawn from the patent and my write-up.</figcaption></figure>
+<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly system. A reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, LightGlue matches its keypoints to the reference RGB image, the reference depth turns the matches into 2D-3D matches, and PnP with RANSAC gives the camera pose. A transform chain with the hand-eye calibration and the stored reference tool pose gives the target 6D tool pose for robot motion."><figcaption>Dashed boxes mark steps described in the patent.</figcaption></figure>
 </section>
 """,
     "bin-picking": """<section>
@@ -551,13 +564,13 @@ EXTRA_SECTIONS = {
 """,
     "strawberry-cultivation": """<section>
 <h2>Model structure</h2>
-<p>The policy is Diffusion Policy. An image encoder turns the RGB frames into features. Those features and the robot state form the global conditioning. Starting from a noisy action sequence, the denoising network removes noise over repeated steps and returns an action sequence for the robot side. I compared U-Net and ViT configurations.</p>
+<p>The policy is Diffusion Policy. An image encoder turns the RGB frames into features. Those features and the robot state form the global conditioning. Starting from a noisy action sequence, the denoising network removes noise over repeated steps and returns an action sequence for the robot side.</p>
 <figure class="arch"><img src="/assets/figures/strawberry-policy.png" width="2040" height="700" alt="Diffusion Policy for the strawberry tasks. RGB frames go through an image encoder to RGB features. RGB features and robot state form the global conditioning of a trained denoising network, which turns a noisy action sequence into an action sequence over repeated denoising steps. The action sequence goes to the robot side."></figure>
 </section>
 """,
     "auto-labeling": """<section>
 <h2>Model structure</h2>
-<p>The pipeline builds on an existing prompt-guided video segmentation model. A ViT image encoder turns each image or video frame into tokens, and a neck turns those tokens into a feature pyramid. A prompt encoder and mask decoder turn point or mask prompts into mask logits. Video adds a memory path. There, a memory encoder compresses each tracked mask into memory features and an object pointer, and four memory-attention layers let the current frame attend to recent frames and up to four conditioning frames.</p>
+<p>The pipeline builds on an existing prompt-guided video segmentation model. An image encoder and neck turn each frame into features, and a mask decoder turns point or mask prompts into mask logits. For video, a memory path stores each tracked mask and carries it to later frames.</p>
 <figure class="arch"><img src="/assets/figures/auto-labeling-system.png" width="2040" height="1500" alt="Auto-labeling system. Top: an image encoder and neck feed point- and mask-prompt decoding, and memory attention with a memory bank carries tracked objects between frames. Mask logits go to a CPU service that writes COCO polygons and RLE masks. Bottom: the finished labels are captioned in three stages, an object caption per mask, a relation caption of each mask in the image, and an image caption. Captions are checked, with a second review for unsure cases, and linked to the instance annotations. Object and image captions feed training of the second-generation open-vocabulary detector. Relation captions are stored with the labels and not used in that training."><figcaption>The GPU service runs the model, and a CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
 <p>The model runs on an existing open-source TensorRT export. That export split the model into separate graphs and made memory attention sparse. Those changes are its author's work. My changes are built on top of it and do not change the model weights.</p>
 </section>
@@ -571,7 +584,7 @@ EXTRA_SECTIONS = {
 </section>
 <section>
 <h2>Outputs</h2>
-<p>Mask logits are filled at low resolution, upsampled and thresholded. Cleanup keeps objects and region classes from overlapping and gives small stray islands of a region class to their neighbours. It also removes overlapping duplicates of one object class. Pieces disconnected from every positive click are dropped. Objects are saved as COCO polygons and region classes as masks.</p>
+<p>Mask logits are filled at low resolution, upsampled and thresholded. Cleanup keeps objects and region classes from overlapping and gives small stray islands of a region class to their neighbors. It also removes overlapping duplicates of one object class. Pieces disconnected from every positive click are dropped. Objects are saved as COCO polygons and region classes as masks.</p>
 </section>
 <section>
 <h2>Serving</h2>
@@ -579,7 +592,7 @@ EXTRA_SECTIONS = {
 </section>
 <section>
 <h2>Captioning after labeling</h2>
-<p>After auto-labeling finished, Qwen-series vision-language models captioned the labeled data in three stages:</p>
+<p>After auto-labeling finished, open-weight vision-language models captioned the labeled data in three stages:</p>
 <ul>
 <li>Each mask got a caption of the object it covers.</li>
 <li>Each mask also got a caption of its relationship to the image.</li>

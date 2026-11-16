@@ -23,8 +23,8 @@
 <header class="bar wrap">
 <a href="/#work">Work</a>
 <a href="/#record">Patent and awards</a>
-<a href="/#education">Education</a>
 <a href="/#experience">Experience</a>
+<a href="/#education">Education</a>
 </header>
 
 <main id="content">
@@ -83,7 +83,7 @@
 </section>
 <section>
 <h2>Model structure</h2>
-<p>The policy is Diffusion Policy. An image encoder turns the RGB frames into features. Those features and the robot state form the global conditioning. Starting from a noisy action sequence, the denoising network removes noise over repeated steps and returns an action sequence for the robot side. I compared U‑Net and ViT configurations.</p>
+<p>The policy is Diffusion Policy. An image encoder turns the RGB frames into features. Those features and the robot state form the global conditioning. Starting from a noisy action sequence, the denoising network removes noise over repeated steps and returns an action sequence for the robot side.</p>
 <figure class="arch"><img src="/assets/figures/strawberry-policy.png" width="2040" height="700" alt="Diffusion Policy for the strawberry tasks. RGB frames go through an image encoder to RGB features. RGB features and robot state form the global conditioning of a trained denoising network, which turns a noisy action sequence into an action sequence over repeated denoising steps. The action sequence goes to the robot side."></figure>
 </section>
 <section>

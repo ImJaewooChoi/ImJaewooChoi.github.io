@@ -223,12 +223,12 @@ PROJECTS = [
             "ko": "Auto-Labeling과 Data Captioning 시스템",
         },
         "line": {
-            "en": "Point prompts and mask corrections become tracked masks. Qwen-series models write region-grounded captions. Per-image labeling cost fell from USD 1.05 to USD 0.036 compared with Prolific.",
-            "ko": "Point prompt와 mask correction을 tracked mask로 바꿉니다. Qwen 계열 모델이 region caption을 답니다. 이미지당 비용은 Prolific 대비 USD 1.05에서 USD 0.036입니다.",
+            "en": "Point prompts and mask corrections become tracked masks. Open-weight vision-language models write region-grounded captions. Per-image labeling cost fell from USD 1.05 to USD 0.036 compared with Prolific.",
+            "ko": "Point prompt와 mask correction을 tracked mask로 바꿉니다. Open-weight vision-language model이 region caption을 답니다. 이미지당 비용은 Prolific 대비 USD 1.05에서 USD 0.036입니다.",
         },
         "tools": {
-            "en": "Auto-labeling, TensorRT, Qwen",
-            "ko": "Auto-labeling, TensorRT, Qwen",
+            "en": "Auto-labeling, TensorRT, vision-language models",
+            "ko": "Auto-labeling, TensorRT, vision-language models",
         },
         "desc": {
             "en": "Video auto-labeling and region-grounded captioning. Per-image labeling cost fell from USD 1.05 to USD 0.036 compared with Prolific.",
@@ -241,7 +241,7 @@ PROJECTS = [
                     "I built a video auto-labeling pipeline. Point prompts and mask corrections become tracked masks with consistent IDs across frames.",
                 )),
                 ("Approach", P(
-                    "Qwen-series vision-language models generate region-grounded object captions and check them.",
+                    "Open-weight vision-language models generate region-grounded object captions and check them.",
                     "Uncertain cases go to a second review. Verified captions are linked to the instance annotations.",
                     "I set the label taxonomy and the annotation guidelines, and built COCO-format training datasets.",
                 )),
@@ -251,7 +251,7 @@ PROJECTS = [
                     "That is a 96.6% reduction.",
                 )),
                 ("Stack", P(
-                    "TensorRT, Qwen-series vision-language models, COCO.",
+                    "TensorRT, open-weight vision-language models, COCO.",
                 )),
             ],
             "ko": [
@@ -260,14 +260,14 @@ PROJECTS = [
                 )),
                 ("방법", P(
                     "Video auto-labeling pipeline을 만들었습니다. Point prompt와 mask correction은 frame 사이에서 ID가 유지되는 tracked mask가 되고, image 입력과 video 입력은 TensorRT engine을 공유합니다. 같은 연산을 두 번 하지 않습니다.",
-                    "Qwen 계열 vision-language model이 region-grounded object caption을 만들고 검증합니다. 불확실한 경우는 두 번째 검토로 보내고, 검증된 caption은 instance annotation에 연결합니다.",
+                    "open-weight vision-language model이 region-grounded object caption을 만들고 검증합니다. 불확실한 경우는 두 번째 검토로 보내고, 검증된 caption은 instance annotation에 연결합니다.",
                     "Label taxonomy와 annotation guideline을 정하고 COCO format 학습 데이터셋을 만들었습니다.",
                 )),
                 ("결과", P(
                     "Prolific crowdsourcing 기준 이미지당 labeling 비용은 USD 1.05였습니다. USD 0.036으로 줄었고, 감소율은 96.6%입니다.",
                 )),
                 ("기술", P(
-                    "TensorRT, Qwen 계열 vision-language model, COCO.",
+                    "TensorRT, open-weight vision-language model, COCO.",
                 )),
             ],
         },
@@ -314,7 +314,7 @@ PROJECTS = [
                     "사람의 demonstration으로 딸기 재배 세 작업을 학습했습니다. Transplanting, flower thinning, runner handling입니다. Demonstration은 Universal Manipulation Interface(UMI)로 모았고, 세 작업 모두 data pipeline과 policy 학습을 맡았습니다.",
                 )),
                 ("방법", P(
-                    "GoPro RGB와 IMU 데이터를 수집한 뒤 camera-IMU calibration을 했고, ORB-SLAM3 visual-inertial SLAM trajectory를 학습 데이터로 만들었습니다. RGB feature와 robot state를 global conditioning으로 Diffusion Policy를 학습했고, U-Net과 ViT 구성을 비교했습니다.",
+                    "GoPro RGB와 IMU 데이터를 수집한 뒤 camera-IMU calibration을 했고, ORB-SLAM3 visual-inertial SLAM trajectory를 학습 데이터로 만들었습니다. RGB feature와 robot state를 global conditioning으로 Diffusion Policy를 학습했습니다.",
                 )),
                 ("결과", P(
                     "고정된 실험실에서 1,000회 시험했습니다. 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%입니다. CES 2025에 전시했습니다.",
@@ -661,7 +661,7 @@ DISPLAY = {
             ("Cost after", "USD 0.036 per image"),
             ("Reduction", "96.6%"),
         ],
-        "stack": ["TensorRT", "Qwen-series vision-language models", "COCO"],
+        "stack": ["TensorRT", "open-weight vision-language models", "COCO"],
     },
     "ros-6d-vision": {
         "nav": "Hand-eye and 6D pose",
@@ -1043,7 +1043,7 @@ def education_html(lang):
             ("Place", "Seoul, South Korea"),
             (
                 "Degree",
-                "Bachelor of Engineering, Industrial Management Systems Engineering. Multidisciplinary major: Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies).",
+                "Bachelor of Engineering, Industrial Management Systems Engineering. Multidisciplinary major: Big Data Business Intelligence (Bachelor of Multidisciplinary Studies).",
             ),
             (
                 "Patent",
@@ -1063,7 +1063,7 @@ def education_html(lang):
             ("장소", "서울, 대한민국"),
             (
                 "학위",
-                "Bachelor of Engineering, Industrial Management Systems Engineering. 융합전공은 Bigdata Business Intelligence (Bachelor of Multidisciplinary Studies)입니다.",
+                "Bachelor of Engineering, Industrial Management Systems Engineering. 융합전공은 Big Data Business Intelligence (Bachelor of Multidisciplinary Studies)입니다.",
             ),
             ("특허", "한국 특허 10-2694987. 2024년 8월 등록. 출원인은 PLAIF입니다. 공동 발명자입니다."),
             ("명칭", f'<span lang="en">{esc(PATENT_TITLE)}</span>'),

@@ -23,8 +23,8 @@
 <header class="bar wrap">
 <a href="/#work">Work</a>
 <a href="/#record">Patent and awards</a>
-<a href="/#education">Education</a>
 <a href="/#experience">Experience</a>
+<a href="/#education">Education</a>
 </header>
 
 <main id="content">
@@ -43,12 +43,12 @@
 <h2>Method</h2>
 <ol>
 <li>Clicks and mask corrections become tracked masks that keep the same ID across frames.</li>
-<li>Qwen‑series vision‑language models wrote the region‑grounded object captions and checked them. I sent uncertain cases to a second review and linked the verified captions to the instance annotations.</li>
+<li>Open‑weight vision‑language models wrote the region‑grounded object captions and checked them. I sent uncertain cases to a second review and linked the verified captions to the instance annotations.</li>
 </ol>
 </section>
 <section>
 <h2>Model structure</h2>
-<p>The pipeline builds on an existing prompt‑guided video segmentation model. A ViT image encoder turns each image or video frame into tokens, and a neck turns those tokens into a feature pyramid. A prompt encoder and mask decoder turn point or mask prompts into mask logits. Video adds a memory path. There, a memory encoder compresses each tracked mask into memory features and an object pointer, and four memory‑attention layers let the current frame attend to recent frames and up to four conditioning frames.</p>
+<p>The pipeline builds on an existing prompt‑guided video segmentation model. An image encoder and neck turn each frame into features, and a mask decoder turns point or mask prompts into mask logits. For video, a memory path stores each tracked mask and carries it to later frames.</p>
 <figure class="arch"><img src="/assets/figures/auto-labeling-system.png" width="2040" height="1500" alt="Auto-labeling system. Top: an image encoder and neck feed point- and mask-prompt decoding, and memory attention with a memory bank carries tracked objects between frames. Mask logits go to a CPU service that writes COCO polygons and RLE masks. Bottom: the finished labels are captioned in three stages, an object caption per mask, a relation caption of each mask in the image, and an image caption. Captions are checked, with a second review for unsure cases, and linked to the instance annotations. Object and image captions feed training of the second-generation open-vocabulary detector. Relation captions are stored with the labels and not used in that training."><figcaption>The GPU service runs the model, and a CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
 <p>The model runs on an existing open‑source TensorRT export. That export split the model into separate graphs and made memory attention sparse. Those changes are its author's work. My changes are built on top of it and do not change the model weights.</p>
 </section>
@@ -62,7 +62,7 @@
 </section>
 <section>
 <h2>Outputs</h2>
-<p>Mask logits are filled at low resolution, upsampled and thresholded. Cleanup keeps objects and region classes from overlapping and gives small stray islands of a region class to their neighbours. It also removes overlapping duplicates of one object class. Pieces disconnected from every positive click are dropped. Objects are saved as COCO polygons and region classes as masks.</p>
+<p>Mask logits are filled at low resolution, upsampled and thresholded. Cleanup keeps objects and region classes from overlapping and gives small stray islands of a region class to their neighbors. It also removes overlapping duplicates of one object class. Pieces disconnected from every positive click are dropped. Objects are saved as COCO polygons and region classes as masks.</p>
 </section>
 <section>
 <h2>Serving</h2>
@@ -70,7 +70,7 @@
 </section>
 <section>
 <h2>Captioning after labeling</h2>
-<p>After auto‑labeling finished, Qwen‑series vision‑language models captioned the labeled data in three stages:</p>
+<p>After auto‑labeling finished, open‑weight vision‑language models captioned the labeled data in three stages:</p>
 <ul>
 <li>Each mask got a caption of the object it covers.</li>
 <li>Each mask also got a caption of its relationship to the image.</li>

@@ -1,4 +1,4 @@
-/* Faculty skim, prototype A.
+/* Faculty skim, design A.
    Paper #ffffff, ink #1a1a1a, quiet #3e4a56, link #234e6d, slot #f3f4f5.
    Source Serif 4, self-hosted. The name is the only display size.
    Order: identity with icon links, equal project rows, then the lists.
@@ -190,6 +190,15 @@ p {
 .slot video {
   position: absolute;
   inset: 0;
+}
+
+.slot-fig,
+.slot-fig img {
+  background: #fff;
+}
+
+.slot-fig img {
+  object-fit: contain;
 }
 
 .proj h2 {
