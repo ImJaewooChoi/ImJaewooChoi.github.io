@@ -12,10 +12,32 @@
 <meta property="og:title" content="Prompt-guided image and video auto-labeling, Jaewoo Choi">
 <meta property="og:description" content="A deployed, prompt-guided auto-labeling pipeline for images and video. Labeling cost per image fell from USD 1.05 to USD 0.036 (96.6%) compared with Prolific.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
+<link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
+<link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/auto-labeling.html">
+<link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif-4-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
+<script>
+(function () {
+  var KEY = "lang";
+  var page = document.documentElement.lang === "ko" ? "ko" : "en";
+  var stored = null;
+  try { stored = localStorage.getItem(KEY); } catch (e) { return; }
+  if (stored === "en" || stored === "ko") return;
+  var nav = ((navigator.languages && navigator.languages[0]) || navigator.language || "").toLowerCase();
+  var ref = document.referrer;
+  var local = !ref || ref.indexOf(location.origin + "/") === 0;
+  var home = location.pathname === "/" || location.pathname === "/index.html";
+  if (page === "en" && home && local && nav.slice(0, 2) === "ko") {
+    try { localStorage.setItem(KEY, "ko"); } catch (e) {}
+    location.replace("/ko/" + location.hash);
+    return;
+  }
+  try { localStorage.setItem(KEY, page); } catch (e) {}
+})();
+</script>
 </head>
 
 <body class="page">
@@ -25,6 +47,7 @@
 <a href="/#record">Patent and awards</a>
 <a href="/#experience">Experience</a>
 <a href="/#education">Education</a>
+<span class="lang" role="group" aria-label="Language"><a href="/projects/auto-labeling.html" hreflang="en" lang="en" data-lang="en" title="English" aria-current="true">EN</a><span aria-hidden="true">/</span><a href="/ko/projects/auto-labeling.html" hreflang="ko" lang="ko" data-lang="ko" title="한국어">KO</a></span>
 </header>
 
 <main id="content">
@@ -48,9 +71,9 @@
 </section>
 <section>
 <h2>Model structure</h2>
-<p>The pipeline builds on an existing prompt‑guided video segmentation model. An image encoder and neck turn each frame into features, and a mask decoder turns point or mask prompts into mask logits. For video, a memory path stores each tracked mask and carries it to later frames.</p>
+<p>The pipeline uses an existing prompt‑guided video segmentation model. An image encoder and neck turn each frame into features, and a mask decoder turns point or mask prompts into mask logits. For video, a memory path stores each tracked mask and carries it to later frames.</p>
 <figure class="arch"><img src="/assets/figures/auto-labeling-system.png" width="2040" height="1500" alt="Auto-labeling system. Top: an image encoder and neck feed point- and mask-prompt decoding, and memory attention with a memory bank carries tracked objects between frames. Mask logits go to a CPU service that writes COCO polygons and RLE masks. Bottom: the finished labels are captioned in three stages, an object caption per mask, a relation caption of each mask in the image, and an image caption. Captions are checked, with a second review for unsure cases, and linked to the instance annotations. Object and image captions feed training of the second-generation open-vocabulary detector. Relation captions are stored with the labels and not used in that training."><figcaption>The GPU service runs the model, and a CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
-<p>The model runs on an existing open‑source TensorRT export. That export split the model into separate graphs and made memory attention sparse. Those changes are its author's work. My changes are built on top of it and do not change the model weights.</p>
+<p>The model runs on an existing open‑source TensorRT export. That export split the model into separate graphs and made memory attention sparse. Those changes are its author's work. My changes do not change the model weights.</p>
 </section>
 <section>
 <h2>Image labeling</h2>
@@ -97,6 +120,12 @@
   });
 })();
 </script>
-
+<script>
+document.querySelectorAll("a[data-lang]").forEach(function (a) {
+  a.addEventListener("click", function () {
+    try { localStorage.setItem("lang", a.getAttribute("data-lang")); } catch (e) {}
+  });
+});
+</script>
 </body>
 </html>

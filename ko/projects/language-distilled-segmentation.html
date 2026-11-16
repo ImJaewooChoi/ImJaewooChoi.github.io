@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open-vocabulary segmentation과 mapping, Jaewoo Choi</title>
+<meta name="description" content="RT100 과수원 플랫폼을 위한 두 세대의 open-vocabulary perception과, 그 instance mask로 만든 occupancy grid입니다. Semantic segmentation과 instance segmentation을 하는 Class-name open-vocabulary segmenter(1세대)가 먼저였고, 다음이 Caption-trained open-vocabulary detector(2세대)입니다. 두 세대 모두 production RT100에 TensorRT와 Jetson Orin Nano로 배포했습니다.">
+<meta name="author" content="Jaewoo Choi">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="Open-vocabulary segmentation과 mapping, Jaewoo Choi">
+<meta property="og:description" content="RT100 과수원 플랫폼을 위한 두 세대의 open-vocabulary perception과, 그 instance mask로 만든 occupancy grid입니다. Semantic segmentation과 instance segmentation을 하는 Class-name open-vocabulary segmenter(1세대)가 먼저였고, 다음이 Caption-trained open-vocabulary detector(2세대)입니다. 두 세대 모두 production RT100에 TensorRT와 Jetson Orin Nano로 배포했습니다.">
+<link rel="canonical" href="https://imjaewoochoi.github.io/ko/projects/language-distilled-segmentation.html">
+<link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/language-distilled-segmentation.html">
+<link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/language-distilled-segmentation.html">
+<link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/language-distilled-segmentation.html">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/source-serif-4-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+(function () {
+  var KEY = "lang";
+  var page = document.documentElement.lang === "ko" ? "ko" : "en";
+  var stored = null;
+  try { stored = localStorage.getItem(KEY); } catch (e) { return; }
+  if (stored === "en" || stored === "ko") return;
+  var nav = ((navigator.languages && navigator.languages[0]) || navigator.language || "").toLowerCase();
+  var ref = document.referrer;
+  var local = !ref || ref.indexOf(location.origin + "/") === 0;
+  var home = location.pathname === "/" || location.pathname === "/index.html";
+  if (page === "en" && home && local && nav.slice(0, 2) === "ko") {
+    try { localStorage.setItem(KEY, "ko"); } catch (e) {}
+    location.replace("/ko/" + location.hash);
+    return;
+  }
+  try { localStorage.setItem(KEY, page); } catch (e) {}
+})();
+</script>
+</head>
+
+<body class="page">
+<a class="skip" href="#content">본문으로 건너뛰기</a>
+<header class="bar wrap">
+<a href="/ko/#work">작업</a>
+<a href="/ko/#record">특허와 수상</a>
+<a href="/ko/#experience">경력</a>
+<a href="/ko/#education">학력</a>
+<span class="lang" role="group" aria-label="언어"><a href="/projects/language-distilled-segmentation.html" hreflang="en" lang="en" data-lang="en" title="English">EN</a><span aria-hidden="true">/</span><a href="/ko/projects/language-distilled-segmentation.html" hreflang="ko" lang="ko" data-lang="ko" title="한국어" aria-current="true">KO</a></span>
+</header>
+
+<main id="content">
+<h1>Open‑vocabulary segmentation과 mapping</h1>
+<p class="meta">Daedong AILab, Senior AI Researcher, 2024년 5월–현재.</p>
+
+<section>
+<h2>문제</h2>
+<p>자율 과수원 플랫폼 RT100은 고정된 label 목록에 없는 물체도 instance mask로 잡아야 합니다. 그 mask는 Jetson Orin Nano 위에서 주행 가능한 map이 되어야 합니다.</p>
+</section>
+<section>
+<h2>맡은 일</h2>
+<p>Semantic segmentation과 instance segmentation을 위한 Class‑name open‑vocabulary segmenter(1세대)는 frozen DINOv3와 SigLIP2 encoder 위에서 pre‑training했습니다. 이어서 mask head를 단 Caption‑trained open‑vocabulary detector(2세대)를 만들었습니다. RT100에는 두 세대를 모두 배포했고, 그 instance mask로 occupancy‑grid mapping을 구축했습니다.</p>
+</section>
+<section>
+<h2>방법</h2>
+<figure class="flow">
+<p class="flow-k">RT100의 system flow</p>
+<div class="flow-step">
+<p class="flow-k">입력</p>
+<p>RGB image, 그리고 같은 장면의 point cloud.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Open‑vocabulary segmentation</p>
+<p>Category name을 text로 주므로 다시 학습하지 않고 class 목록을 바꿀 수 있습니다.</p>
+</div>
+<div class="flow-fork">
+<div>
+<p class="flow-k">Class‑name open‑vocabulary segmenter(1세대)</p>
+<p>Frozen DINOv3와 SigLIP2 encoder. 학습하는 부분은 image adapter와 text adapter, PAN‑FPN neck, instance head와 semantic head입니다.</p>
+</div>
+<div>
+<p class="flow-k">Caption‑trained open‑vocabulary detector(2세대)</p>
+<p>Frozen DINOv3 backbone, multi‑scale projector, three‑layer decoder, 학습 가능한 compact text encoder, mask head. Object caption과 image caption은 학습 때만 씁니다.</p>
+</div>
+</div>
+<div class="flow-step">
+<p class="flow-k">Box와 instance mask</p>
+<p>두 세대 모두 냅니다. 1세대는 semantic mask도 냅니다.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Voxel에서 mask로</p>
+<p>Image에 투영한 voxel 중심이 자신이 떨어진 mask의 object와 class를 받습니다. 유효한 anchor depth에서 virtual voxel을 더합니다.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Occupancy grid</p>
+<p>Label이 붙은 voxel을 decay, hysteresis, cost inflation과 함께 grid에 기록합니다.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Navigation</p>
+<p>Occupancy grid를 읽습니다.</p>
+</div>
+<figcaption>Validation에서 1세대의 오류가 드러난 뒤 2세대를 만들었습니다. 두 세대 모두 같은 mapping 단계로 이어집니다.</figcaption>
+</figure>
+<h3>Class‑name open‑vocabulary segmenter(1세대)</h3>
+<p>DINOv3와 SigLIP2 encoder는 고정하고, image adapter, PAN‑FPN neck, text adapter, instance head와 semantic head를 여러 dataset으로 pre‑training했습니다. 두 head는 batch를 번갈아 가며 함께 학습했습니다. Box와 instance mask를 내는 instance head에는 region‑text alignment loss를 걸었고, semantic head는 pixel마다 class‑name text embedding과 비교해 class를 고릅니다. Text‑prompt inference와 fixed‑vocabulary 변환을 넣었고, 모델을 과수원 domain에 맞췄습니다.</p>
+<figure class="arch"><img src="/assets/figures/open-vocab-v1.png" width="1920" height="930" alt="Class-name open-vocabulary segmenter(1세대): frozen DINOv3 image encoder와 SigLIP2 text encoder, 학습하는 image adapter, PAN-FPN neck, text adapter, instance head와 semantic head."><figcaption>Class‑name open‑vocabulary segmenter(1세대).</figcaption></figure>
+<h3>2세대가 필요했던 이유</h3>
+<p>1세대는 class name만 보고 학습했고, SigLIP2 text encoder도 고정돼 있었습니다. Validation subset에서는 가로등 같은 가는 구조물과 책 같은 작은 물체를 놓쳤고, 비슷한 class끼리 헷갈렸습니다. Semantic head는 정해진 목록에서 가장 가까운 class를 고를 뿐, 모르는 물체를 거부하지 못합니다. 그래서 RT100 이미지에서 흰 반사판 일부가 snow로 분류됐습니다. Class name보다 풍부한 text로 학습하려고 Caption‑trained open‑vocabulary detector(2세대)를 만들었습니다. 2세대의 compact text encoder는 object caption과 image caption으로 학습합니다. Caption은 학습 때만 쓰므로 inference 비용은 그대로입니다. Occupancy grid에는 instance mask가 필요합니다. 그래서 detector에 mask head를 달아 box와 함께 mask를 내게 했습니다.</p>
+<h3>Caption‑trained open‑vocabulary detector(2세대)</h3>
+<p>2세대는 query‑based transformer 구조입니다. Frozen DINOv3 backbone 뒤에 multi‑scale projector와 three‑layer decoder가 붙습니다. 학습 가능한 compact text encoder가 category name을 embedding합니다. Inference 때는 어떤 category name 목록이든 받고, 그 embedding으로 decoder query를 고르고 class마다 점수를 매깁니다. Mask head는 가장 해상도가 높은 feature를 decoder query와 함께 읽고, mask를 원본 이미지 해상도로 돌려줍니다. 학습에는 category name, object caption, image caption을 씁니다. 학습 중에만, 미리 계산해 둔 language teacher가 caption을 matched query, pooled image feature와 정렬하고 관련 있는 negative의 가중치를 다시 매깁니다. Mask는 matching을 거쳐 BCE/Dice loss로 학습합니다.</p>
+<figure class="arch"><img src="/assets/figures/open-vocab-v2.png" width="2000" height="1230" alt="Caption-trained open-vocabulary detector(2세대) 구조도. Frozen image encoder 뒤에 multi-scale projector와 300개 query를 쓰는 three-layer decoder가 붙고, 이 query가 mask head, box head, class head로 이어집니다. Category name은 학습 가능한 text encoder를 거쳐 query를 고르고 class 점수를 매깁니다. 학습 때만 쓰는 branch에서는 object caption과 image caption이 frozen teacher text encoder를 거쳐 matched query, pooled image feature와 정렬됩니다."><figcaption>2세대. Category name(청록색)은 inference에 씁니다. Object caption(자홍색)과 image caption(금색)은 학습 때만 씁니다.</figcaption></figure>
+<h3>Mask를 occupancy grid로</h3>
+<p>두 세대 모두 같은 mapping 단계를 씁니다. Point cloud를 voxel로 줄이고, 각 voxel 중심을 camera image에 투영합니다. Instance mask 안에 떨어진 voxel은 그 mask의 object와 class를 받습니다. 유효한 anchor depth에서 virtual voxel을 더했습니다. Label이 붙은 voxel은 주행 가능한 occupancy grid에 기록됩니다. 더 이상 관측되지 않는 cell은 decay로 서서히 지워지고, hysteresis는 cell이 free와 occupied 사이에서 뒤집히지 않게 잡아 줍니다. Cost inflation 덕분에 계획 경로는 장애물 가장자리에서 떨어져 지나갑니다. Navigation은 이 grid를 읽습니다.</p>
+</section>
+<section>
+<h2>결과</h2>
+<p>두 세대 모두 Jetson Orin Nano의 production RT100 perception pipeline에서 TensorRT로 최적화되어 돌아가며, 제 auto‑labeling system이 만든 label로 학습했습니다. 둘 다 box와 instance mask를 내고, 1세대는 semantic mask도 냅니다. 2세대는 ONNX와 TensorRT로 export되며 PyTorch, ONNX Runtime과 parity check를 거칩니다. 작은 물체, 그리고 주어진 category name 어디에도 맞지 않는 물체를 거부하는 일은 2세대 이후에도 남은 과제입니다.</p>
+</section>
+<nav class="pager" aria-label="인접 프로젝트"><span></span><a href="/ko/#work">전체 작업</a><a href="/ko/projects/auto-labeling.html"><span class="dir quiet">다음</span>Auto‑labeling pipeline</a></nav>
+</main>
+<script>
+(function () {
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll("video").forEach(function (v) {
+    v.muted = true;
+    if (reduce) {
+      v.removeAttribute("autoplay");
+      v.pause();
+      v.controls = true;
+    }
+  });
+})();
+</script>
+<script>
+document.querySelectorAll("a[data-lang]").forEach(function (a) {
+  a.addEventListener("click", function () {
+    try { localStorage.setItem("lang", a.getAttribute("data-lang")); } catch (e) {}
+  });
+});
+</script>
+</body>
+</html>

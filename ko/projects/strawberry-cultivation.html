@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>딸기 재배 작업, Jaewoo Choi</title>
+<meta name="description" content="UMI 시연 데이터로 학습한 transplanting, flower thinning, runner handling용 Diffusion Policy controller입니다. 고정된 실험실 환경에서 1,000 work cycles 동안 잰 작업별 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%였습니다. 이 작업은 CES 2025에 전시했습니다.">
+<meta name="author" content="Jaewoo Choi">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="딸기 재배 작업, Jaewoo Choi">
+<meta property="og:description" content="UMI 시연 데이터로 학습한 transplanting, flower thinning, runner handling용 Diffusion Policy controller입니다. 고정된 실험실 환경에서 1,000 work cycles 동안 잰 작업별 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%였습니다. 이 작업은 CES 2025에 전시했습니다.">
+<link rel="canonical" href="https://imjaewoochoi.github.io/ko/projects/strawberry-cultivation.html">
+<link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/strawberry-cultivation.html">
+<link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/strawberry-cultivation.html">
+<link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/strawberry-cultivation.html">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/source-serif-4-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+(function () {
+  var KEY = "lang";
+  var page = document.documentElement.lang === "ko" ? "ko" : "en";
+  var stored = null;
+  try { stored = localStorage.getItem(KEY); } catch (e) { return; }
+  if (stored === "en" || stored === "ko") return;
+  var nav = ((navigator.languages && navigator.languages[0]) || navigator.language || "").toLowerCase();
+  var ref = document.referrer;
+  var local = !ref || ref.indexOf(location.origin + "/") === 0;
+  var home = location.pathname === "/" || location.pathname === "/index.html";
+  if (page === "en" && home && local && nav.slice(0, 2) === "ko") {
+    try { localStorage.setItem(KEY, "ko"); } catch (e) {}
+    location.replace("/ko/" + location.hash);
+    return;
+  }
+  try { localStorage.setItem(KEY, page); } catch (e) {}
+})();
+</script>
+</head>
+
+<body class="page">
+<a class="skip" href="#content">본문으로 건너뛰기</a>
+<header class="bar wrap">
+<a href="/ko/#work">작업</a>
+<a href="/ko/#record">특허와 수상</a>
+<a href="/ko/#experience">경력</a>
+<a href="/ko/#education">학력</a>
+<span class="lang" role="group" aria-label="언어"><a href="/projects/strawberry-cultivation.html" hreflang="en" lang="en" data-lang="en" title="English">EN</a><span aria-hidden="true">/</span><a href="/ko/projects/strawberry-cultivation.html" hreflang="ko" lang="ko" data-lang="ko" title="한국어" aria-current="true">KO</a></span>
+</header>
+
+<main id="content">
+<h1>딸기 재배 작업</h1>
+<p class="meta">Daedong AILab, Senior AI Researcher, 2024년 5월–현재.</p>
+<figure class="film portrait"><video width="540" height="960" muted playsinline controls preload="metadata" poster="/assets/frames/strawberry-booth.jpg" aria-label="CES 2025 부스의 딸기 재배 작업."><source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4"></video><figcaption>CES 2025 부스의 딸기 재배 작업.</figcaption></figure>
+<section>
+<h2>문제</h2>
+<p>딸기 재배 로봇은 모종 이식(transplanting), 꽃 솎기(flower thinning), 런너 정리(runner handling)를 해야 합니다. 작업별 policy는 Universal Manipulation Interface(UMI)로 모은 사람의 시연에서 학습합니다.</p>
+</section>
+<section>
+<h2>맡은 일</h2>
+<p>세 작업 모두 data pipeline과 policy 학습을 이끌었고, 로봇 쪽 post‑processing을 뺀 나머지를 전부 만들었습니다.</p>
+</section>
+<section>
+<h2>방법</h2>
+<figure class="flow">
+<p class="flow-k">작업별 전체 시스템</p>
+<div class="flow-step">
+<p class="flow-k">시연</p>
+<p>사람이 손에 든 UMI gripper로 작업을 합니다. Gripper에 달린 GoPro가 RGB video와 IMU data를 기록합니다.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Calibration</p>
+<p>Camera를 IMU에 맞춰 calibration합니다.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Trajectory</p>
+<p>ORB‑SLAM3 visual‑inertial SLAM이 video와 IMU data에서 gripper trajectory를 복원합니다.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Training set</p>
+<p>Trajectory와 video frame을 training set으로 만듭니다.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">Policy</p>
+<p>RGB feature와 robot state를 조건으로 받는 Diffusion Policy가 action sequence를 냅니다.</p>
+</div>
+<div class="flow-step">
+<p class="flow-k">로봇 쪽</p>
+<p>로봇 쪽 post‑processing이 action을 robot control로 넘깁니다.</p>
+</div>
+<div class="flow-fork">
+<div>
+<p class="flow-k">작업</p>
+<p>Transplanting, flower thinning, runner handling.</p>
+</div>
+<div>
+<p class="flow-k">평가</p>
+<p>고정된 실험실 환경에서 1,000 work cycles.</p>
+</div>
+</div>
+<figcaption>같은 pipeline을 작업마다 한 번씩 돌리며, 작업마다 policy가 따로 있습니다.</figcaption>
+</figure>
+
+</section>
+<section>
+<h2>모델 구조</h2>
+<p>Policy는 Diffusion Policy입니다. Image encoder가 RGB frame을 feature로 바꿉니다. 그 feature와 robot state가 global conditioning이 됩니다. Denoising network는 noise가 섞인 action sequence에서 출발해 단계를 반복하며 noise를 걷어 내고, 로봇 쪽에 넘길 action sequence를 돌려줍니다.</p>
+<figure class="arch"><img src="/assets/figures/strawberry-policy.png" width="2040" height="700" alt="딸기 작업용 Diffusion Policy. RGB frame이 image encoder를 거쳐 RGB feature가 됩니다. RGB feature와 robot state가 학습된 denoising network의 global conditioning이 되고, network는 denoising 단계를 반복해 noise 섞인 action sequence를 action sequence로 바꿉니다. Action sequence는 로봇 쪽으로 넘어갑니다."></figure>
+</section>
+<section>
+<h2>결과</h2>
+<p>세 작업 policy는 재배 로봇에서 돌아갑니다. 고정된 실험실 환경에서 1,000 work cycles 동안 잰 작업별 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%였습니다. 이 작업은 CES 2025에 전시했습니다.</p>
+</section>
+<nav class="pager" aria-label="인접 프로젝트"><a href="/ko/projects/auto-labeling.html"><span class="dir quiet">이전</span>Auto‑labeling pipeline</a><a href="/ko/#work">전체 작업</a><a href="/ko/projects/cad-free-assembly.html"><span class="dir quiet">다음</span>CAD‑free assembly</a></nav>
+</main>
+<script>
+(function () {
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll("video").forEach(function (v) {
+    v.muted = true;
+    if (reduce) {
+      v.removeAttribute("autoplay");
+      v.pause();
+      v.controls = true;
+    }
+  });
+})();
+</script>
+<script>
+document.querySelectorAll("a[data-lang]").forEach(function (a) {
+  a.addEventListener("click", function () {
+    try { localStorage.setItem("lang", a.getAttribute("data-lang")); } catch (e) {}
+  });
+});
+</script>
+</body>
+</html>

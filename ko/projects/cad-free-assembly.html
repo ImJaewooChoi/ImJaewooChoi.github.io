@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CAD-free assembly, Jaewoo Choi</title>
+<meta name="description" content="부품 CAD model 없이 2D camera로 robot assembly용 6D tool pose를 추정합니다. 사내 시험 1,000회의 task success는 93%였고, 총 다섯 차례 진행했습니다.">
+<meta name="author" content="Jaewoo Choi">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="CAD-free assembly, Jaewoo Choi">
+<meta property="og:description" content="부품 CAD model 없이 2D camera로 robot assembly용 6D tool pose를 추정합니다. 사내 시험 1,000회의 task success는 93%였고, 총 다섯 차례 진행했습니다.">
+<link rel="canonical" href="https://imjaewoochoi.github.io/ko/projects/cad-free-assembly.html">
+<link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
+<link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/cad-free-assembly.html">
+<link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/source-serif-4-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+(function () {
+  var KEY = "lang";
+  var page = document.documentElement.lang === "ko" ? "ko" : "en";
+  var stored = null;
+  try { stored = localStorage.getItem(KEY); } catch (e) { return; }
+  if (stored === "en" || stored === "ko") return;
+  var nav = ((navigator.languages && navigator.languages[0]) || navigator.language || "").toLowerCase();
+  var ref = document.referrer;
+  var local = !ref || ref.indexOf(location.origin + "/") === 0;
+  var home = location.pathname === "/" || location.pathname === "/index.html";
+  if (page === "en" && home && local && nav.slice(0, 2) === "ko") {
+    try { localStorage.setItem(KEY, "ko"); } catch (e) {}
+    location.replace("/ko/" + location.hash);
+    return;
+  }
+  try { localStorage.setItem(KEY, page); } catch (e) {}
+})();
+</script>
+</head>
+
+<body class="page">
+<a class="skip" href="#content">본문으로 건너뛰기</a>
+<header class="bar wrap">
+<a href="/ko/#work">작업</a>
+<a href="/ko/#record">특허와 수상</a>
+<a href="/ko/#experience">경력</a>
+<a href="/ko/#education">학력</a>
+<span class="lang" role="group" aria-label="언어"><a href="/projects/cad-free-assembly.html" hreflang="en" lang="en" data-lang="en" title="English">EN</a><span aria-hidden="true">/</span><a href="/ko/projects/cad-free-assembly.html" hreflang="ko" lang="ko" data-lang="ko" title="한국어" aria-current="true">KO</a></span>
+</header>
+
+<main id="content">
+<h1>CAD‑free assembly</h1>
+<p class="meta">PLAIF, Computer Vision Engineer, 2023년 1월–2024년 4월.</p>
+<figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/cad-room.jpg" aria-label="Gripper와 wrist camera를 단 robot arm이 fixture 위에서 부품을 조립합니다."><source src="/assets/video/cad-free-assembly.mp4" type="video/mp4"></video><figcaption>Gripper와 wrist camera를 단 robot arm이 fixture 위에서 부품을 조립합니다.</figcaption></figure>
+<section>
+<h2>문제</h2>
+<p>CAD model이 없는 부품을 로봇이 조립해야 하고, 실행 중에 쓸 수 있는 것은 2D camera뿐입니다. 그래서 그 image에서 목표 6D tool pose를 구해야 합니다.</p>
+</section>
+<section>
+<h2>맡은 일</h2>
+<p>Image matching에서 목표 6D tool pose까지 이어지는 pose pipeline을 만들었습니다.</p>
+</section>
+<section>
+<h2>방법</h2>
+<ol>
+<li>Pipeline은 실시간 2D image를 미리 저장한 reference RGB‑D capture와 LightGlue로 matching합니다. 그래서 match마다 depth가 붙습니다.</li>
+<li>3D‑2D match에서 solvePnP와 RANSAC으로 camera pose를 복원합니다. 여기에 eye‑to‑hand calibration과 저장된 reference pose를 이어 붙여 목표 6D tool pose를 얻습니다.</li>
+</ol>
+</section>
+<section>
+<h2>시스템 구성도</h2>
+<p>Reference RGB‑D capture는 한 번만 찍습니다. 실행 중에는 2D camera image를 crop하고 grayscale로 바꾼 뒤 matching합니다.</p>
+<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly 시스템. Reference RGB-D capture는 한 번만 찍습니다. 실행 중에는 2D camera image를 crop하고 grayscale로 바꾸며, LightGlue가 그 keypoint를 reference RGB image와 matching합니다. Reference depth가 match를 2D-3D match로 바꾸고, solvePnP와 RANSAC이 camera pose를 구합니다. Eye-to-hand calibration과 저장된 reference tool pose로 이어지는 transform chain이 robot motion에 쓸 목표 6D tool pose를 줍니다."><figcaption>점선 상자는 특허에 적힌 단계입니다.</figcaption></figure>
+</section>
+<section>
+<h2>결과</h2>
+<p>Pipeline은 총 다섯 차례 진행을 마쳤습니다. 사내 시험 1,000회 중 93%가 성공했습니다. 이 작업은 한국 특허 10‑2694987의 기반이며, 저는 이 특허의 공동 발명자입니다.</p>
+</section>
+<nav class="pager" aria-label="인접 프로젝트"><a href="/ko/projects/strawberry-cultivation.html"><span class="dir quiet">이전</span>딸기 재배 작업</a><a href="/ko/#work">전체 작업</a><a href="/ko/projects/bin-picking.html"><span class="dir quiet">다음</span>CAD‑based bin picking</a></nav>
+</main>
+<script>
+(function () {
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll("video").forEach(function (v) {
+    v.muted = true;
+    if (reduce) {
+      v.removeAttribute("autoplay");
+      v.pause();
+      v.controls = true;
+    }
+  });
+})();
+</script>
+<script>
+document.querySelectorAll("a[data-lang]").forEach(function (a) {
+  a.addEventListener("click", function () {
+    try { localStorage.setItem("lang", a.getAttribute("data-lang")); } catch (e) {}
+  });
+});
+</script>
+</body>
+</html>

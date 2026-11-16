@@ -4,18 +4,40 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CAD-free assembly, Jaewoo Choi</title>
-<meta name="description" content="6D tool-pose estimation for robot assembly from a 2D camera, with no CAD model of the part. Task success was 93% across 1,000 in-house trials, and the work completed five PoC rounds.">
+<meta name="description" content="6D tool-pose estimation for robot assembly from a 2D camera, with no CAD model of the part. Task success was 93% across 1,000 in-house trials, and the work completed five rounds.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="CAD-free assembly, Jaewoo Choi">
-<meta property="og:description" content="6D tool-pose estimation for robot assembly from a 2D camera, with no CAD model of the part. Task success was 93% across 1,000 in-house trials, and the work completed five PoC rounds.">
+<meta property="og:description" content="6D tool-pose estimation for robot assembly from a 2D camera, with no CAD model of the part. Task success was 93% across 1,000 in-house trials, and the work completed five rounds.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
+<link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
+<link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/cad-free-assembly.html">
+<link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif-4-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
+<script>
+(function () {
+  var KEY = "lang";
+  var page = document.documentElement.lang === "ko" ? "ko" : "en";
+  var stored = null;
+  try { stored = localStorage.getItem(KEY); } catch (e) { return; }
+  if (stored === "en" || stored === "ko") return;
+  var nav = ((navigator.languages && navigator.languages[0]) || navigator.language || "").toLowerCase();
+  var ref = document.referrer;
+  var local = !ref || ref.indexOf(location.origin + "/") === 0;
+  var home = location.pathname === "/" || location.pathname === "/index.html";
+  if (page === "en" && home && local && nav.slice(0, 2) === "ko") {
+    try { localStorage.setItem(KEY, "ko"); } catch (e) {}
+    location.replace("/ko/" + location.hash);
+    return;
+  }
+  try { localStorage.setItem(KEY, page); } catch (e) {}
+})();
+</script>
 </head>
 
 <body class="page">
@@ -25,6 +47,7 @@
 <a href="/#record">Patent and awards</a>
 <a href="/#experience">Experience</a>
 <a href="/#education">Education</a>
+<span class="lang" role="group" aria-label="Language"><a href="/projects/cad-free-assembly.html" hreflang="en" lang="en" data-lang="en" title="English" aria-current="true">EN</a><span aria-hidden="true">/</span><a href="/ko/projects/cad-free-assembly.html" hreflang="ko" lang="ko" data-lang="ko" title="한국어">KO</a></span>
 </header>
 
 <main id="content">
@@ -43,17 +66,17 @@
 <h2>Method</h2>
 <ol>
 <li>The pipeline matches the live 2D image to a stored reference RGB‑D capture with LightGlue, so each match carries depth.</li>
-<li>From the 3D‑2D matches, solvePnP with RANSAC recovers the camera pose, which I chain with the hand‑eye calibration and the stored reference pose to get the target 6D tool pose.</li>
+<li>From the 3D‑2D matches, solvePnP with RANSAC recovers the camera pose, which I chain with the eye‑to‑hand calibration and the stored reference pose to get the target 6D tool pose.</li>
 </ol>
 </section>
 <section>
 <h2>System diagram</h2>
 <p>The reference RGB‑D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale before matching.</p>
-<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly system. A reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, LightGlue matches its keypoints to the reference RGB image, the reference depth turns the matches into 2D-3D matches, and PnP with RANSAC gives the camera pose. A transform chain with the hand-eye calibration and the stored reference tool pose gives the target 6D tool pose for robot motion."><figcaption>Dashed boxes mark steps described in the patent.</figcaption></figure>
+<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly system. A reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, LightGlue matches its keypoints to the reference RGB image, the reference depth turns the matches into 2D-3D matches, and solvePnP with RANSAC gives the camera pose. A transform chain with the eye-to-hand calibration and the stored reference tool pose gives the target 6D tool pose for robot motion."><figcaption>Dashed boxes mark steps described in the patent.</figcaption></figure>
 </section>
 <section>
 <h2>Result</h2>
-<p>The pipeline completed five PoC rounds. 93% of 1,000 in‑house trials succeeded. This work is the basis of Korean Patent 10‑2694987, on which I am a co‑inventor.</p>
+<p>The pipeline completed five rounds. 93% of 1,000 in‑house trials succeeded. This work is the basis of Korean Patent 10‑2694987, on which I am a co‑inventor.</p>
 </section>
 <nav class="pager" aria-label="Adjacent projects"><a href="/projects/strawberry-cultivation.html"><span class="dir quiet">Previous</span>Strawberry cultivation tasks</a><a href="/#work">All work</a><a href="/projects/bin-picking.html"><span class="dir quiet">Next</span>CAD‑based bin picking</a></nav>
 </main>
@@ -70,6 +93,12 @@
   });
 })();
 </script>
-
+<script>
+document.querySelectorAll("a[data-lang]").forEach(function (a) {
+  a.addEventListener("click", function () {
+    try { localStorage.setItem("lang", a.getAttribute("data-lang")); } catch (e) {}
+  });
+});
+</script>
 </body>
 </html>

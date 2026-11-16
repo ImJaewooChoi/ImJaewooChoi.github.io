@@ -4,7 +4,7 @@
 `python3 tools/build_site.py` writes the HTML through renew.write_all.
 The published design is the faculty skim (design A): Source Serif 4,
 white page, project rows with a clip or an empty slot.
-Korean copy stays in this file. PUBLISH_KO is false, so ko/ is not written.
+Korean pages are written to ko/ by renew.py from tools/ko_copy.py. PUBLISH_KO turns that on.
 """
 
 import html
@@ -13,11 +13,31 @@ import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-# Korean copy stays in this file. While this is false the build does not
-# write ko/. .nojekyll makes GitHub Pages publish every committed path, so
-# a side folder would still be served. Set this true and rebuild to restore
-# /ko/ and the language switch.
-PUBLISH_KO = False
+# True writes the Korean pages under ko/ and the KO/EN switch. False writes
+# English only and deletes ko/ (GitHub Pages serves every committed path).
+PUBLISH_KO = True
+
+# Figures shared by the English and Korean pages. Korean copy (tools/ko_copy.py)
+# takes every number from here, and renew.write_all() refuses to write the site
+# if a Korean page and its English pair carry different numbers.
+FACTS = {
+    "cost_before": "USD 1.05",
+    "cost_after": "USD 0.036",
+    "cost_cut": "96.6%",
+    "masks": "13.0M",
+    "records": "1.1M",
+    "images": "662K",
+    "cycles": "1,000",
+    "transplant": "93.8%",
+    "thinning": "87.5%",
+    "runner": "65%",
+    "ces": "CES 2025",
+    "trials": "1,000",
+    "cad_success": "93%",
+    "bin_success": "89%",
+    "patent": "10-2694987",
+    "queries": "300",
+}
 SITE = "https://imjaewoochoi.github.io"
 EMAIL = "iam.jaewoochoi@gmail.com"
 GITHUB = "https://github.com/ImJaewooChoi"
@@ -352,11 +372,11 @@ PROJECTS = [
                 )),
                 ("Approach", P(
                     "LightGlue matches the live 2D image to a stored reference RGB-D capture, so each match carries depth.",
-                    "solvePnP and RANSAC estimate the camera pose from the 3D-2D matches. That pose is chained with the hand-eye calibration and the stored reference pose. The result is the target 6D tool pose.",
+                    "solvePnP and RANSAC estimate the camera pose from the 3D-2D matches. That pose is chained with the eye-to-hand calibration and the stored reference pose. The result is the target 6D tool pose.",
                     "The pipeline is deployed for assembly. Task success was 93% across 1,000 in-house trials. This work is the basis of Korean Patent 10-2694987.",
                 )),
                 ("Stack", P(
-                    "LightGlue, solvePnP with RANSAC, hand-eye calibration.",
+                    "LightGlue, solvePnP with RANSAC, eye-to-hand calibration.",
                 )),
             ],
             "ko": [
@@ -364,10 +384,10 @@ PROJECTS = [
                     "부품 CAD model이 없을 때 조립용 target 6D tool pose가 필요합니다. 실행 시점의 센서는 3D camera가 아니라 2D camera입니다.",
                 )),
                 ("방법", P(
-                    '조립 현장에 배포된 pipeline은 LightGlue로 live 2D image와 저장된 reference RGB-D capture를 맞춥니다. Match마다 depth가 붙고, depth가 없는 match는 제거합니다. 3D-2D match에 solvePnP와 RANSAC으로 camera pose를 구한 뒤, hand-eye calibration과 저장된 reference pose를 이어 target 6D tool pose를 얻습니다. 사내 시험 1,000회에서 task success 93%를 기록했습니다. 이 작업이 <a href="/ko/#patent">한국 특허 10-2694987</a>의 기반입니다.',
+                    '조립 현장에 배포된 pipeline은 LightGlue로 live 2D image와 저장된 reference RGB-D capture를 맞춥니다. Match마다 depth가 붙고, depth가 없는 match는 제거합니다. 3D-2D match에 solvePnP와 RANSAC으로 camera pose를 구한 뒤, eye-to-hand calibration과 저장된 reference pose를 이어 target 6D tool pose를 얻습니다. 사내 시험 1,000회에서 task success 93%를 기록했습니다. 이 작업이 <a href="/ko/#patent">한국 특허 10-2694987</a>의 기반입니다.',
                 )),
                 ("기술", P(
-                    "LightGlue, solvePnP with RANSAC, hand-eye calibration.",
+                    "LightGlue, solvePnP with RANSAC, eye-to-hand calibration.",
                 )),
             ],
         },
@@ -429,16 +449,16 @@ PROJECTS = [
         "group": "plaif",
         "video": None,
         "title": {
-            "en": "Hand-eye calibration and 6D pose server",
-            "ko": "Hand-eye calibration과 6D pose server",
+            "en": "Eye-to-hand calibration and 6D pose server",
+            "ko": "Eye-to-hand calibration과 6D pose server",
         },
         "line": {
             "en": "Wrote the ROS server that returns camera and robot-base poses on each request, plus eye-to-hand calibration tools that report residual error.",
             "ko": "요청마다 capture, segmentation, pose estimation을 실행하는 ROS action server입니다. Eye-to-hand calibration 도구를 같이 만들었습니다.",
         },
         "tools": {
-            "en": "6D pose, ROS, hand-eye calibration",
-            "ko": "6D pose, ROS, hand-eye calibration",
+            "en": "6D pose, ROS, eye-to-hand calibration",
+            "ko": "6D pose, ROS, eye-to-hand calibration",
         },
         "desc": {
             "en": "ROS action server for capture, segmentation, and 6D pose, plus eye-to-hand calibration tools for Zivid and RealSense.",
@@ -620,7 +640,7 @@ DISPLAY = {
             ("Sensor", "2D camera at run time"),
             ("Patent", "Korean Patent 10-2694987"),
         ],
-        "stack": ["LightGlue", "solvePnP", "RANSAC", "hand-eye calibration"],
+        "stack": ["LightGlue", "solvePnP", "RANSAC", "eye-to-hand calibration"],
     },
     "bin-picking": {
         "nav": "Bin picking",
@@ -664,7 +684,7 @@ DISPLAY = {
         "stack": ["TensorRT", "open-weight vision-language models", "COCO"],
     },
     "ros-6d-vision": {
-        "nav": "Hand-eye and 6D pose",
+        "nav": "Eye-to-hand and 6D pose",
         "pitch": "Serving 6D poses over ROS, with eye-to-hand calibration tools.",
         "dek": "Robot-base poses and camera-frame poses.",
         "notes": [],

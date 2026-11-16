@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Overflow, line measure, hyphen breaks, and robots meta for the static site."""
+"""Overflow, line measure, hyphen breaks, robots meta, and lang/hreflang for the static site (English at /, Korean at /ko/)."""
 
 import re
 import sys
@@ -224,8 +224,14 @@ def static_checks():
             continue
         text = path.read_text(encoding="utf-8")
         rel = path.relative_to(ROOT).as_posix()
-        if 'hreflang="ko"' in text or "/ko/" in text or 'href="/ko"' in text:
-            errors.append(f"{rel} still points at a Korean page")
+        want = "ko" if rel.startswith("ko/") else "en"
+        if f'<html lang="{want}">' not in text:
+            errors.append(f"{rel} html lang is not {want}")
+        for code in ("en", "ko", "x-default"):
+            if f'rel="alternate" hreflang="{code}"' not in text:
+                errors.append(f"{rel} missing hreflang {code}")
+        if 'class="lang"' not in text:
+            errors.append(f"{rel} missing KO/EN switch")
         if 'name="robots" content="noindex, nofollow, noarchive"' not in text:
             errors.append(f"{rel} missing robots noindex meta")
         if 'property="og:title"' not in text or 'property="og:description"' not in text:

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CAD-based bin picking, Jaewoo Choi</title>
+<meta name="description" content="CAD geometry를 아는 물체를 위한 RGB-D bin picking입니다. Object type 다섯 종류, 사내 고정 환경 시험 1,000회에서 task success는 89%였습니다. 총 세 차례 진행했습니다.">
+<meta name="author" content="Jaewoo Choi">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="CAD-based bin picking, Jaewoo Choi">
+<meta property="og:description" content="CAD geometry를 아는 물체를 위한 RGB-D bin picking입니다. Object type 다섯 종류, 사내 고정 환경 시험 1,000회에서 task success는 89%였습니다. 총 세 차례 진행했습니다.">
+<link rel="canonical" href="https://imjaewoochoi.github.io/ko/projects/bin-picking.html">
+<link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/bin-picking.html">
+<link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/bin-picking.html">
+<link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/bin-picking.html">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/source-serif-4-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+(function () {
+  var KEY = "lang";
+  var page = document.documentElement.lang === "ko" ? "ko" : "en";
+  var stored = null;
+  try { stored = localStorage.getItem(KEY); } catch (e) { return; }
+  if (stored === "en" || stored === "ko") return;
+  var nav = ((navigator.languages && navigator.languages[0]) || navigator.language || "").toLowerCase();
+  var ref = document.referrer;
+  var local = !ref || ref.indexOf(location.origin + "/") === 0;
+  var home = location.pathname === "/" || location.pathname === "/index.html";
+  if (page === "en" && home && local && nav.slice(0, 2) === "ko") {
+    try { localStorage.setItem(KEY, "ko"); } catch (e) {}
+    location.replace("/ko/" + location.hash);
+    return;
+  }
+  try { localStorage.setItem(KEY, page); } catch (e) {}
+})();
+</script>
+</head>
+
+<body class="page">
+<a class="skip" href="#content">본문으로 건너뛰기</a>
+<header class="bar wrap">
+<a href="/ko/#work">작업</a>
+<a href="/ko/#record">특허와 수상</a>
+<a href="/ko/#experience">경력</a>
+<a href="/ko/#education">학력</a>
+<span class="lang" role="group" aria-label="언어"><a href="/projects/bin-picking.html" hreflang="en" lang="en" data-lang="en" title="English">EN</a><span aria-hidden="true">/</span><a href="/ko/projects/bin-picking.html" hreflang="ko" lang="ko" data-lang="ko" title="한국어" aria-current="true">KO</a></span>
+</header>
+
+<main id="content">
+<h1>CAD‑based bin picking</h1>
+<p class="meta">PLAIF, Computer Vision Engineer, 2023년 1월–2024년 4월.</p>
+<figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/bin-arm.jpg" aria-label="CAD-based bin picking 중인 cobot arm."><source src="/assets/video/bin-picking.mp4" type="video/mp4"></video><figcaption>CAD‑based bin picking 중인 cobot arm.</figcaption></figure>
+<section>
+<h2>문제</h2>
+<p>로봇이 CAD geometry를 아는 물체를 bin에서 꺼내야 합니다. 그러려면 bin을 찍은 RGB‑D image에서 물체마다 pick pose를 구해야 합니다.</p>
+</section>
+<section>
+<h2>맡은 일</h2>
+<p>Instance segmentation model을 학습했고, 보이는 면의 CAD template을 segment된 point에 맞추는 단계를 만들었습니다.</p>
+</section>
+<section>
+<h2>방법</h2>
+<ol>
+<li>Instance segmentation model은 가려지지 않은 물체 class와 hole class를 나눠 학습했습니다. Object mask에서 hole mask를 빼고, 남은 instance mask로 point cloud를 나눴습니다.</li>
+<li>Pick pose마다 hidden‑point removal로 visible‑surface CAD template을 만들고, PCA 초기화와 point‑to‑point ICP로 segment된 point에 정렬했습니다.</li>
+<li>Registration fitness가 낮거나 inlier RMSE가 높은 pose는 버렸습니다. 남은 pose는 순위를 매긴 뒤 camera extrinsics로 robot base frame에 옮겼습니다.</li>
+</ol>
+</section>
+<section>
+<h2>시스템 구성도</h2>
+<p>요청마다 color, point, normal이 담긴 RGB‑D frame 하나에서 시작합니다. Mask 안의 point는 downsampling하고 normal 방향으로 거른 뒤 PCA에 넣습니다. Template은 CAD mesh에서 offline으로 만들고, reverse check가 각 fit을 양방향으로 평가합니다. Camera에서 base로의 변환에는 eye‑to‑hand calibration을 쓰고, 남긴 pose는 ROS action result로 돌아갑니다. Robot motion은 로봇 쪽에서 처리합니다.</p>
+<figure class="arch"><img src="/assets/figures/bin-picking-system.png" width="1900" height="1090" alt="CAD-based bin picking 시스템. RGB-D frame이 instance segmentation model로 들어가 object와 hole을 segment합니다. Hole mask를 지운 뒤 object마다 mask 안의 point로 PCA 초기 pose를 구합니다. CAD mesh에서 hidden-point removal로 미리 만든 visible-surface template을 point-to-point ICP로 정렬하고, fit check로 pose 순위를 매깁니다. 남긴 pose는 eye-to-hand calibration으로 camera frame에서 robot base로 옮겨, robot motion에 쓸 ROS action result로 돌려줍니다."><figcaption>학습하는 것은 instance segmentation model 하나뿐입니다. Template은 object마다 offline으로 한 번 만듭니다.</figcaption></figure>
+</section>
+<section>
+<h2>결과</h2>
+<p>시스템은 총 세 차례 진행을 마쳤습니다. 사내 고정 환경 시험 1,000회에서 로봇은 다섯 종류의 object type을 빈 용기로 옮겼고, task success는 89%였습니다.</p>
+</section>
+<nav class="pager" aria-label="인접 프로젝트"><a href="/ko/projects/cad-free-assembly.html"><span class="dir quiet">이전</span>CAD‑free assembly</a><a href="/ko/#work">전체 작업</a><a href="/ko/projects/ros-6d-vision.html"><span class="dir quiet">다음</span>Eye‑to‑hand calibration을 쓴 6D pose estimation</a></nav>
+</main>
+<script>
+(function () {
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll("video").forEach(function (v) {
+    v.muted = true;
+    if (reduce) {
+      v.removeAttribute("autoplay");
+      v.pause();
+      v.controls = true;
+    }
+  });
+})();
+</script>
+<script>
+document.querySelectorAll("a[data-lang]").forEach(function (a) {
+  a.addEventListener("click", function () {
+    try { localStorage.setItem("lang", a.getAttribute("data-lang")); } catch (e) {}
+  });
+});
+</script>
+</body>
+</html>

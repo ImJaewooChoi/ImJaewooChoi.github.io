@@ -12,10 +12,32 @@
 <meta property="og:title" content="6D pose estimation with eye-to-hand calibration, Jaewoo Choi">
 <meta property="og:description" content="A deployed ROS action server runs capture, segmentation, and pose estimation on each request and returns poses with matching scores. The eye-to-hand calibration tools report residual error.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
+<link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
+<link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/ros-6d-vision.html">
+<link rel="alternate" hreflang="x-default" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif-4-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
+<script>
+(function () {
+  var KEY = "lang";
+  var page = document.documentElement.lang === "ko" ? "ko" : "en";
+  var stored = null;
+  try { stored = localStorage.getItem(KEY); } catch (e) { return; }
+  if (stored === "en" || stored === "ko") return;
+  var nav = ((navigator.languages && navigator.languages[0]) || navigator.language || "").toLowerCase();
+  var ref = document.referrer;
+  var local = !ref || ref.indexOf(location.origin + "/") === 0;
+  var home = location.pathname === "/" || location.pathname === "/index.html";
+  if (page === "en" && home && local && nav.slice(0, 2) === "ko") {
+    try { localStorage.setItem(KEY, "ko"); } catch (e) {}
+    location.replace("/ko/" + location.hash);
+    return;
+  }
+  try { localStorage.setItem(KEY, page); } catch (e) {}
+})();
+</script>
 </head>
 
 <body class="page">
@@ -25,6 +47,7 @@
 <a href="/#record">Patent and awards</a>
 <a href="/#experience">Experience</a>
 <a href="/#education">Education</a>
+<span class="lang" role="group" aria-label="Language"><a href="/projects/ros-6d-vision.html" hreflang="en" lang="en" data-lang="en" title="English" aria-current="true">EN</a><span aria-hidden="true">/</span><a href="/ko/projects/ros-6d-vision.html" hreflang="ko" lang="ko" data-lang="ko" title="한국어">KO</a></span>
 </header>
 
 <main id="content">
@@ -98,6 +121,12 @@
   });
 })();
 </script>
-
+<script>
+document.querySelectorAll("a[data-lang]").forEach(function (a) {
+  a.addEventListener("click", function () {
+    try { localStorage.setItem("lang", a.getAttribute("data-lang")); } catch (e) {}
+  });
+});
+</script>
 </body>
 </html>

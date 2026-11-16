@@ -16,10 +16,39 @@ from build_site import (
     ROOT,
     SITE,
     WHALE,
+    FACTS,
     esc,
     harden_html,
     project_href,
 )
+
+import ko_copy as KO
+
+LANGS = ("en", "ko")
+
+UI = {
+    "en": {
+        "skip": "Skip to content",
+        "work": "Work",
+        "record": "Patent and awards",
+        "experience": "Experience",
+        "education": "Education",
+        "details": "details",
+        "problem": "Problem",
+        "role": "My role",
+        "method": "Method",
+        "result": "Result",
+        "prev": "Previous",
+        "next": "Next",
+        "all": "All work",
+        "pager": "Adjacent projects",
+        "code": "Code",
+        "missing": "Page not found",
+        "missing_body": "This address is not on the site.",
+        "home_desc": "Perception engineer building segmentation, point-cloud perception, pose estimation, and manipulation learning for orchard robots and robot arms.",
+    },
+    "ko": KO.UI,
+}
 
 # Short titles and the five sections. Numbers and claims are the CV figures.
 # The strawberry ownership sentence is stated once, under My role.
@@ -86,22 +115,22 @@ PAGES = {
     },
     "cad-free-assembly": {
         "title": "CAD-free assembly",
-        "result": "93% task success across 1,000 in-house trials, with no CAD model of the part. Completed five PoC rounds.",
-        "desc": "6D tool-pose estimation for robot assembly from a 2D camera, with no CAD model of the part. Task success was 93% across 1,000 in-house trials, and the work completed five PoC rounds.",
+        "result": "93% task success across 1,000 in-house trials, with no CAD model of the part. Completed five rounds.",
+        "desc": "6D tool-pose estimation for robot assembly from a 2D camera, with no CAD model of the part. Task success was 93% across 1,000 in-house trials, and the work completed five rounds.",
         "video": "cad",
         "problem": "The robot has to assemble a part that has no CAD model, using only a 2D camera at run time, so it needs the target 6D tool pose from that image.",
         "role": "I built the pose pipeline, from image matching to the target 6D tool pose.",
         "method": [
             "The pipeline matches the live 2D image to a stored reference RGB-D capture with LightGlue, so each match carries depth.",
-            "From the 3D-2D matches, solvePnP with RANSAC recovers the camera pose, which I chain with the hand-eye calibration and the stored reference pose to get the target 6D tool pose.",
+            "From the 3D-2D matches, solvePnP with RANSAC recovers the camera pose, which I chain with the eye-to-hand calibration and the stored reference pose to get the target 6D tool pose.",
         ],
-        "outcome": "The pipeline completed five PoC rounds. 93% of 1,000 in-house trials succeeded. This work is the basis of Korean Patent 10-2694987, on which I am a co-inventor.",
-        "stack": "LightGlue, solvePnP with RANSAC, and hand-eye calibration.",
+        "outcome": "The pipeline completed five rounds. 93% of 1,000 in-house trials succeeded. This work is the basis of Korean Patent 10-2694987, on which I am a co-inventor.",
+        "stack": "LightGlue, solvePnP with RANSAC, and eye-to-hand calibration.",
     },
     "bin-picking": {
         "title": "CAD-based bin picking",
-        "result": "89% task success across 1,000 in-house, fixed-environment trials on five object types. Completed three PoC rounds.",
-        "desc": "RGB-D bin picking for objects with known CAD geometry. Task success was 89% in 1,000 in-house, fixed-environment trials on five object types, and the work completed three PoC rounds.",
+        "result": "89% task success across 1,000 in-house, fixed-environment trials on five object types. Completed three rounds.",
+        "desc": "RGB-D bin picking for objects with known CAD geometry. Task success was 89% in 1,000 in-house, fixed-environment trials on five object types, and the work completed three rounds.",
         "video": "bin",
         "problem": "The robot has to pick objects with known CAD geometry out of a bin, so it needs a pick pose for each object from an RGB-D image of the bin.",
         "role": "I trained the instance segmentation model and built the step that aligns visible-surface CAD templates to the segmented points.",
@@ -110,7 +139,7 @@ PAGES = {
             "For each pick pose, I built a visible-surface CAD template by hidden-point removal and aligned it to the segmented points with PCA initialization and point-to-point ICP.",
             "Poses with low registration fitness or high inlier RMSE were dropped. The rest were ranked and transformed into the robot base frame with the camera extrinsics.",
         ],
-        "outcome": "The system completed three PoC rounds. In 1,000 in-house, fixed-environment trials, the robot moved five object types into an empty container with 89% task success.",
+        "outcome": "The system completed three rounds. In 1,000 in-house, fixed-environment trials, the robot moved five object types into an empty container with 89% task success.",
         "stack": "An instance segmentation model, PCA, and point-to-point ICP.",
     },
     "ros-6d-vision": {
@@ -213,15 +242,70 @@ def group_of(project):
     return next(g for g in GROUPS if g["id"] == project["group"])
 
 
-def employment(project):
+def employment(project, lang="en"):
     group = group_of(project)
-    return f"{group['org']}, {group['role']['en']}, {WHEN[project['group']]}."
+    when = WHEN[project["group"]] if lang == "en" else KO.WHEN[project["group"]]
+    return f"{group['org']}, {group['role']['en']}, {when}."
 
 
-def head(title, desc, path):
-    canon = SITE + "/" if path == "/" else SITE + path
+def lang_path(path, lang):
+    """English path to the same page in lang. '/' and '/projects/x.html' style."""
+    if lang == "en":
+        return path
+    return "/ko" + path
+
+
+# Runs before paint on every page.
+# - A stored choice (localStorage "lang", set by the KO/EN switch or by the
+#   first visit) always wins, and nothing redirects.
+# - First visit only (no stored value): if the visitor lands on the English
+#   home page "/", the browser's first language starts with "ko", and the
+#   referrer is empty or this site, go to /ko/ with location.replace.
+#   Any other first visit, including a direct link to an English project
+#   page or a link from another site, stays where it is.
+# - The first visit stores the language it ends up on, so the rule runs once.
+# No IP lookup.
+LANG_SCRIPT = """<script>
+(function () {
+  var KEY = "lang";
+  var page = document.documentElement.lang === "ko" ? "ko" : "en";
+  var stored = null;
+  try { stored = localStorage.getItem(KEY); } catch (e) { return; }
+  if (stored === "en" || stored === "ko") return;
+  var nav = ((navigator.languages && navigator.languages[0]) || navigator.language || "").toLowerCase();
+  var ref = document.referrer;
+  var local = !ref || ref.indexOf(location.origin + "/") === 0;
+  var home = location.pathname === "/" || location.pathname === "/index.html";
+  if (page === "en" && home && local && nav.slice(0, 2) === "ko") {
+    try { localStorage.setItem(KEY, "ko"); } catch (e) {}
+    location.replace("/ko/" + location.hash);
+    return;
+  }
+  try { localStorage.setItem(KEY, page); } catch (e) {}
+})();
+</script>
+"""
+
+# Saves the choice when the KO/EN switch is clicked. The link still works without script.
+SWITCH_SCRIPT = """<script>
+document.querySelectorAll("a[data-lang]").forEach(function (a) {
+  a.addEventListener("click", function () {
+    try { localStorage.setItem("lang", a.getAttribute("data-lang")); } catch (e) {}
+  });
+});
+</script>
+"""
+
+
+def head(title, desc, path, lang="en"):
+    own = lang_path(path, lang)
+    canon = SITE + own
+    alternates = "".join(
+        f'<link rel="alternate" hreflang="{code}" href="{esc(SITE + lang_path(path, target))}">\n'
+        for code, target in (("en", "en"), ("ko", "ko"), ("x-default", "en"))
+    )
     return f"""<!DOCTYPE html>
-<html lang="en">
+<html lang="{lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -234,39 +318,59 @@ def head(title, desc, path):
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
 <link rel="canonical" href="{esc(canon)}">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+{alternates}<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/source-serif-4-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
-</head>
+{LANG_SCRIPT}</head>
 """
 
 
-def nav(home):
-    prefix = "" if home else "/"
-    return f"""<a class="skip" href="#{'glance' if home else 'content'}">Skip to content</a>
+def switch(path, lang):
+    """KO/EN switch. path is the English path of the current page."""
+    items = []
+    for code, label, name in (("en", "EN", "English"), ("ko", "KO", "한국어")):
+        cur = ' aria-current="true"' if code == lang else ""
+        items.append(
+            f'<a href="{esc(lang_path(path, code))}" hreflang="{code}" lang="{code}" '
+            f'data-lang="{code}" title="{name}"{cur}>{label}</a>'
+        )
+    aria = "Language" if lang == "en" else "언어"
+    return f'<span class="lang" role="group" aria-label="{aria}">{items[0]}<span aria-hidden="true">/</span>{items[1]}</span>'
+
+
+def nav(home, lang="en", path="/"):
+    t = UI[lang]
+    prefix = "" if home else lang_path("/", lang)
+    return f"""<a class="skip" href="#{'glance' if home else 'content'}">{t['skip']}</a>
 <header class="bar wrap">
-<a href="{prefix}#work">Work</a>
-<a href="{prefix}#record">Patent and awards</a>
-<a href="{prefix}#experience">Experience</a>
-<a href="{prefix}#education">Education</a>
+<a href="{prefix}#work">{t['work']}</a>
+<a href="{prefix}#record">{t['record']}</a>
+<a href="{prefix}#experience">{t['experience']}</a>
+<a href="{prefix}#education">{t['education']}</a>
+{switch(path, lang)}
 </header>
 """
 
 
-def slot(page):
+def clip_label(video, lang):
+    return CLIPS[video]["label"] if lang == "en" else KO.CLIP_LABELS[video]
+
+
+def slot(page, lang="en", slug=None):
     video = page["video"]
     if not video:
         thumb = page.get("thumb")
         if not thumb:
             return ""
+        alt = thumb["alt"] if lang == "en" else KO.PAGES[slug]["thumb_alt"]
         return (
             '<div class="slot slot-fig">'
-            f'<img src="{thumb["src"]}" alt="{esc(thumb["alt"])}" width="{thumb["w"]}" height="{thumb["h"]}" loading="lazy">'
+            f'<img src="{thumb["src"]}" alt="{esc(alt)}" width="{thumb["w"]}" height="{thumb["h"]}" loading="lazy">'
             "</div>"
         )
     clip = CLIPS[video]
-    label = esc(clip["label"])
+    label = esc(clip_label(video, lang))
     return (
         '<div class="slot">'
         f'<img src="{clip["poster"]}" alt="{label}" width="{clip["home_w"]}" height="{clip["home_h"]}">'
@@ -308,35 +412,8 @@ def contact_icons():
     )
 
 
-def home_page():
-    rows = []
-    for project in PROJECTS:
-        page = PAGES[project["slug"]]
-        href = project_href("en", project["slug"])
-        kind = "proj" if page["video"] or page.get("thumb") else "proj proj-plain"
-        rows.append(
-            f'<article class="{kind}" id="{esc(project["slug"])}">'
-            f"{slot(page)}"
-            '<div class="proj-copy">'
-            f'<h2><a href="{href}">{esc(page["title"])}</a></h2>'
-            f'<p>{esc(page["result"])} <a href="{href}">details</a></p>'
-            "</div></article>"
-        )
-    body = f"""{head("Jaewoo Choi", "Perception engineer building segmentation, point-cloud perception, pose estimation, and manipulation learning for orchard robots and robot arms.", "/")}
-<body>
-{nav(True)}
-<main class="wrap glance" id="glance">
-<div class="who">
-<h1>Jaewoo Choi</h1>
-<p class="role">Perception Engineer</p>
-<p class="interest">{esc(INTRO)}</p>
-<p class="contacts">{contact_icons()}</p>
-</div>
-<div class="work" id="work">
-{''.join(rows)}
-</div>
-<div class="below">
-<section id="record">
+def below_en():
+    return f"""<section id="record">
 <h2>Patent and awards</h2>
 <ul>
 <li>Korean Patent 10-2694987, registered Aug. 2024. Applicant PLAIF. Co-inventor. {esc(PATENT_TITLE)} My <a href="{project_href("en", "cad-free-assembly")}">CAD-free assembly</a> work is the basis of the patent.</li>
@@ -358,22 +435,98 @@ def home_page():
 <ul>
 <li>Bachelor of Engineering, Industrial Management Systems Engineering, Seokyeong University, Seoul, Mar. 2016–Aug. 2022. Multidisciplinary major: Big Data Business Intelligence (Bachelor of Multidisciplinary Studies).</li>
 </ul>
+</section>"""
+
+
+def below_ko():
+    t = UI["ko"]
+    link = f'<a href="{project_href("ko", "cad-free-assembly")}">CAD-free assembly</a>'
+    record = [
+        esc(KO.RECORD[0]).format(title=esc(PATENT_TITLE), link=link),
+        esc(KO.RECORD[1]),
+        esc(KO.RECORD[2]).format(code=f'<a href="{esc(MATCH)}">{t["code"]}</a>.'),
+        esc(KO.RECORD[3]).format(code=f'<a href="{esc(WHALE)}">{t["code"]}</a>.'),
+    ]
+    items = lambda rows: "\n".join(f"<li>{row}</li>" for row in rows)
+    return f"""<section id="record">
+<h2>{t['record']}</h2>
+<ul>
+{items(record)}
+</ul>
 </section>
+<section id="experience">
+<h2>{t['experience']}</h2>
+<ul>
+{items(esc(x) for x in KO.EXPERIENCE)}
+</ul>
+</section>
+<section id="education">
+<h2>{t['education']}</h2>
+<ul>
+{items(esc(x) for x in KO.EDUCATION)}
+</ul>
+</section>"""
+
+
+def tie(text, lang):
+    """Korean headings: keep the last two words together so no line holds one word."""
+    if lang != "ko" or " " not in text:
+        return text
+    head, last = text.rsplit(" ", 1)
+    return head + "\u00a0" + last
+
+
+def page_copy(slug, lang):
+    return PAGES[slug] if lang == "en" else KO.PAGES[slug]
+
+
+def home_page(lang="en"):
+    t = UI[lang]
+    rows = []
+    for project in PROJECTS:
+        page = PAGES[project["slug"]]
+        copy = page_copy(project["slug"], lang)
+        href = project_href(lang, project["slug"])
+        kind = "proj" if page["video"] or page.get("thumb") else "proj proj-plain"
+        rows.append(
+            f'<article class="{kind}" id="{esc(project["slug"])}">'
+            f"{slot(page, lang, project['slug'])}"
+            '<div class="proj-copy">'
+            f'<h2><a href="{href}">{esc(copy["title"])}</a></h2>'
+            f'<p>{esc(copy["result"])} <a href="{href}">{t["details"]}</a></p>'
+            "</div></article>"
+        )
+    intro = INTRO if lang == "en" else KO.INTRO
+    below = below_en() if lang == "en" else below_ko()
+    body = f"""{head("Jaewoo Choi", t["home_desc"], "/", lang)}
+<body>
+{nav(True, lang, "/")}
+<main class="wrap glance" id="glance">
+<div class="who">
+<h1>Jaewoo Choi</h1>
+<p class="role">Perception Engineer</p>
+<p class="interest">{esc(intro)}</p>
+<p class="contacts">{contact_icons()}</p>
+</div>
+<div class="work" id="work">
+{''.join(rows)}
+</div>
+<div class="below">
+{below}
 </div>
 </main>
-{SCRIPT}
-</body>
+{SCRIPT}{SWITCH_SCRIPT}</body>
 </html>
 """
     return harden_html(body)
 
 
-def film(page):
+def film(page, lang="en"):
     video = page["video"]
     if not video:
         return ""
     clip = CLIPS[video]
-    label = esc(clip["label"])
+    label = esc(clip_label(video, lang))
     return (
         f'<figure class="film {clip["orient"]}">'
         f'<video width="{clip["full_w"]}" height="{clip["full_h"]}" muted playsinline controls preload="metadata" poster="{clip["poster"]}" aria-label="{label}">'
@@ -384,28 +537,34 @@ def film(page):
     )
 
 
-def pager(project):
+def pager(project, lang="en"):
+    t = UI[lang]
     idx = next(i for i, item in enumerate(PROJECTS) if item["slug"] == project["slug"])
     prev = '<span></span>'
     nxt = '<span></span>'
+
+    def label(slug):
+        copy = page_copy(slug, lang)
+        return esc(copy.get("nav_title", copy["title"]))
+
     if idx > 0:
         item = PROJECTS[idx - 1]
         prev = (
-            f'<a href="{project_href("en", item["slug"])}">'
-            '<span class="dir quiet">Previous</span>'
-            f'{esc(PAGES[item["slug"]].get("nav_title", PAGES[item["slug"]]["title"]))}</a>'
+            f'<a href="{project_href(lang, item["slug"])}">'
+            f'<span class="dir quiet">{t["prev"]}</span>'
+            f'{label(item["slug"])}</a>'
         )
     if idx + 1 < len(PROJECTS):
         item = PROJECTS[idx + 1]
         nxt = (
-            f'<a href="{project_href("en", item["slug"])}">'
-            '<span class="dir quiet">Next</span>'
-            f'{esc(PAGES[item["slug"]].get("nav_title", PAGES[item["slug"]]["title"]))}</a>'
+            f'<a href="{project_href(lang, item["slug"])}">'
+            f'<span class="dir quiet">{t["next"]}</span>'
+            f'{label(item["slug"])}</a>'
         )
     return (
-        '<nav class="pager" aria-label="Adjacent projects">'
+        f'<nav class="pager" aria-label="{t["pager"]}">'
         f"{prev}"
-        '<a href="/#work">All work</a>'
+        f'<a href="{lang_path("/", lang)}#work">{t["all"]}</a>'
         f"{nxt}"
         "</nav>"
     )
@@ -553,7 +712,7 @@ EXTRA_SECTIONS = {
     "cad-free-assembly": """<section>
 <h2>System diagram</h2>
 <p>The reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale before matching.</p>
-<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly system. A reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, LightGlue matches its keypoints to the reference RGB image, the reference depth turns the matches into 2D-3D matches, and PnP with RANSAC gives the camera pose. A transform chain with the hand-eye calibration and the stored reference tool pose gives the target 6D tool pose for robot motion."><figcaption>Dashed boxes mark steps described in the patent.</figcaption></figure>
+<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly system. A reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, LightGlue matches its keypoints to the reference RGB image, the reference depth turns the matches into 2D-3D matches, and solvePnP with RANSAC gives the camera pose. A transform chain with the eye-to-hand calibration and the stored reference tool pose gives the target 6D tool pose for robot motion."><figcaption>Dashed boxes mark steps described in the patent.</figcaption></figure>
 </section>
 """,
     "bin-picking": """<section>
@@ -570,9 +729,9 @@ EXTRA_SECTIONS = {
 """,
     "auto-labeling": """<section>
 <h2>Model structure</h2>
-<p>The pipeline builds on an existing prompt-guided video segmentation model. An image encoder and neck turn each frame into features, and a mask decoder turns point or mask prompts into mask logits. For video, a memory path stores each tracked mask and carries it to later frames.</p>
+<p>The pipeline uses an existing prompt-guided video segmentation model. An image encoder and neck turn each frame into features, and a mask decoder turns point or mask prompts into mask logits. For video, a memory path stores each tracked mask and carries it to later frames.</p>
 <figure class="arch"><img src="/assets/figures/auto-labeling-system.png" width="2040" height="1500" alt="Auto-labeling system. Top: an image encoder and neck feed point- and mask-prompt decoding, and memory attention with a memory bank carries tracked objects between frames. Mask logits go to a CPU service that writes COCO polygons and RLE masks. Bottom: the finished labels are captioned in three stages, an object caption per mask, a relation caption of each mask in the image, and an image caption. Captions are checked, with a second review for unsure cases, and linked to the instance annotations. Object and image captions feed training of the second-generation open-vocabulary detector. Relation captions are stored with the labels and not used in that training."><figcaption>The GPU service runs the model, and a CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
-<p>The model runs on an existing open-source TensorRT export. That export split the model into separate graphs and made memory attention sparse. Those changes are its author's work. My changes are built on top of it and do not change the model weights.</p>
+<p>The model runs on an existing open-source TensorRT export. That export split the model into separate graphs and made memory attention sparse. Those changes are its author's work. My changes do not change the model weights.</p>
 </section>
 <section>
 <h2>Image labeling</h2>
@@ -604,26 +763,29 @@ EXTRA_SECTIONS = {
 }
 
 
-def arch_figure(slug, label):
+def arch_figure(slug, label, lang="en"):
     item = ARCH.get((slug, label))
     if not item:
         return ""
+    words = item if lang == "en" else KO.ARCH[(slug, label)]
     return (
         '<figure class="arch">'
-        f'<img src="{item["src"]}" width="{item["w"]}" height="{item["h"]}" alt="{esc(item["alt"])}">'
-        f"<figcaption>{esc(item['caption'])}</figcaption>"
+        f'<img src="{item["src"]}" width="{item["w"]}" height="{item["h"]}" alt="{esc(words["alt"])}">'
+        f"<figcaption>{esc(words['caption'])}</figcaption>"
         "</figure>"
     )
 
 
-def project_page(project):
+def project_page(project, lang="en"):
     page = PAGES[project["slug"]]
-    method = page["method"]
+    copy = page_copy(project["slug"], lang)
+    t = UI[lang]
+    method = copy["method"]
     if method and isinstance(method[0], tuple):
         blocks = []
-        for label, text in method:
-            blocks.append(f"<h3>{esc(label)}</h3>\n<p>{esc(text)}</p>")
-            figure = arch_figure(project["slug"], label)
+        for i, (label, text) in enumerate(method):
+            blocks.append(f"<h3>{esc(tie(label, lang))}</h3>\n<p>{esc(text)}</p>")
+            figure = arch_figure(project["slug"], page["method"][i][0], lang)
             if figure:
                 blocks.append(figure)
         steps = "\n".join(blocks)
@@ -632,82 +794,97 @@ def project_page(project):
         steps = f"<ol>\n{items}\n</ol>"
     else:
         steps = ""
-    title = f"{page['title']}, Jaewoo Choi"
+    title = f"{copy['title']}, Jaewoo Choi"
     path = project_href("en", project["slug"])
-    extra = EXTRA_SECTIONS.get(project["slug"], "")
+    extras = EXTRA_SECTIONS if lang == "en" else KO.EXTRA_SECTIONS
+    extra = extras.get(project["slug"], "")
     if extra:
         extra = extra.strip() + "\n"
     result = ""
-    if page["outcome"]:
+    if copy["outcome"]:
         result = f"""<section>
-<h2>Result</h2>
-<p>{esc(page["outcome"])}</p>
+<h2>{t['result']}</h2>
+<p>{esc(copy["outcome"])}</p>
 </section>
 """
-    diagram = DIAGRAMS.get(project["slug"], "")
+    diagrams = DIAGRAMS if lang == "en" else KO.DIAGRAMS
+    diagram = diagrams.get(project["slug"], "")
     if diagram:
         diagram = diagram.strip() + "\n"
-    body = f"""{head(title, page["desc"], path)}
+    body = f"""{head(title, copy["desc"], path, lang)}
 <body class="page">
-{nav(False)}
+{nav(False, lang, path)}
 <main id="content">
-<h1>{esc(page["title"])}</h1>
-<p class="meta">{esc(employment(project))}</p>
-{film(page)}
+<h1>{esc(tie(copy["title"], lang))}</h1>
+<p class="meta">{esc(employment(project, lang))}</p>
+{film(page, lang)}
 <section>
-<h2>Problem</h2>
-<p>{esc(page["problem"])}</p>
+<h2>{t['problem']}</h2>
+<p>{esc(copy["problem"])}</p>
 </section>
 <section>
-<h2>My role</h2>
-<p>{esc(page["role"])}</p>
+<h2>{t['role']}</h2>
+<p>{esc(copy["role"])}</p>
 </section>
 <section>
-<h2>Method</h2>
+<h2>{t['method']}</h2>
 {diagram}{steps}
 </section>
-{extra}{result}{pager(project)}
+{extra}{result}{pager(project, lang)}
 </main>
-{SCRIPT}
-</body>
+{SCRIPT}{SWITCH_SCRIPT}</body>
 </html>
 """
     return harden_html(body)
 
 
-def not_found_page():
-    body = f"""{head("Page not found", "This address is not on the site.", "/404.html")}
+def not_found_page(lang="en"):
+    t = UI[lang]
+    body = f"""{head(t["missing"], t["missing_body"], "/404.html", lang)}
 <body class="page">
-{nav(False)}
+{nav(False, lang, "/404.html")}
 <main id="content" class="missing">
-<h1>Page not found</h1>
-<p>This address is not on the site.</p>
-<p><a href="/">All work</a></p>
+<h1>{t["missing"]}</h1>
+<p>{t["missing_body"]}</p>
+<p><a href="{lang_path("/", lang)}">{t["all"]}</a></p>
 </main>
-</body>
+{SWITCH_SCRIPT}</body>
 </html>
 """
     return harden_html(body)
 
 
-def write_all():
-    if PUBLISH_KO:
-        raise SystemExit("PUBLISH_KO is true. This writer publishes English only.")
-    ko = ROOT / "ko"
-    if ko.exists():
-        shutil.rmtree(ko)
-    (ROOT / "index.html").write_text(home_page(), encoding="utf-8")
-    projects = ROOT / "projects"
+def write_lang(lang):
+    base = ROOT if lang == "en" else ROOT / "ko"
+    base.mkdir(exist_ok=True)
+    (base / "index.html").write_text(home_page(lang), encoding="utf-8")
+    projects = base / "projects"
     projects.mkdir(exist_ok=True)
     keep = set()
     for project in PROJECTS:
         name = project["slug"] + ".html"
         keep.add(name)
-        (projects / name).write_text(project_page(project), encoding="utf-8")
+        (projects / name).write_text(project_page(project, lang), encoding="utf-8")
     for path in projects.glob("*.html"):
         if path.name not in keep:
             path.unlink()
-    (ROOT / "404.html").write_text(not_found_page(), encoding="utf-8")
+    (base / "404.html").write_text(not_found_page(lang), encoding="utf-8")
+
+
+def write_all():
+    ko = ROOT / "ko"
+    if ko.exists():
+        shutil.rmtree(ko)
+    write_lang("en")
+    if not PUBLISH_KO:
+        return
+    write_lang("ko")
+    from check_parity import compare
+
+    problems = compare()
+    if problems:
+        shutil.rmtree(ko)
+        raise SystemExit("Korean numbers differ from English:\n" + "\n".join(problems))
 
 
 if __name__ == "__main__":

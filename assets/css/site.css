@@ -494,3 +494,34 @@ p {
     scroll-behavior: auto;
   }
 }
+
+/* KO/EN switch at the end of the top bar. */
+.bar .lang {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 4px;
+  color: var(--quiet);
+}
+
+.bar .lang a[aria-current] {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Korean pages: Hangul falls back to a Korean serif; words break at spaces. */
+html[lang="ko"] body {
+  font-family: "Source Serif 4", "Noto Serif KR", "Noto Serif CJK KR", "Nanum Myeongjo", "AppleMyungjo", "Batang", serif;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  line-height: 1.5;
+}
+
+html[lang="ko"] .interest {
+  line-height: 1.45;
+}
+
+html[lang="ko"] h1 {
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
