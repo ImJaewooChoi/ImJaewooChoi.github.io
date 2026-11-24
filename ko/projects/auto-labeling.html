@@ -90,7 +90,7 @@
 </section>
 <section>
 <h2>Serving</h2>
-<p>Image 경로와 video 경로는 GPU 위의 encoder와 neck 하나를 함께 씁니다. Image feature는 click 사이에 GPU에 남겨 두고, 직전 mask도 마찬가지입니다. FP16 build가 mask IoU check를 통과하지 못해서 point‑prompt decoder는 FP32로 build했습니다. GPU inference와 CPU post‑processing은 별도 service 두 개로 나눠 돌립니다.</p>
+<p>Image 경로와 video 경로는 GPU 위의 encoder와 neck 하나를 함께 씁니다. Image feature는 click 사이에 GPU에 남겨 두고, 직전 mask도 마찬가지입니다. GPU inference와 CPU post‑processing은 별도 service 두 개로 나눠 돌립니다.</p>
 </section>
 <section>
 <h2>Labeling 이후 captioning</h2>

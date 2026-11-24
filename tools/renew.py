@@ -79,7 +79,7 @@ PAGES = {
             ),
             (
                 "Why the upgrade",
-                "The initial release learned only from class names, and its SigLIP2 text encoder stayed frozen. On a validation subset it missed thin structures such as streetlights and small objects such as books. It also confused similar classes. Its semantic head picks the best class from a fixed list and cannot reject an unknown object. On RT100 images, some white reflectors were labeled as snow. The upgrade learns from richer text than class names. Its compact text encoder is trained with object and image captions. The captions are used only in training, so they add no inference cost. The occupancy grid needs instance masks, so the detector has a mask head and outputs them along with boxes.",
+                "The initial release learned only from class names, and its SigLIP2 text encoder stayed frozen. The upgrade learns from richer text than class names. Its compact text encoder is trained with object and image captions. The captions are used only in training, so they add no inference cost. The occupancy grid needs instance masks, so the detector has a mask head and outputs them along with boxes.",
             ),
             (
                 "Upgrade: caption-trained detector",
@@ -90,7 +90,7 @@ PAGES = {
                 "The point cloud is reduced to voxels, and each voxel center is projected into the camera image. A voxel that lands inside an instance mask takes that mask's object and class. I added virtual voxels from valid anchor depths. The labeled voxels are then written into a navigable occupancy grid. Decay lets cells that are no longer observed fade out. Hysteresis keeps a cell from flipping between free and occupied. Cost inflation keeps planned paths clear of obstacle edges. Navigation reads this grid.",
             ),
         ],
-        "outcome": "The upgrade exports to ONNX and TensorRT, with parity checks against PyTorch and ONNX Runtime. Two problems remain open: small objects, and rejecting objects that match none of the given category names.",
+        "outcome": "The upgrade exports to ONNX and TensorRT, with parity checks against PyTorch and ONNX Runtime.",
     },
     "auto-labeling": {
         "title": "Prompt-guided image and video auto-labeling",
@@ -729,7 +729,7 @@ EXTRA_SECTIONS = {
 </section>
 <section>
 <h2>Serving</h2>
-<p>The image and video paths share one encoder and neck on the GPU. Image features stay cached on the GPU between clicks, and so does the previous mask. The point-prompt decoder is built in FP32 because the FP16 build failed the mask IoU check. GPU inference and CPU post-processing run as two separate services.</p>
+<p>The image and video paths share one encoder and neck on the GPU. Image features stay cached on the GPU between clicks, and so does the previous mask. GPU inference and CPU post-processing run as two separate services.</p>
 </section>
 <section>
 <h2>Captioning after labeling</h2>

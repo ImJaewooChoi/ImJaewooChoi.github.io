@@ -90,7 +90,7 @@ PAGES = {
             ),
             (
                 "업그레이드가 필요했던 이유",
-                "첫 배포 모델은 class name만 보고 학습했고, SigLIP2 text encoder도 고정돼 있었습니다. Validation subset에서는 가로등 같은 가는 구조물과 책 같은 작은 물체를 놓쳤습니다. 비슷한 class끼리 헷갈리기도 했습니다. Semantic head는 정해진 목록에서 가장 가까운 class를 고를 뿐, 모르는 물체를 거부하지 못합니다. 그래서 RT100 이미지에서 흰 반사판 일부가 snow로 분류됐습니다. 업그레이드한 모델은 class name보다 풍부한 text로 학습합니다. Compact text encoder를 object caption과 image caption으로 학습합니다. Caption은 학습 때만 쓰므로 inference 비용이 늘지 않습니다. Occupancy grid에는 instance mask가 필요해서, detector에 mask head를 달아 box와 함께 mask를 내게 했습니다.",
+                "첫 배포 모델은 class name만 보고 학습했고, SigLIP2 text encoder도 고정돼 있었습니다. 업그레이드한 모델은 class name보다 풍부한 text로 학습합니다. Compact text encoder를 object caption과 image caption으로 학습합니다. Caption은 학습 때만 쓰므로 inference 비용이 늘지 않습니다. Occupancy grid에는 instance mask가 필요해서, detector에 mask head를 달아 box와 함께 mask를 내게 했습니다.",
             ),
             (
                 G2,
@@ -101,7 +101,7 @@ PAGES = {
                 "Point cloud를 voxel로 줄이고, 각 voxel 중심을 camera image에 투영합니다. Instance mask 안에 떨어진 voxel은 그 mask의 object와 class를 받습니다. 유효한 anchor depth에서 virtual voxel을 더했습니다. Label이 붙은 voxel은 주행 가능한 occupancy grid에 기록됩니다. 더 이상 관측되지 않는 cell은 decay로 서서히 지워집니다. Hysteresis는 cell이 free와 occupied 사이에서 뒤집히지 않게 잡아 줍니다. Cost inflation은 계획 경로가 장애물 가장자리에서 떨어지게 합니다. Navigation은 이 grid를 읽습니다.",
             ),
         ],
-        "outcome": "업그레이드한 모델은 ONNX와 TensorRT로 export되며, PyTorch, ONNX Runtime과 parity check를 거칩니다. 남은 과제는 두 가지입니다. 작은 물체, 그리고 주어진 category name 어디에도 맞지 않는 물체를 거부하는 일입니다.",
+        "outcome": "업그레이드한 모델은 ONNX와 TensorRT로 export되며, PyTorch, ONNX Runtime과 parity check를 거칩니다.",
     },
     "auto-labeling": {
         "title": "Prompt 기반 image·video auto-labeling",
@@ -306,7 +306,7 @@ EXTRA_SECTIONS = {
 </section>
 <section>
 <h2>Serving</h2>
-<p>Image 경로와 video 경로는 GPU 위의 encoder와 neck 하나를 함께 씁니다. Image feature는 click 사이에 GPU에 남겨 두고, 직전 mask도 마찬가지입니다. FP16 build가 mask IoU check를 통과하지 못해서 point-prompt decoder는 FP32로 build했습니다. GPU inference와 CPU post-processing은 별도 service 두 개로 나눠 돌립니다.</p>
+<p>Image 경로와 video 경로는 GPU 위의 encoder와 neck 하나를 함께 씁니다. Image feature는 click 사이에 GPU에 남겨 두고, 직전 mask도 마찬가지입니다. GPU inference와 CPU post-processing은 별도 service 두 개로 나눠 돌립니다.</p>
 </section>
 <section>
 <h2>Labeling 이후 captioning</h2>

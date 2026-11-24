@@ -90,7 +90,7 @@
 </section>
 <section>
 <h2>Serving</h2>
-<p>The image and video paths share one encoder and neck on the GPU. Image features stay cached on the GPU between clicks, and so does the previous mask. The point‑prompt decoder is built in FP32 because the FP16 build failed the mask IoU check. GPU inference and CPU post‑processing run as two separate services.</p>
+<p>The image and video paths share one encoder and neck on the GPU. Image features stay cached on the GPU between clicks, and so does the previous mask. GPU inference and CPU post‑processing run as two separate services.</p>
 </section>
 <section>
 <h2>Captioning after labeling</h2>
