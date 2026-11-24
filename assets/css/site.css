@@ -355,6 +355,16 @@ p {
   font-size: 1.125rem;
 }
 
+/* One-line result and role under a project title, above any video. */
+.page .lead {
+  margin-top: 6px;
+  font-size: 1.125rem;
+}
+
+.page .meta + .lead {
+  margin-top: 12px;
+}
+
 .page .film {
   margin: 16px 0 0;
 }

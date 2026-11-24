@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>6D pose estimation with eye-to-hand calibration, Jaewoo Choi</title>
-<meta name="description" content="A deployed ROS action server runs capture, segmentation, and pose estimation on each request and returns poses with matching scores. The eye-to-hand calibration tools report residual error.">
+<title>Eye-to-hand calibration automation, Jaewoo Choi</title>
+<meta name="description" content="Automated eye-to-hand calibration for a Zivid camera fixed outside the robot: ArUco board capture, eye-to-hand solve with residual error, and a validation step.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
-<meta property="og:title" content="6D pose estimation with eye-to-hand calibration, Jaewoo Choi">
-<meta property="og:description" content="A deployed ROS action server runs capture, segmentation, and pose estimation on each request and returns poses with matching scores. The eye-to-hand calibration tools report residual error.">
+<meta property="og:title" content="Eye-to-hand calibration automation, Jaewoo Choi">
+<meta property="og:description" content="Automated eye-to-hand calibration for a Zivid camera fixed outside the robot: ArUco board capture, eye-to-hand solve with residual error, and a validation step.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
 <link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/ros-6d-vision.html">
@@ -51,60 +51,22 @@
 </header>
 
 <main id="content">
-<h1>6D pose estimation with eye‑to‑hand calibration</h1>
+<h1>Eye‑to‑hand calibration automation</h1>
 <p class="meta">PLAIF, Computer Vision Engineer, Jan. 2023–Apr. 2024.</p>
+<p class="lead"><span class="quiet">Result:</span> Calibration runs from ROS triggers, and the residual error is reported after every capture. A separate validation step outputs marker poses in the robot base frame.</p><p class="lead"><span class="quiet">Role:</span> Built the eye‑to‑hand calibration automation and its validation step.</p>
 
 <section>
 <h2>Problem</h2>
-<p>A caller needs each object pose in the robot base frame, so the camera has to be calibrated to the robot.</p>
-</section>
-<section>
-<h2>My role</h2>
-<p>I wrote the ROS action server and the eye‑to‑hand calibration tools.</p>
+<p>A camera fixed outside the robot (eye‑to‑hand) measures poses in its own frame. The robot needs them in its base frame, so the camera‑to‑robot transform has to be calibrated and then checked.</p>
 </section>
 <section>
 <h2>Method</h2>
-<figure class="flow">
-<p class="flow-k">Per request; camera, model, and pipeline set in a config file</p>
-<div class="flow-step">
-<p class="flow-k">Input</p>
-<p>Zivid, RealSense, or recorded data</p>
-</div>
-<div class="flow-step">
-<p class="flow-k">Capture</p>
-</div>
-<div class="flow-step">
-<p class="flow-k">Segmentation</p>
-</div>
-<div class="flow-step">
-<p class="flow-k">Pose estimation</p>
-</div>
-<div class="flow-step">
-<p class="flow-k">Return</p>
-<p>Robot‑base and camera‑frame poses, with matching scores</p>
-</div>
-<div class="flow-side">
-<p class="flow-k">Eye‑to‑hand calibration</p>
-<div class="flow-step">
-<p>ArUco board poses</p>
-</div>
-<div class="flow-step">
-<p>Batch AX = YB solve, OpenCV Park method</p>
-</div>
-<div class="flow-step">
-<p>Camera‑robot transform and residual error</p>
-</div>
-<div class="flow-step">
-<p>Validation tool and dynamic_reconfigure tuning</p>
-</div>
-</div>
-<figcaption>The action server runs the request chain. Calibration is a separate tool.</figcaption>
-</figure>
-
-</section>
-<section>
-<h2>Result</h2>
-<p>Each request returns the pose in the camera frame and in the robot base, with a matching score. The server and the calibration tools are deployed and in use.</p>
+<ol>
+<li>Each ROS trigger captures a Zivid frame of an ArUco board, reads the robot tool pose, and estimates the marker poses with help from the point cloud.</li>
+<li>Every new pose pair updates the solution. A batch AX = YB solver and the OpenCV Park method estimate the camera‑to‑robot transform, and the mean and standard deviation of the residual error are published after each capture.</li>
+<li>Captures and pose pairs are saved, so an interrupted session can resume. A stop request writes the final calibration matrix.</li>
+<li>A separate validation node loads the saved matrix and reports each marker&#x27;s position and orientation in the robot base frame.</li>
+</ol>
 </section>
 <nav class="pager" aria-label="Adjacent projects"><a href="/projects/bin-picking.html"><span class="dir quiet">Previous</span>CAD‑based bin picking</a><a href="/#work">All work</a><a href="/projects/license-plate.html"><span class="dir quiet">Next</span>License plate recognition</a></nav>
 </main>

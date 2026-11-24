@@ -4,9 +4,7 @@
 Text, title, meta description, alt and aria-label are read from each built
 page. Before comparing:
 - non-breaking hyphens and spaces are normalized;
-- English dates "May 2024" become "2024년 5월", the Korean form;
-- the Korean generation labels "1세대" and "2세대" are dropped, since the
-  English pages spell those as "first"/"second generation".
+- English dates "May 2024" become "2024년 5월", the Korean form.
 A number is a digit run (with , or . inside, optional % M K) that is not part
 of a name such as RT100, SigLIP2, FP16 or 6D. The multisets must be equal.
 """
@@ -62,8 +60,6 @@ def numbers(text, lang):
             lambda m: f"{m.group(2)}년 {MONTHS[m.group(1)[:3]]}월",
             text,
         )
-    else:
-        text = re.sub(r"[12]세대", "세대", text)
     return Counter(NUM.findall(text))
 
 

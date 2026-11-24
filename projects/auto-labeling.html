@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Prompt-guided image and video auto-labeling, Jaewoo Choi</title>
-<meta name="description" content="A deployed, prompt-guided auto-labeling pipeline for images and video. Labeling cost per image fell from USD 1.05 to USD 0.036 (96.6%) compared with Prolific.">
+<meta name="description" content="A prompt-guided auto-labeling pipeline for images and video, deployed at Daedong AILab. Labeling cost per image fell from USD 1.05 to USD 0.036 (96.6%) compared with Prolific.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="Prompt-guided image and video auto-labeling, Jaewoo Choi">
-<meta property="og:description" content="A deployed, prompt-guided auto-labeling pipeline for images and video. Labeling cost per image fell from USD 1.05 to USD 0.036 (96.6%) compared with Prolific.">
+<meta property="og:description" content="A prompt-guided auto-labeling pipeline for images and video, deployed at Daedong AILab. Labeling cost per image fell from USD 1.05 to USD 0.036 (96.6%) compared with Prolific.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
 <link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/auto-labeling.html">
@@ -53,6 +53,7 @@
 <main id="content">
 <h1>Prompt‑guided image and video auto‑labeling</h1>
 <p class="meta">Daedong AILab, Senior AI Researcher, May 2024–Present.</p>
+<p class="lead"><span class="quiet">Result:</span> Labeling cost fell from USD 1.05 to USD 0.036 per image (96.6%) compared with Prolific.</p><p class="lead"><span class="quiet">Role:</span> Built the prompting, serving, and post‑processing around an existing video segmentation model.</p>
 <figure class="film landscape"><video width="1280" height="678" muted playsinline controls preload="metadata" poster="/assets/frames/auto-labeling-canvas.jpg" aria-label="Orchard video in the labeling tool, with masks carried to the next frames."><source src="/assets/video/auto-labeling.mp4" type="video/mp4"></video><figcaption>Orchard video in the labeling tool, with masks carried to the next frames.</figcaption></figure>
 <section>
 <h2>Problem</h2>
@@ -60,19 +61,19 @@
 </section>
 <section>
 <h2>My role</h2>
-<p>I built image and video annotation on an existing prompt‑guided video segmentation model: an image‑only decoder graph, a click‑refinement flow, selective memory writes, and one shared encoder for both paths. Beyond the annotation tool, I also set the label taxonomy, wrote the annotation guidelines, and built the COCO‑format training datasets.</p>
+<p>Beyond the labeling tool, I set the label taxonomy, wrote the annotation guidelines, and built the COCO‑format training datasets. The three‑stage captioning that follows labeling is also my pipeline.</p>
 </section>
 <section>
 <h2>Method</h2>
 <ol>
 <li>Clicks and mask corrections become tracked masks that keep the same ID across frames.</li>
-<li>Open‑weight vision‑language models wrote the region‑grounded object captions and checked them. I sent uncertain cases to a second review and linked the verified captions to the instance annotations.</li>
+<li>After labeling, open‑weight vision‑language models caption the labeled data.</li>
 </ol>
 </section>
 <section>
 <h2>Model structure</h2>
 <p>The pipeline uses an existing prompt‑guided video segmentation model. An image encoder and neck turn each frame into features, and a mask decoder turns point or mask prompts into mask logits. For video, a memory path stores each tracked mask and carries it to later frames.</p>
-<figure class="arch"><img src="/assets/figures/auto-labeling-system.png" width="2040" height="1500" alt="Auto-labeling system. Top: an image encoder and neck feed point- and mask-prompt decoding, and memory attention with a memory bank carries tracked objects between frames. Mask logits go to a CPU service that writes COCO polygons and RLE masks. Bottom: the finished labels are captioned in three stages, an object caption per mask, a relation caption of each mask in the image, and an image caption. Captions are checked, with a second review for unsure cases, and linked to the instance annotations. Object and image captions feed training of the second-generation open-vocabulary detector. Relation captions are stored with the labels and not used in that training."><figcaption>The GPU service runs the model, and a CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
+<figure class="arch"><img src="/assets/figures/auto-labeling-system.png" width="2040" height="1500" alt="Auto-labeling system. Top: an image encoder and neck feed point- and mask-prompt decoding, and memory attention with a memory bank carries tracked objects between frames. Mask logits go to a CPU service that writes COCO polygons and RLE masks. Bottom: the finished labels are captioned in three stages, an object caption per mask, a relation caption of each mask in the image, and an image caption. Captions are checked, with a second review for unsure cases, and linked to the instance annotations. Object and image captions feed training of the caption-trained upgrade of the open-vocabulary detector. Relation captions are stored with the labels and not used in that training."><figcaption>The GPU service runs the model, and a CPU service turns its mask logits into COCO polygons and RLE masks.</figcaption></figure>
 <p>The model runs on an existing open‑source TensorRT export. That export split the model into separate graphs and made memory attention sparse. Those changes are its author's work. My changes do not change the model weights.</p>
 </section>
 <section>
@@ -85,27 +86,28 @@
 </section>
 <section>
 <h2>Outputs</h2>
-<p>Mask logits are filled at low resolution, upsampled and thresholded. Cleanup keeps objects and region classes from overlapping and gives small stray islands of a region class to their neighbors. It also removes overlapping duplicates of one object class. Pieces disconnected from every positive click are dropped. Objects are saved as COCO polygons and region classes as masks.</p>
+<p>Mask logits are filled at low resolution, then upsampled and turned into binary masks. Cleanup keeps objects and region classes from overlapping and gives small stray islands of a region class to their neighbors. It also removes overlapping duplicates of one object class. Pieces disconnected from every positive click are dropped. Objects are saved as COCO polygons and region classes as masks.</p>
 </section>
 <section>
 <h2>Serving</h2>
-<p>The image and video paths share one encoder and neck on the GPU. Image features stay cached on the GPU between clicks, and so does the previous mask. The point‑prompt decoder is built in FP32 because the FP16 build failed the mask IoU check. GPU inference and CPU post‑processing run as two separate services. None of these choices change the model.</p>
+<p>The image and video paths share one encoder and neck on the GPU. Image features stay cached on the GPU between clicks, and so does the previous mask. The point‑prompt decoder is built in FP32 because the FP16 build failed the mask IoU check. GPU inference and CPU post‑processing run as two separate services.</p>
 </section>
 <section>
 <h2>Captioning after labeling</h2>
-<p>After auto‑labeling finished, open‑weight vision‑language models captioned the labeled data in three stages:</p>
+<p>The captions come in three stages:</p>
 <ul>
 <li>Each mask got a caption of the object it covers.</li>
 <li>Each mask also got a caption of its relationship to the image.</li>
 <li>The whole image got a caption of its own.</li>
 </ul>
-<p>The second generation of the <a href="/projects/language-distilled-segmentation.html">open‑vocabulary model</a> trains on the object and image captions. It does not use the relationship captions, which are stored with the labels.</p>
+<p>Captions are checked, and unsure cases get a second review. Verified captions are linked to the instance annotations.</p>
+<p>The caption‑trained upgrade of the <a href="/projects/language-distilled-segmentation.html">open‑vocabulary model</a> trains on the object and image captions. It does not use the relationship captions, which are stored with the labels.</p>
 </section>
 <section>
 <h2>Result</h2>
-<p>Labeling one image cost USD 1.05 with crowdsourced labeling on Prolific and USD 0.036 with this pipeline, a 96.6% reduction. The pipeline is deployed at Daedong AILab, where it has produced 13.0M instance‑mask labels for 1.1M training records (662K images). These labels trained both generations of the open‑vocabulary model.</p>
+<p>The pipeline is deployed at Daedong AILab. Its labels trained the open‑vocabulary perception model and its upgrade.</p>
 </section>
-<nav class="pager" aria-label="Adjacent projects"><a href="/projects/language-distilled-segmentation.html"><span class="dir quiet">Previous</span>Open‑vocabulary segmentation and mapping</a><a href="/#work">All work</a><a href="/projects/strawberry-cultivation.html"><span class="dir quiet">Next</span>Strawberry cultivation tasks</a></nav>
+<nav class="pager" aria-label="Adjacent projects"><a href="/projects/language-distilled-segmentation.html"><span class="dir quiet">Previous</span>RT100 open‑vocabulary perception</a><a href="/#work">All work</a><a href="/projects/strawberry-cultivation.html"><span class="dir quiet">Next</span>Strawberry cultivation tasks</a></nav>
 </main>
 <script>
 (function () {

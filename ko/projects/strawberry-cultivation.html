@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>딸기 재배 작업, Jaewoo Choi</title>
-<meta name="description" content="UMI 시연 데이터로 학습한 transplanting, flower thinning, runner handling용 Diffusion Policy controller입니다. 고정된 실험실 환경에서 1,000 work cycles 동안 잰 작업별 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%였습니다. 이 작업은 CES 2025에 전시했습니다.">
+<meta name="description" content="UMI 시연으로 학습한 딸기 재배 작업 세 가지의 Diffusion Policy입니다. 고정된 실험실 환경에서 1,000 work cycles 동안 측정한 task success는 transplanting 93.8%, flower thinning 87.5%, runner handling 65%입니다. CES 2025에 전시했습니다.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="딸기 재배 작업, Jaewoo Choi">
-<meta property="og:description" content="UMI 시연 데이터로 학습한 transplanting, flower thinning, runner handling용 Diffusion Policy controller입니다. 고정된 실험실 환경에서 1,000 work cycles 동안 잰 작업별 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%였습니다. 이 작업은 CES 2025에 전시했습니다.">
+<meta property="og:description" content="UMI 시연으로 학습한 딸기 재배 작업 세 가지의 Diffusion Policy입니다. 고정된 실험실 환경에서 1,000 work cycles 동안 측정한 task success는 transplanting 93.8%, flower thinning 87.5%, runner handling 65%입니다. CES 2025에 전시했습니다.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/ko/projects/strawberry-cultivation.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/strawberry-cultivation.html">
 <link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/strawberry-cultivation.html">
@@ -53,6 +53,7 @@
 <main id="content">
 <h1>딸기 재배 작업</h1>
 <p class="meta">Daedong AILab, Senior AI Researcher, 2024년 5월–현재.</p>
+<p class="lead"><span class="quiet">결과:</span> 고정된 실험실 환경에서 1,000 work cycles 동안 측정한 task success는 transplanting 93.8%, flower thinning 87.5%, runner handling 65%입니다. CES 2025에 전시했습니다.</p><p class="lead"><span class="quiet">역할:</span> 세 작업 모두 data pipeline과 Diffusion Policy 학습을 이끌었습니다.</p>
 <figure class="film portrait"><video width="540" height="960" muted playsinline controls preload="metadata" poster="/assets/frames/strawberry-booth.jpg" aria-label="CES 2025 부스의 딸기 재배 작업."><source src="/assets/video/strawberry-ces2025.mp4" type="video/mp4"></video><figcaption>CES 2025 부스의 딸기 재배 작업.</figcaption></figure>
 <section>
 <h2>문제</h2>
@@ -60,7 +61,7 @@
 </section>
 <section>
 <h2>맡은 일</h2>
-<p>세 작업 모두 data pipeline과 policy 학습을 이끌었고, 로봇 쪽 post‑processing을 뺀 나머지를 전부 만들었습니다.</p>
+<p>로봇 쪽 post‑processing을 뺀 나머지는 모두 제가 만들었습니다.</p>
 </section>
 <section>
 <h2>방법</h2>
@@ -84,21 +85,11 @@
 </div>
 <div class="flow-step">
 <p class="flow-k">Policy</p>
-<p>RGB feature와 robot state를 조건으로 받는 Diffusion Policy가 action sequence를 냅니다.</p>
+<p>Diffusion Policy가 action sequence를 냅니다.</p>
 </div>
 <div class="flow-step">
 <p class="flow-k">로봇 쪽</p>
 <p>로봇 쪽 post‑processing이 action을 robot control로 넘깁니다.</p>
-</div>
-<div class="flow-fork">
-<div>
-<p class="flow-k">작업</p>
-<p>Transplanting, flower thinning, runner handling.</p>
-</div>
-<div>
-<p class="flow-k">평가</p>
-<p>고정된 실험실 환경에서 1,000 work cycles.</p>
-</div>
 </div>
 <figcaption>같은 pipeline을 작업마다 한 번씩 돌리며, 작업마다 policy가 따로 있습니다.</figcaption>
 </figure>
@@ -111,7 +102,7 @@
 </section>
 <section>
 <h2>결과</h2>
-<p>세 작업 policy는 재배 로봇에서 돌아갑니다. 고정된 실험실 환경에서 1,000 work cycles 동안 잰 작업별 성공률은 transplanting 93.8%, flower thinning 87.5%, runner handling 65%였습니다. 이 작업은 CES 2025에 전시했습니다.</p>
+<p>세 작업 policy는 재배 로봇에서 돌아갑니다.</p>
 </section>
 <nav class="pager" aria-label="인접 프로젝트"><a href="/ko/projects/auto-labeling.html"><span class="dir quiet">이전</span>Auto‑labeling pipeline</a><a href="/ko/#work">전체 작업</a><a href="/ko/projects/cad-free-assembly.html"><span class="dir quiet">다음</span>CAD‑free assembly</a></nav>
 </main>

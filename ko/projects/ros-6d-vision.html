@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Eye-to-hand calibration을 쓴 6D pose estimation, Jaewoo Choi</title>
-<meta name="description" content="배포된 ROS action server가 요청마다 capture, segmentation, pose estimation을 실행하고 matching score와 함께 pose를 돌려줍니다. Eye-to-hand calibration 도구는 residual error를 보고합니다.">
+<title>Eye-to-hand calibration 자동화, Jaewoo Choi</title>
+<meta name="description" content="로봇 밖에 고정한 Zivid camera의 eye-to-hand calibration 자동화입니다. ArUco board capture, residual error를 보고하는 eye-to-hand solve, 검증 단계로 이뤄집니다.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
-<meta property="og:title" content="Eye-to-hand calibration을 쓴 6D pose estimation, Jaewoo Choi">
-<meta property="og:description" content="배포된 ROS action server가 요청마다 capture, segmentation, pose estimation을 실행하고 matching score와 함께 pose를 돌려줍니다. Eye-to-hand calibration 도구는 residual error를 보고합니다.">
+<meta property="og:title" content="Eye-to-hand calibration 자동화, Jaewoo Choi">
+<meta property="og:description" content="로봇 밖에 고정한 Zivid camera의 eye-to-hand calibration 자동화입니다. ArUco board capture, residual error를 보고하는 eye-to-hand solve, 검증 단계로 이뤄집니다.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/ko/projects/ros-6d-vision.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/ros-6d-vision.html">
 <link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/ros-6d-vision.html">
@@ -51,60 +51,22 @@
 </header>
 
 <main id="content">
-<h1>Eye‑to‑hand calibration을 쓴 6D pose estimation</h1>
+<h1>Eye‑to‑hand calibration 자동화</h1>
 <p class="meta">PLAIF, Computer Vision Engineer, 2023년 1월–2024년 4월.</p>
+<p class="lead"><span class="quiet">결과:</span> ROS trigger로 calibration을 돌리고, capture마다 residual error를 보고합니다. 별도 검증 단계는 robot base frame 기준 marker pose를 출력합니다.</p><p class="lead"><span class="quiet">역할:</span> Eye‑to‑hand calibration 자동화와 검증 단계를 만들었습니다.</p>
 
 <section>
 <h2>문제</h2>
-<p>호출하는 쪽은 robot base frame 기준의 object pose가 필요합니다. 그래서 camera를 로봇에 맞춰 calibration해야 합니다.</p>
-</section>
-<section>
-<h2>맡은 일</h2>
-<p>ROS action server와 eye‑to‑hand calibration 도구를 작성했습니다.</p>
+<p>로봇 밖에 고정한 camera(eye‑to‑hand)는 pose를 camera frame 기준으로 측정합니다. 로봇은 robot base frame 기준 pose가 필요하므로, camera와 로봇 사이 transform을 calibration하고 검증해야 합니다.</p>
 </section>
 <section>
 <h2>방법</h2>
-<figure class="flow">
-<p class="flow-k">요청마다 실행. Camera, model, pipeline은 config file에서 정합니다</p>
-<div class="flow-step">
-<p class="flow-k">입력</p>
-<p>Zivid, RealSense 또는 recorded data</p>
-</div>
-<div class="flow-step">
-<p class="flow-k">Capture</p>
-</div>
-<div class="flow-step">
-<p class="flow-k">Segmentation</p>
-</div>
-<div class="flow-step">
-<p class="flow-k">Pose estimation</p>
-</div>
-<div class="flow-step">
-<p class="flow-k">반환</p>
-<p>Robot‑base pose와 camera‑frame pose, 그리고 matching score</p>
-</div>
-<div class="flow-side">
-<p class="flow-k">Eye‑to‑hand calibration</p>
-<div class="flow-step">
-<p>ArUco board pose</p>
-</div>
-<div class="flow-step">
-<p>Batch AX = YB solve, OpenCV Park method</p>
-</div>
-<div class="flow-step">
-<p>Camera‑robot transform과 residual error</p>
-</div>
-<div class="flow-step">
-<p>Validation 도구와 dynamic_reconfigure tuning</p>
-</div>
-</div>
-<figcaption>Action server는 요청 처리 순서를 실행합니다. Calibration은 별도 도구입니다.</figcaption>
-</figure>
-
-</section>
-<section>
-<h2>결과</h2>
-<p>요청마다 camera frame과 robot base 기준 pose를 matching score와 함께 돌려줍니다. Server와 calibration 도구는 배포되어 실제로 쓰이고 있습니다.</p>
+<ol>
+<li>ROS trigger가 들어올 때마다 ArUco board를 Zivid로 찍고, robot tool pose를 읽고, point cloud를 함께 써서 marker pose를 추정합니다.</li>
+<li>새 pose 쌍이 들어올 때마다 해를 다시 구합니다. Batch AX = YB solver와 OpenCV Park method가 camera‑to‑robot transform을 추정하고, capture마다 residual error의 평균과 표준편차를 publish합니다.</li>
+<li>Capture와 pose 쌍을 저장하므로, 중단된 session을 이어서 진행할 수 있습니다. 종료 요청이 오면 최종 calibration matrix를 저장합니다.</li>
+<li>별도 validation node가 저장된 matrix를 불러와, marker마다 robot base frame 기준 위치와 자세를 보고합니다.</li>
+</ol>
 </section>
 <nav class="pager" aria-label="인접 프로젝트"><a href="/ko/projects/bin-picking.html"><span class="dir quiet">이전</span>CAD‑based bin picking</a><a href="/ko/#work">전체 작업</a><a href="/ko/projects/license-plate.html"><span class="dir quiet">다음</span>차량 번호판 인식</a></nav>
 </main>

@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Prompt 기반 image·video auto-labeling, Jaewoo Choi</title>
-<meta name="description" content="Image와 video를 위한 prompt 기반 auto-labeling pipeline이며, 실제로 배포했습니다. 이미지당 labeling 비용은 Prolific 대비 USD 1.05에서 USD 0.036로 줄었습니다(96.6%).">
+<meta name="description" content="Daedong AILab에 배포한 image·video용 prompt 기반 auto-labeling pipeline입니다. 이미지당 labeling 비용이 Prolific 대비 USD 1.05에서 USD 0.036으로 96.6% 줄었습니다.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="Prompt 기반 image·video auto-labeling, Jaewoo Choi">
-<meta property="og:description" content="Image와 video를 위한 prompt 기반 auto-labeling pipeline이며, 실제로 배포했습니다. 이미지당 labeling 비용은 Prolific 대비 USD 1.05에서 USD 0.036로 줄었습니다(96.6%).">
+<meta property="og:description" content="Daedong AILab에 배포한 image·video용 prompt 기반 auto-labeling pipeline입니다. 이미지당 labeling 비용이 Prolific 대비 USD 1.05에서 USD 0.036으로 96.6% 줄었습니다.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/ko/projects/auto-labeling.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/auto-labeling.html">
 <link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/auto-labeling.html">
@@ -53,6 +53,7 @@
 <main id="content">
 <h1>Prompt 기반 image·video auto‑labeling</h1>
 <p class="meta">Daedong AILab, Senior AI Researcher, 2024년 5월–현재.</p>
+<p class="lead"><span class="quiet">결과:</span> 이미지당 labeling 비용이 Prolific 대비 USD 1.05에서 USD 0.036으로 96.6% 줄었습니다.</p><p class="lead"><span class="quiet">역할:</span> 기존 video segmentation 모델 위에 prompting, serving, post‑processing 계층을 만들었습니다.</p>
 <figure class="film landscape"><video width="1280" height="678" muted playsinline controls preload="metadata" poster="/assets/frames/auto-labeling-canvas.jpg" aria-label="Labeling 도구에 띄운 과수원 video. Mask가 다음 frame으로 이어집니다."><source src="/assets/video/auto-labeling.mp4" type="video/mp4"></video><figcaption>Labeling 도구에 띄운 과수원 video. Mask가 다음 frame으로 이어집니다.</figcaption></figure>
 <section>
 <h2>문제</h2>
@@ -60,19 +61,19 @@
 </section>
 <section>
 <h2>맡은 일</h2>
-<p>기존 prompt 기반 video segmentation 모델 위에 image annotation과 video annotation을 만들었습니다. Image 전용 decoder graph, click‑refinement 흐름, 선택적 memory write, 두 경로가 함께 쓰는 encoder 하나가 그 내용입니다. Annotation 도구 밖에서는 label taxonomy를 정하고 annotation guideline을 썼으며, COCO 형식의 training dataset을 만들었습니다.</p>
+<p>Labeling 도구 밖에서는 label taxonomy를 정하고 annotation guideline을 썼습니다. COCO 형식의 training dataset도 만들었습니다. Labeling 뒤에 이어지는 세 단계 captioning pipeline 역시 제 작업입니다.</p>
 </section>
 <section>
 <h2>방법</h2>
 <ol>
 <li>Click과 mask 수정은 frame이 바뀌어도 같은 ID를 유지하는 tracked mask가 됩니다.</li>
-<li>Open‑weight vision‑language models가 region‑grounded object caption을 쓰고 검토했습니다. 확신이 낮은 경우는 한 번 더 검토하도록 보냈고, 검증된 caption은 instance annotation에 연결했습니다.</li>
+<li>Labeling이 끝나면 open‑weight vision‑language model이 label된 data에 caption을 답니다.</li>
 </ol>
 </section>
 <section>
 <h2>모델 구조</h2>
 <p>Pipeline은 기존 prompt 기반 video segmentation 모델을 씁니다. Image encoder와 neck이 frame마다 feature를 만들고, mask decoder가 point prompt나 mask prompt를 mask logit으로 바꿉니다. Video에서는 memory 경로가 추적 중인 mask를 저장해 이후 frame으로 넘깁니다.</p>
-<figure class="arch"><img src="/assets/figures/auto-labeling-system.png" width="2040" height="1500" alt="Auto-labeling 시스템. 위쪽에서는 image encoder와 neck이 point-prompt decoding과 mask-prompt decoding으로 이어지고, memory bank를 쓰는 memory attention이 frame 사이로 추적 대상을 넘깁니다. Mask logit은 COCO polygon과 RLE mask를 쓰는 CPU service로 갑니다. 아래쪽에서는 완성된 label에 세 단계로 caption을 답니다. Mask마다 object caption, image 안에서 각 mask가 맺는 relation caption, 그리고 image caption입니다. Caption은 검토를 거치고 확신이 낮은 경우는 다시 검토한 뒤 instance annotation에 연결합니다. Object caption과 image caption은 Caption-trained open-vocabulary detector(2세대) 학습에 쓰입니다. Relation caption은 label과 함께 저장하고 그 학습에는 쓰지 않습니다."><figcaption>GPU service가 모델을 돌리고, CPU service가 mask logit을 COCO polygon과 RLE mask로 바꿉니다.</figcaption></figure>
+<figure class="arch"><img src="/assets/figures/auto-labeling-system.png" width="2040" height="1500" alt="Auto-labeling 시스템. 위쪽에서는 image encoder와 neck이 point-prompt decoding과 mask-prompt decoding으로 이어지고, memory bank를 쓰는 memory attention이 frame 사이로 추적 대상을 넘깁니다. Mask logit은 COCO polygon과 RLE mask를 쓰는 CPU service로 갑니다. 아래쪽에서는 완성된 label에 세 단계로 caption을 답니다. Mask마다 object caption, image 안에서 각 mask가 맺는 relation caption, 그리고 image caption입니다. Caption은 검토를 거치고 확신이 낮은 경우는 다시 검토한 뒤 instance annotation에 연결합니다. Object caption과 image caption은 open-vocabulary detector 업그레이드의 학습에 쓰입니다. Relation caption은 label과 함께 저장하고 그 학습에는 쓰지 않습니다."><figcaption>GPU service가 모델을 돌리고, CPU service가 mask logit을 COCO polygon과 RLE mask로 바꿉니다.</figcaption></figure>
 <p>모델은 공개된 기존 open‑source TensorRT export 위에서 돌아갑니다. 그 export가 모델을 여러 graph로 나누고 memory attention을 sparse하게 바꿨습니다. 이 변경은 export 작성자의 작업입니다. 제 변경은 model weight를 바꾸지 않습니다.</p>
 </section>
 <section>
@@ -85,27 +86,28 @@
 </section>
 <section>
 <h2>출력</h2>
-<p>Mask logit은 낮은 해상도로 채운 뒤 upsampling하고 threshold를 적용합니다. Cleanup 단계는 object와 region class가 겹치지 않게 하고, region class의 작은 조각은 이웃 영역에 넘깁니다. 같은 object class끼리 겹친 중복도 지웁니다. 어떤 positive click과도 이어지지 않은 조각은 버립니다. Object는 COCO polygon으로, region class는 mask로 저장합니다.</p>
+<p>Mask logit은 낮은 해상도로 채운 뒤 upsampling해 binary mask로 바꿉니다. Cleanup 단계는 object와 region class가 겹치지 않게 하고, region class의 작은 조각은 이웃 영역에 넘깁니다. 같은 object class끼리 겹친 중복도 지웁니다. 어떤 positive click과도 이어지지 않은 조각은 버립니다. Object는 COCO polygon으로, region class는 mask로 저장합니다.</p>
 </section>
 <section>
 <h2>Serving</h2>
-<p>Image 경로와 video 경로는 GPU 위의 encoder와 neck 하나를 함께 씁니다. Image feature는 click 사이에 GPU에 남겨 두고, 직전 mask도 마찬가지입니다. FP16 build가 mask IoU check를 통과하지 못해서 point‑prompt decoder는 FP32로 build했습니다. GPU inference와 CPU post‑processing은 별도 service 두 개로 나눠 돌립니다. 이런 선택은 모델 자체를 바꾸지 않습니다.</p>
+<p>Image 경로와 video 경로는 GPU 위의 encoder와 neck 하나를 함께 씁니다. Image feature는 click 사이에 GPU에 남겨 두고, 직전 mask도 마찬가지입니다. FP16 build가 mask IoU check를 통과하지 못해서 point‑prompt decoder는 FP32로 build했습니다. GPU inference와 CPU post‑processing은 별도 service 두 개로 나눠 돌립니다.</p>
 </section>
 <section>
 <h2>Labeling 이후 captioning</h2>
-<p>Auto‑labeling이 끝난 뒤 open‑weight vision‑language models가 label된 data에 세 단계로 caption을 달았습니다.</p>
+<p>Caption은 세 단계로 나뉩니다.</p>
 <ul>
 <li>Mask마다 그 mask가 덮는 object의 caption을 달았습니다.</li>
 <li>Mask마다 image와의 관계를 설명하는 caption도 달았습니다.</li>
 <li>Image 전체에도 따로 caption을 달았습니다.</li>
 </ul>
-<p><a href="/ko/projects/language-distilled-segmentation.html">Open‑vocabulary 모델</a>의 2세대는 object caption과 image caption으로 학습합니다. Relationship caption은 label과 함께 저장해 두고, 이 학습에는 쓰지 않습니다.</p>
+<p>Caption은 검토를 거치며, 확신이 낮은 경우는 두 번째 검토로 넘깁니다. 검증된 caption은 instance annotation에 연결합니다.</p>
+<p><a href="/ko/projects/language-distilled-segmentation.html">Open‑vocabulary 모델</a>의 caption 학습 업그레이드는 object caption과 image caption으로 학습합니다. Relationship caption은 label과 함께 저장해 두고, 이 학습에는 쓰지 않습니다.</p>
 </section>
 <section>
 <h2>결과</h2>
-<p>이미지당 labeling 비용은 Prolific crowdsourcing으로 USD 1.05, 이 pipeline으로 USD 0.036였습니다. 96.6% 줄어든 셈입니다. Pipeline은 Daedong AILab에 배포되어 1.1M개 training record(662K images)에 13.0M개의 instance‑mask label을 만들었습니다. 이 label로 open‑vocabulary 모델 두 세대를 모두 학습했습니다.</p>
+<p>Pipeline은 Daedong AILab에 배포되어 있습니다. 이 label로 open‑vocabulary perception model과 그 업그레이드를 학습했습니다.</p>
 </section>
-<nav class="pager" aria-label="인접 프로젝트"><a href="/ko/projects/language-distilled-segmentation.html"><span class="dir quiet">이전</span>Open‑vocabulary segmentation과 mapping</a><a href="/ko/#work">전체 작업</a><a href="/ko/projects/strawberry-cultivation.html"><span class="dir quiet">다음</span>딸기 재배 작업</a></nav>
+<nav class="pager" aria-label="인접 프로젝트"><a href="/ko/projects/language-distilled-segmentation.html"><span class="dir quiet">이전</span>RT100 open‑vocabulary perception</a><a href="/ko/#work">전체 작업</a><a href="/ko/projects/strawberry-cultivation.html"><span class="dir quiet">다음</span>딸기 재배 작업</a></nav>
 </main>
 <script>
 (function () {

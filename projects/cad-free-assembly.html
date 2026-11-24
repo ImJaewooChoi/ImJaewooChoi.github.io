@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CAD-free assembly, Jaewoo Choi</title>
-<meta name="description" content="6D tool-pose estimation for robot assembly from a 2D camera, with no CAD model of the part. Task success was 93% across 1,000 in-house trials, and the work completed five rounds.">
+<meta name="description" content="6D tool-pose estimation for robot assembly from a 2D camera, with no CAD model of the part. 93% task success across 1,000 in-house trials. Basis of Korean Patent 10-2694987.">
 <meta name="author" content="Jaewoo Choi">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="CAD-free assembly, Jaewoo Choi">
-<meta property="og:description" content="6D tool-pose estimation for robot assembly from a 2D camera, with no CAD model of the part. Task success was 93% across 1,000 in-house trials, and the work completed five rounds.">
+<meta property="og:description" content="6D tool-pose estimation for robot assembly from a 2D camera, with no CAD model of the part. 93% task success across 1,000 in-house trials. Basis of Korean Patent 10-2694987.">
 <link rel="canonical" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
 <link rel="alternate" hreflang="en" href="https://imjaewoochoi.github.io/projects/cad-free-assembly.html">
 <link rel="alternate" hreflang="ko" href="https://imjaewoochoi.github.io/ko/projects/cad-free-assembly.html">
@@ -53,30 +53,27 @@
 <main id="content">
 <h1>CAD‑free assembly</h1>
 <p class="meta">PLAIF, Computer Vision Engineer, Jan. 2023–Apr. 2024.</p>
+<p class="lead"><span class="quiet">Result:</span> 93% task success across 1,000 in‑house trials.</p><p class="lead"><span class="quiet">Role:</span> Built the pose pipeline that turns a 2D camera image into the target 6D tool pose.</p>
 <figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/cad-room.jpg" aria-label="Robot arm with a gripper and wrist camera, assembling a part on a fixture."><source src="/assets/video/cad-free-assembly.mp4" type="video/mp4"></video><figcaption>Robot arm with a gripper and wrist camera, assembling a part on a fixture.</figcaption></figure>
 <section>
 <h2>Problem</h2>
-<p>The robot has to assemble a part that has no CAD model, using only a 2D camera at run time, so it needs the target 6D tool pose from that image.</p>
+<p>The robot has to assemble a part that has no CAD model. At run time it has only a 2D camera, so it needs the target 6D tool pose from that image.</p>
 </section>
 <section>
 <h2>My role</h2>
-<p>I built the pose pipeline, from image matching to the target 6D tool pose.</p>
+<p>This work is the basis of Korean Patent 10‑2694987, on which I am a co‑inventor.</p>
 </section>
 <section>
 <h2>Method</h2>
 <ol>
-<li>The pipeline matches the live 2D image to a stored reference RGB‑D capture with LightGlue, so each match carries depth.</li>
-<li>From the 3D‑2D matches, solvePnP with RANSAC recovers the camera pose, which I chain with the eye‑to‑hand calibration and the stored reference pose to get the target 6D tool pose.</li>
+<li>LightGlue matches the live 2D image to a stored reference RGB‑D capture, so each match carries depth.</li>
+<li>solvePnP with RANSAC recovers the camera pose from the 3D‑2D matches. Chaining that pose with the eye‑to‑hand calibration and the stored reference pose gives the target 6D tool pose.</li>
 </ol>
 </section>
 <section>
 <h2>System diagram</h2>
 <p>The reference RGB‑D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale before matching.</p>
 <figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly system. A reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, LightGlue matches its keypoints to the reference RGB image, the reference depth turns the matches into 2D-3D matches, and solvePnP with RANSAC gives the camera pose. A transform chain with the eye-to-hand calibration and the stored reference tool pose gives the target 6D tool pose for robot motion."><figcaption>Dashed boxes mark steps described in the patent.</figcaption></figure>
-</section>
-<section>
-<h2>Result</h2>
-<p>The pipeline completed five rounds. 93% of 1,000 in‑house trials succeeded. This work is the basis of Korean Patent 10‑2694987, on which I am a co‑inventor.</p>
 </section>
 <nav class="pager" aria-label="Adjacent projects"><a href="/projects/strawberry-cultivation.html"><span class="dir quiet">Previous</span>Strawberry cultivation tasks</a><a href="/#work">All work</a><a href="/projects/bin-picking.html"><span class="dir quiet">Next</span>CAD‑based bin picking</a></nav>
 </main>
