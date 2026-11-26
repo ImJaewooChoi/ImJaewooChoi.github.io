@@ -54,26 +54,34 @@
 <h1>CAD‑free assembly</h1>
 <p class="meta">PLAIF, Computer Vision Engineer, Jan. 2023–Apr. 2024.</p>
 <p class="lead"><span class="quiet">Result:</span> 93% task success across 1,000 in‑house trials.</p><p class="lead"><span class="quiet">Role:</span> Built the pose pipeline that turns a 2D camera image into the target 6D tool pose.</p>
-<figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/cad-room.jpg" aria-label="Robot arm with a gripper and wrist camera, assembling a part on a fixture."><source src="/assets/video/cad-free-assembly.mp4" type="video/mp4"></video><figcaption>Robot arm with a gripper and wrist camera, assembling a part on a fixture.</figcaption></figure>
+<figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/cad-room.jpg" aria-label="Robot arm with a gripper assembling a part on a fixture, seen by a camera fixed on a stand."><source src="/assets/video/cad-free-assembly.mp4" type="video/mp4"></video><figcaption>Robot arm with a gripper assembling a part on a fixture, seen by a camera fixed on a stand.</figcaption></figure>
 <section>
 <h2>Problem</h2>
 <p>The robot has to assemble a part that has no CAD model. At run time it has only a 2D camera, so it needs the target 6D tool pose from that image.</p>
 </section>
 <section>
 <h2>My role</h2>
-<p>This work is the basis of Korean Patent 10‑2694987, on which I am a co‑inventor.</p>
+<p>I built the pose pipeline, from image matching to the target 6D tool pose. This work is the basis of Korean Patent 10‑2694987, on which I am a co‑inventor.</p>
 </section>
 <section>
 <h2>Method</h2>
 <ol>
-<li>LightGlue matches the live 2D image to a stored reference RGB‑D capture, so each match carries depth.</li>
-<li>solvePnP with RANSAC recovers the camera pose from the 3D‑2D matches. Chaining that pose with the eye‑to‑hand calibration and the stored reference pose gives the target 6D tool pose.</li>
+<li>Segmentation finds the target ROI in the live 2D image, and the ROI is converted to grayscale. LightGlue matches keypoints in the ROI to keypoints in the image of the stored reference RGB‑D capture.</li>
+<li>An epipolar filter with essential‑matrix RANSAC removes matches that break the two‑view geometry. Each remaining match takes its depth from the reference capture, and matches without valid depth are dropped.</li>
+<li>solvePnP with RANSAC turns the 3D‑2D matches into the metric pose of the part frame O in the live camera frame. Chaining that pose with the eye‑to‑hand calibration and the stored reference tool pose gives the target 6D tool pose.</li>
 </ol>
+<div class="pose-math"><p>Frames: B is the robot base, E the tool, R the camera frame of the reference capture, and C the live camera frame. Eye‑to‑hand calibration gives <span class="tf"><sup>B</sup>T<sub>R</sub></span> and <span class="tf"><sup>B</sup>T<sub>C</sub></span>. The part has no CAD model, so its frame O is fixed to the part and matches R at capture time.</p>
+<div class="eq"><math display="block" aria-label="O T E equals the inverse of B T R times B T E ref"><mrow><mmultiscripts><mi>T</mi><mi>E</mi><none/><mprescripts/><none/><mi>O</mi></mmultiscripts><mo>=</mo><msup><mrow><mo>(</mo><mmultiscripts><mi>T</mi><mi>R</mi><none/><mprescripts/><none/><mi>B</mi></mmultiscripts><mo>)</mo></mrow><mrow><mo>&#8722;</mo><mn>1</mn></mrow></msup><mo>&#8290;</mo><mmultiscripts><mi>T</mi><mi>E</mi><mtext>ref</mtext><mprescripts/><none/><mi>B</mi></mmultiscripts></mrow></math></div>
+<div class="eq"><math display="block" aria-label="O X i equals d i times K R inverse times u i, v i, 1 transposed"><mrow><mmultiscripts><mi>X</mi><mi>i</mi><none/><mprescripts/><none/><mi>O</mi></mmultiscripts><mo>=</mo><msub><mi>d</mi><mi>i</mi></msub><mo>&#8290;</mo><msubsup><mi>K</mi><mi>R</mi><mrow><mo>&#8722;</mo><mn>1</mn></mrow></msubsup><mo>&#8290;</mo><msup><mrow><mo>[</mo><msub><mi>u</mi><mi>i</mi></msub><mo>,</mo><msub><mi>v</mi><mi>i</mi></msub><mo>,</mo><mn>1</mn><mo>]</mo></mrow><mi>&#8868;</mi></msup></mrow></math></div>
+<p>Here d<sub>i</sub> is the reference depth in metres at keypoint (u<sub>i</sub>, v<sub>i</sub>), given in full‑image pixel coordinates, and K<sub>R</sub> is the reference camera intrinsic matrix.</p>
+<div class="eq"><math display="block" aria-label="C T O equals solvePnP RANSAC of the pairs O X i, x i"><mrow><mmultiscripts><mi>T</mi><mi>O</mi><none/><mprescripts/><none/><mi>C</mi></mmultiscripts><mo>=</mo><msub><mtext>solvePnP</mtext><mtext>RANSAC</mtext></msub><mrow><mo>(</mo><mo>{</mo><mo>(</mo><mmultiscripts><mi>X</mi><mi>i</mi><none/><mprescripts/><none/><mi>O</mi></mmultiscripts><mo>,</mo><msub><mi>x</mi><mi>i</mi></msub><mo>)</mo><mo>}</mo><mo>)</mo></mrow></mrow></math></div>
+<div class="eq"><math display="block" aria-label="B T E target equals B T C times C T O times O T E"><mrow><mmultiscripts><mi>T</mi><mi>E</mi><mtext>target</mtext><mprescripts/><none/><mi>B</mi></mmultiscripts><mo>=</mo><mmultiscripts><mi>T</mi><mi>C</mi><none/><mprescripts/><none/><mi>B</mi></mmultiscripts><mo>&#8290;</mo><mmultiscripts><mi>T</mi><mi>O</mi><none/><mprescripts/><none/><mi>C</mi></mmultiscripts><mo>&#8290;</mo><mmultiscripts><mi>T</mi><mi>E</mi><none/><mprescripts/><none/><mi>O</mi></mmultiscripts></mrow></math></div>
+<p>The first line is stored once with the reference capture, and x<sub>i</sub> is the matched keypoint in the live image. The third line gives <span class="tf"><sup>C</sup>T<sub>O</sub></span>, the pose of the part frame O in the live camera frame, using the live camera intrinsic matrix K<sub>C</sub>.</p></div>
 </section>
 <section>
 <h2>System diagram</h2>
-<p>The reference RGB‑D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale before matching.</p>
-<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly system. A reference RGB-D capture is taken once. At run time, the 2D camera image is cropped and converted to grayscale, LightGlue matches its keypoints to the reference RGB image, the reference depth turns the matches into 2D-3D matches, and solvePnP with RANSAC gives the camera pose. A transform chain with the eye-to-hand calibration and the stored reference tool pose gives the target 6D tool pose for robot motion."><figcaption>Dashed boxes mark steps described in the patent.</figcaption></figure>
+<p>The reference RGB‑D capture is taken once. At run time, segmentation finds the target ROI in the 2D camera image, and the ROI is converted to grayscale before matching.</p>
+<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2300" height="760" alt="CAD-free assembly system. A reference RGB-D capture is taken once. At run time, segmentation finds the target ROI in the 2D camera image, and the ROI is converted to grayscale. LightGlue matches its keypoints to the reference image, and an epipolar filter with essential-matrix RANSAC removes matches that break the two-view geometry. The reference depth turns the remaining matches into 3D-2D matches, and solvePnP with RANSAC gives the metric pose of the part frame O in the live camera frame. A transform chain with the eye-to-hand calibration and the stored reference tool pose gives the target 6D tool pose for robot motion."></figure>
 </section>
 <nav class="pager" aria-label="Adjacent projects"><a href="/projects/strawberry-cultivation.html"><span class="dir quiet">Previous</span>Strawberry cultivation tasks</a><a href="/#work">All work</a><a href="/projects/bin-picking.html"><span class="dir quiet">Next</span>CAD‑based bin picking</a></nav>
 </main>

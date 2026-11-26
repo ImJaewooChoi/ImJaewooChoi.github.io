@@ -78,11 +78,11 @@
 <div class="flow-fork">
 <div>
 <p class="flow-k">첫 배포: class‑name text prompt</p>
-<p>Frozen DINOv3와 SigLIP2 encoder. 학습하는 부분은 image adapter와 text adapter, PAN‑FPN neck, instance head와 semantic head입니다.</p>
+<p>Frozen DINOv3와 SigLIP2 encoder 위에 adapter, neck, head를 학습합니다.</p>
 </div>
 <div>
 <p class="flow-k">업그레이드: caption으로 학습한 detector (첫 배포 모델 대체)</p>
-<p>Frozen DINOv3 backbone, multi‑scale projector, three‑layer decoder, 학습 가능한 compact text encoder, mask head.</p>
+<p>Frozen DINOv3 backbone, 학습 가능한 compact text encoder, mask head.</p>
 </div>
 </div>
 <div class="flow-step">
@@ -91,11 +91,11 @@
 </div>
 <div class="flow-step">
 <p class="flow-k">Voxel에서 mask로</p>
-<p>Image에 투영한 voxel 중심이 자신이 떨어진 mask의 object와 class를 받습니다. 유효한 anchor depth에서 virtual voxel을 더합니다.</p>
+<p>Image에 투영한 voxel 중심이 자신이 떨어진 mask의 label을 받습니다.</p>
 </div>
 <div class="flow-step">
 <p class="flow-k">Occupancy grid</p>
-<p>Label이 붙은 voxel을 decay, hysteresis, cost inflation과 함께 grid에 기록합니다.</p>
+<p>Label이 붙은 voxel을 주행 가능한 grid에 기록합니다.</p>
 </div>
 <div class="flow-step">
 <p class="flow-k">Navigation</p>
@@ -107,10 +107,12 @@
 <p>DINOv3와 SigLIP2 encoder는 고정하고, image adapter, PAN‑FPN neck, text adapter, instance head, semantic head를 여러 dataset으로 pre‑training했습니다. 두 head는 batch를 번갈아 가며 함께 학습했습니다. Box와 instance mask를 내는 instance head에는 region‑text alignment loss를 걸었습니다. Semantic head는 pixel마다 class‑name text embedding과 비교해 class를 고릅니다. Text‑prompt inference와 fixed‑vocabulary 변환을 넣었고, 모델을 과수원 domain에 맞췄습니다.</p>
 <figure class="arch"><img src="/assets/figures/open-vocab-initial.png" width="1920" height="930" alt="첫 배포 모델(class-name text prompt): frozen DINOv3 image encoder와 SigLIP2 text encoder, 학습하는 image adapter, PAN-FPN neck, text adapter, instance head와 semantic head."><figcaption>첫 배포 모델의 구조.</figcaption></figure>
 <h3>업그레이드가 필요했던 이유</h3>
-<p>첫 배포 모델은 class name만 보고 학습했고, SigLIP2 text encoder도 고정돼 있었습니다. 업그레이드한 모델은 class name보다 풍부한 text로 학습합니다. Compact text encoder를 object caption과 image caption으로 학습합니다. Caption은 학습 때만 쓰므로 inference 비용이 늘지 않습니다. Occupancy grid에는 instance mask가 필요해서, detector에 mask head를 달아 box와 함께 mask를 내게 했습니다.</p>
+<p>첫 배포 모델은 class name만 보고 학습했고, SigLIP2 text encoder도 고정돼 있었습니다. 업그레이드한 모델은 compact text encoder를 object caption과 image caption으로 학습해, class name보다 풍부한 text를 배웁니다. Occupancy grid에는 instance mask가 필요하므로, 업그레이드한 모델에도 첫 배포 모델처럼 mask head를 달았습니다.</p>
 <h3>업그레이드: caption으로 학습한 detector</h3>
-<p>업그레이드한 모델은 query‑based transformer detector입니다. Frozen DINOv3 backbone 뒤에 multi‑scale projector와 three‑layer decoder가 붙습니다. 학습 가능한 compact text encoder가 category name을 embedding합니다. Inference 때는 어떤 category name 목록이든 받습니다. 그 embedding으로 decoder query를 고르고 class마다 점수를 매깁니다. Mask head는 가장 해상도가 높은 feature를 decoder query와 함께 읽고, mask를 원본 이미지 해상도로 돌려줍니다. 학습에는 category name, object caption, image caption을 씁니다. 미리 계산해 둔 language teacher가 caption을 matched query, pooled image feature와 정렬하고, 관련 있는 negative의 가중치를 다시 매깁니다. Mask는 matching을 거쳐 BCE/Dice loss로 학습합니다.</p>
-<figure class="arch"><img src="/assets/figures/open-vocab-upgrade.png" width="2000" height="1230" alt="업그레이드한 모델(caption으로 학습한 open-vocabulary detector)의 구조도. Frozen image encoder 뒤에 multi-scale projector와 300개 query를 쓰는 three-layer decoder가 붙고, 이 query가 mask head, box head, class head로 이어집니다. Category name은 학습 가능한 text encoder를 거쳐 query를 고르고 class 점수를 매깁니다. 학습 때만 쓰는 branch에서는 object caption과 image caption이 frozen teacher text encoder를 거쳐 matched query, pooled image feature와 정렬됩니다."><figcaption>업그레이드한 모델. Category name(청록색)은 inference에 씁니다. Object caption(자홍색)과 image caption(금색)은 학습 때만 씁니다.</figcaption></figure>
+<p>업그레이드한 모델은 query‑based transformer detector입니다. Frozen DINOv3 backbone 뒤에 multi‑scale projector와 three‑layer decoder가 붙습니다. Inference 때는 학습된 compact text encoder가 어떤 category name 목록이든 embedding하고, 그 embedding으로 decoder query를 고르고 class마다 점수를 매깁니다. Mask head는 가장 해상도가 높은 feature를 decoder query와 함께 읽고, mask를 원본 이미지 해상도로 돌려줍니다.</p>
+<figure class="arch"><img src="/assets/figures/open-vocab-upgrade.png" width="2000" height="1230" alt="업그레이드한 모델(caption으로 학습한 open-vocabulary detector)의 구조도. Frozen image encoder 뒤에 multi-scale projector와 three-layer decoder가 붙고, decoder query가 mask head, box head, class head로 이어집니다. Category name은 학습 가능한 text encoder를 거쳐 query를 고르고 class 점수를 매깁니다. 학습 때만 쓰는 branch에서는 object caption과 image caption이 frozen teacher text encoder를 거쳐 matched query, pooled image feature와 정렬됩니다."><figcaption>업그레이드한 모델. Category name(청록색)은 inference에 씁니다. Object caption(자홍색)과 image caption(금색)은 학습 때만 씁니다.</figcaption></figure>
+<h3>업그레이드 학습</h3>
+<p>학습에는 category name, object caption, image caption을 씁니다. Caption embedding을 offline으로 미리 계산해 둔 frozen language teacher가 caption을 matched query, pooled image feature와 정렬하고, 관련 있는 negative의 가중치를 다시 매깁니다. Mask는 matching을 거쳐 BCE/Dice loss로 학습합니다. Caption은 학습 때만 쓰므로 inference 비용이 늘지 않습니다.</p>
 <h3>Mask를 occupancy grid로</h3>
 <p>Point cloud를 voxel로 줄이고, 각 voxel 중심을 camera image에 투영합니다. Instance mask 안에 떨어진 voxel은 그 mask의 object와 class를 받습니다. 유효한 anchor depth에서 virtual voxel을 더했습니다. Label이 붙은 voxel은 주행 가능한 occupancy grid에 기록됩니다. 더 이상 관측되지 않는 cell은 decay로 서서히 지워집니다. Hysteresis는 cell이 free와 occupied 사이에서 뒤집히지 않게 잡아 줍니다. Cost inflation은 계획 경로가 장애물 가장자리에서 떨어지게 합니다. Navigation은 이 grid를 읽습니다.</p>
 </section>

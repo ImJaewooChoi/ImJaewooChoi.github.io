@@ -417,6 +417,28 @@ p {
   margin-top: 6px;
 }
 
+.page .eq {
+  margin: 8px 0;
+  padding: 0.2em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.page .pose-math {
+  margin-top: 12px;
+}
+
+.page .eq math {
+  display: inline math;
+  math-style: normal;
+  font-size: 1.1em;
+  margin-left: 1.2rem;
+}
+
+.page .tf {
+  white-space: nowrap;
+}
+
 .pager {
   display: grid;
   grid-template-columns: 1fr auto 1fr;

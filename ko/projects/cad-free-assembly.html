@@ -54,26 +54,34 @@
 <h1>CAD‑free assembly</h1>
 <p class="meta">PLAIF, Computer Vision Engineer, 2023년 1월–2024년 4월.</p>
 <p class="lead"><span class="quiet">결과:</span> 사내 시험 1,000회에서 task success 93%를 기록했습니다.</p><p class="lead"><span class="quiet">역할:</span> 2D camera image에서 목표 6D tool pose를 구하는 pose pipeline을 만들었습니다.</p>
-<figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/cad-room.jpg" aria-label="Gripper와 wrist camera를 단 robot arm이 fixture 위에서 부품을 조립합니다."><source src="/assets/video/cad-free-assembly.mp4" type="video/mp4"></video><figcaption>Gripper와 wrist camera를 단 robot arm이 fixture 위에서 부품을 조립합니다.</figcaption></figure>
+<figure class="film landscape"><video width="1280" height="720" muted playsinline controls preload="metadata" poster="/assets/frames/cad-room.jpg" aria-label="Gripper를 단 robot arm이 fixture 위에서 부품을 조립하고, 스탠드에 고정한 camera가 이를 봅니다."><source src="/assets/video/cad-free-assembly.mp4" type="video/mp4"></video><figcaption>Gripper를 단 robot arm이 fixture 위에서 부품을 조립하고, 스탠드에 고정한 camera가 이를 봅니다.</figcaption></figure>
 <section>
 <h2>문제</h2>
 <p>CAD model이 없는 부품을 로봇이 조립해야 합니다. 실행 중에는 2D camera만 쓸 수 있으므로, 그 image에서 목표 6D tool pose를 구해야 합니다.</p>
 </section>
 <section>
 <h2>맡은 일</h2>
-<p>이 작업은 한국 특허 10‑2694987의 기반이며, 저는 이 특허의 공동 발명자입니다.</p>
+<p>Image matching부터 목표 6D tool pose까지 pose pipeline을 만들었습니다. 이 작업은 한국 특허 10‑2694987의 기반이며, 저는 이 특허의 공동 발명자입니다.</p>
 </section>
 <section>
 <h2>방법</h2>
 <ol>
-<li>LightGlue가 실시간 2D image를 미리 저장한 reference RGB‑D capture와 matching합니다. 그래서 match마다 depth가 붙습니다.</li>
-<li>solvePnP와 RANSAC이 3D‑2D match에서 camera pose를 복원합니다. 이 pose를 eye‑to‑hand calibration, 저장된 reference pose와 이어 목표 6D tool pose를 얻습니다.</li>
+<li>Segmentation으로 실시간 2D image에서 대상 ROI를 잡고, 이 ROI를 grayscale로 바꿉니다. LightGlue가 ROI의 keypoint를 미리 저장한 reference RGB‑D capture의 image keypoint와 matching합니다.</li>
+<li>Essential‑matrix RANSAC을 쓰는 epipolar filter가 two‑view geometry에 맞지 않는 match를 지웁니다. 남은 match는 reference capture에서 depth를 가져오고, 유효한 depth가 없는 match는 버립니다.</li>
+<li>solvePnP와 RANSAC이 3D‑2D match에서 현재 camera frame 기준 부품 frame O의 metric pose를 구합니다. 이 pose를 eye‑to‑hand calibration, 저장된 reference tool pose와 이어 목표 6D tool pose를 얻습니다.</li>
 </ol>
+<div class="pose-math"><p>Frame은 B가 robot base, E가 tool, R이 reference capture의 camera frame, C가 현재 camera frame입니다. Eye‑to‑hand calibration으로 <span class="tf"><sup>B</sup>T<sub>R</sub></span>, <span class="tf"><sup>B</sup>T<sub>C</sub></span>를 구합니다. 부품에는 CAD model이 없으므로, 부품에 고정한 frame O를 capture 시점의 R과 같게 둡니다.</p>
+<div class="eq"><math display="block" aria-label="O T E equals the inverse of B T R times B T E ref"><mrow><mmultiscripts><mi>T</mi><mi>E</mi><none/><mprescripts/><none/><mi>O</mi></mmultiscripts><mo>=</mo><msup><mrow><mo>(</mo><mmultiscripts><mi>T</mi><mi>R</mi><none/><mprescripts/><none/><mi>B</mi></mmultiscripts><mo>)</mo></mrow><mrow><mo>&#8722;</mo><mn>1</mn></mrow></msup><mo>&#8290;</mo><mmultiscripts><mi>T</mi><mi>E</mi><mtext>ref</mtext><mprescripts/><none/><mi>B</mi></mmultiscripts></mrow></math></div>
+<div class="eq"><math display="block" aria-label="O X i equals d i times K R inverse times u i, v i, 1 transposed"><mrow><mmultiscripts><mi>X</mi><mi>i</mi><none/><mprescripts/><none/><mi>O</mi></mmultiscripts><mo>=</mo><msub><mi>d</mi><mi>i</mi></msub><mo>&#8290;</mo><msubsup><mi>K</mi><mi>R</mi><mrow><mo>&#8722;</mo><mn>1</mn></mrow></msubsup><mo>&#8290;</mo><msup><mrow><mo>[</mo><msub><mi>u</mi><mi>i</mi></msub><mo>,</mo><msub><mi>v</mi><mi>i</mi></msub><mo>,</mo><mn>1</mn><mo>]</mo></mrow><mi>&#8868;</mi></msup></mrow></math></div>
+<p>d<sub>i</sub>는 keypoint (u<sub>i</sub>, v<sub>i</sub>)의 reference depth이며 단위는 미터입니다. (u<sub>i</sub>, v<sub>i</sub>)는 전체 image 기준 pixel 좌표이고, K<sub>R</sub>은 reference camera의 intrinsic matrix입니다.</p>
+<div class="eq"><math display="block" aria-label="C T O equals solvePnP RANSAC of the pairs O X i, x i"><mrow><mmultiscripts><mi>T</mi><mi>O</mi><none/><mprescripts/><none/><mi>C</mi></mmultiscripts><mo>=</mo><msub><mtext>solvePnP</mtext><mtext>RANSAC</mtext></msub><mrow><mo>(</mo><mo>{</mo><mo>(</mo><mmultiscripts><mi>X</mi><mi>i</mi><none/><mprescripts/><none/><mi>O</mi></mmultiscripts><mo>,</mo><msub><mi>x</mi><mi>i</mi></msub><mo>)</mo><mo>}</mo><mo>)</mo></mrow></mrow></math></div>
+<div class="eq"><math display="block" aria-label="B T E target equals B T C times C T O times O T E"><mrow><mmultiscripts><mi>T</mi><mi>E</mi><mtext>target</mtext><mprescripts/><none/><mi>B</mi></mmultiscripts><mo>=</mo><mmultiscripts><mi>T</mi><mi>C</mi><none/><mprescripts/><none/><mi>B</mi></mmultiscripts><mo>&#8290;</mo><mmultiscripts><mi>T</mi><mi>O</mi><none/><mprescripts/><none/><mi>C</mi></mmultiscripts><mo>&#8290;</mo><mmultiscripts><mi>T</mi><mi>E</mi><none/><mprescripts/><none/><mi>O</mi></mmultiscripts></mrow></math></div>
+<p>첫 줄은 reference capture와 함께 한 번만 저장합니다. x<sub>i</sub>는 현재 image에서 match된 keypoint입니다. 셋째 줄은 현재 camera의 intrinsic matrix K<sub>C</sub>를 써서, 현재 camera frame 기준 부품 frame O의 pose인 <span class="tf"><sup>C</sup>T<sub>O</sub></span>를 구합니다.</p></div>
 </section>
 <section>
 <h2>시스템 구성도</h2>
-<p>Reference RGB‑D capture는 한 번만 찍습니다. 실행 중에는 2D camera image를 crop하고 grayscale로 바꾼 뒤 matching합니다.</p>
-<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly 시스템. Reference RGB-D capture는 한 번만 찍습니다. 실행 중에는 2D camera image를 crop하고 grayscale로 바꾸며, LightGlue가 그 keypoint를 reference RGB image와 matching합니다. Reference depth가 match를 2D-3D match로 바꾸고, solvePnP와 RANSAC이 camera pose를 구합니다. Eye-to-hand calibration과 저장된 reference tool pose로 이어지는 transform chain이 robot motion에 쓸 목표 6D tool pose를 줍니다."><figcaption>점선 상자는 특허에 적힌 단계입니다.</figcaption></figure>
+<p>Reference RGB‑D capture는 한 번만 찍습니다. 실행 중에는 segmentation으로 2D camera image에서 대상 ROI를 잡고, grayscale로 바꾼 뒤 matching합니다.</p>
+<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2300" height="760" alt="CAD-free assembly 시스템. Reference RGB-D capture는 한 번만 찍습니다. 실행 중에는 segmentation으로 2D camera image에서 대상 ROI를 잡고 grayscale로 바꿉니다. LightGlue가 그 keypoint를 reference image와 matching하고, essential-matrix RANSAC을 쓰는 epipolar filter가 two-view geometry에 맞지 않는 match를 지웁니다. Reference depth가 남은 match를 3D-2D match로 바꾸고, solvePnP와 RANSAC이 현재 camera frame 기준 부품 frame O의 metric pose를 구합니다. Eye-to-hand calibration과 저장된 reference tool pose로 이어지는 transform chain이 robot motion에 쓸 목표 6D tool pose를 줍니다."></figure>
 </section>
 <nav class="pager" aria-label="인접 프로젝트"><a href="/ko/projects/strawberry-cultivation.html"><span class="dir quiet">이전</span>딸기 재배 작업</a><a href="/ko/#work">전체 작업</a><a href="/ko/projects/bin-picking.html"><span class="dir quiet">다음</span>CAD‑based bin picking</a></nav>
 </main>

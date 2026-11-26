@@ -31,7 +31,6 @@ FACTS = {
     "cad_success": "93%",
     "bin_success": "89%",
     "patent": "10-2694987",
-    "queries": "300",
     "gpa": "3.34/4.5",
 }
 SITE = "https://imjaewoochoi.github.io"
@@ -142,6 +141,83 @@ def harden_html(doc):
             continue
         out.append(part if skip else harden_text(part))
     return "".join(out)
+
+
+def _tf(left, right, post=None):
+    """Transform with a leading superscript frame: {}^{left}T_{right}^{post}."""
+    post_sup = f"<mtext>{post}</mtext>" if post else "<none/>"
+    right_ml = right if right.startswith("<") else f"<mi>{right}</mi>"
+    return (f"<mmultiscripts><mi>T</mi>{right_ml}{post_sup}"
+            f"<mprescripts/><none/><mi>{left}</mi></mmultiscripts>")
+
+
+def _pt(frame):
+    return (f"<mmultiscripts><mi>X</mi><mi>i</mi><none/>"
+            f"<mprescripts/><none/><mi>{frame}</mi></mmultiscripts>")
+
+
+def _eq(body, label):
+    return (f'<div class="eq"><math display="block" aria-label="{label}">'
+            f"<mrow>{body}</mrow></math></div>")
+
+
+# CAD-free assembly pose chain. Same markup in English and Korean.
+CADFREE_EQUATIONS = "\n".join([
+    _eq(f"{_tf('O', 'E')}<mo>=</mo>"
+        f"<msup><mrow><mo>(</mo>{_tf('B', 'R')}<mo>)</mo></mrow><mrow><mo>&#8722;</mo><mn>1</mn></mrow></msup>"
+        f"<mo>&#8290;</mo>{_tf('B', 'E', 'ref')}",
+        "O T E equals the inverse of B T R times B T E ref"),
+    _eq(f"{_pt('O')}<mo>=</mo><msub><mi>d</mi><mi>i</mi></msub><mo>&#8290;</mo>"
+        f"<msubsup><mi>K</mi><mi>R</mi><mrow><mo>&#8722;</mo><mn>1</mn></mrow></msubsup><mo>&#8290;</mo>"
+        f"<msup><mrow><mo>[</mo><msub><mi>u</mi><mi>i</mi></msub><mo>,</mo><msub><mi>v</mi><mi>i</mi></msub>"
+        f"<mo>,</mo><mn>1</mn><mo>]</mo></mrow><mi>&#8868;</mi></msup>",
+        "O X i equals d i times K R inverse times u i, v i, 1 transposed"),
+    _eq(f"{_tf('C', 'O')}<mo>=</mo><msub><mtext>solvePnP</mtext><mtext>RANSAC</mtext></msub>"
+        f"<mrow><mo>(</mo><mo>{{</mo><mo>(</mo>{_pt('O')}<mo>,</mo><msub><mi>x</mi><mi>i</mi></msub>"
+        f"<mo>)</mo><mo>}}</mo><mo>)</mo></mrow>",
+        "C T O equals solvePnP RANSAC of the pairs O X i, x i"),
+    _eq(f"{_tf('B', 'E', 'target')}<mo>=</mo>{_tf('B', 'C')}<mo>&#8290;</mo>{_tf('C', 'O')}"
+        f"<mo>&#8290;</mo>{_tf('O', 'E')}",
+        "B T E target equals B T C times C T O times O T E"),
+])
+
+
+def _vec(sym, frame, idx):
+    """Point with a leading frame superscript: {}^{frame}sym_{idx}."""
+    idx_ml = idx if idx.startswith("<") else f"<mi>{idx}</mi>"
+    return (f"<mmultiscripts><mi>{sym}</mi>{idx_ml}<none/>"
+            f"<mprescripts/><none/><mi>{frame}</mi></mmultiscripts>")
+
+
+_INV = "<mrow><mo>&#8722;</mo><mn>1</mn></mrow>"
+_PS = "<msub><mi>P</mi><mi>s</mi></msub>"
+_PT = "<msub><mi>P</mi><mi>t</mi></msub>"
+_JI = "<mrow><mi>j</mi><mo>(</mo><mi>i</mi><mo>)</mo></mrow>"
+
+# CAD-based bin picking pose chain. Same markup in English and Korean.
+BINPICK_EQUATIONS = "\n".join([
+    _eq(f"{_vec('p', 'E', 'i')}<mo>=</mo>"
+        f"<msup><mrow><mo>(</mo>{_tf('O', 'E')}<mo>)</mo></mrow>{_INV}</msup>"
+        f"<mo>&#8290;</mo>{_vec('p', 'O', 'i')}",
+        "E p i equals the inverse of O T E times O p i"),
+    _eq(f"{_tf('C', 'E', '(0)')}<mo>=</mo>{_tf('C', _PS)}<mo>&#8290;</mo>"
+        f"<msup><mrow><mo>(</mo>{_tf('E', _PT)}<mo>)</mo></mrow>{_INV}</msup>",
+        "C T E initial equals C T P s times the inverse of E T P t"),
+    _eq(f"{_tf('C', 'E')}<mo>=</mo>"
+        f"<munder><mo movablelimits=\"false\">argmin</mo><mrow><mi>R</mi><mo>&#8712;</mo><mi>SO</mi><mo>(</mo><mn>3</mn><mo>)</mo>"
+        f"<mo>,</mo><mi>t</mi><mo>&#8712;</mo><msup><mi>&#8477;</mi><mn>3</mn></msup></mrow></munder>"
+        f"<munder><mo movablelimits=\"false\">&#8721;</mo><mi>i</mi></munder>"
+        f"<msup><mrow><mo>&#8214;</mo><mi>R</mi><mo>&#8290;</mo>{_vec('p', 'E', 'i')}<mo>+</mo><mi>t</mi>"
+        f"<mo>&#8722;</mo>{_vec('q', 'C', _JI)}<mo>&#8214;</mo></mrow><mn>2</mn></msup>",
+        "C T E equals argmin over R in SO 3 and t in R 3 of the sum over i of the squared norm of R E p i plus t minus C q j of i"),
+    _eq(f"{_tf('B', 'E')}<mo>=</mo>{_tf('B', 'C')}<mo>&#8290;</mo>{_tf('C', 'E')}"
+        f"<mo>=</mo>{_tf('B', 'C')}<mo>&#8290;</mo>{_tf('C', 'O')}<mo>&#8290;</mo>{_tf('O', 'E')}",
+        "B T E equals B T C times C T E, which equals B T C times C T O times O T E"),
+])
+
+def tf_html(left, right):
+    """Inline HTML form of {}^{left}T_{right} for running text."""
+    return f'<span class="tf"><sup>{left}</sup>T<sub>{right}</sub></span>'
 
 
 def main():

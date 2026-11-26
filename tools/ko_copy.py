@@ -5,7 +5,7 @@ Numbers are not typed here. Every figure comes from build_site.FACTS through
 English pair do not carry the same numbers.
 """
 
-from build_site import FACTS
+from build_site import BINPICK_EQUATIONS, CADFREE_EQUATIONS, FACTS, tf_html
 
 
 def F(text):
@@ -63,13 +63,13 @@ EXPERIENCE = [
 ]
 
 EDUCATION = [
-    F("서경대학교 산업경영시스템공학과 공학사, 서울, 2016년 3월–2022년 8월. 학점 {gpa}. 복수전공: Big Data."),
+    F("서경대학교 산업경영시스템공학과 공학사, 서울, 2016년 3월–2022년 8월. 학점 {gpa}. 연계·융합전공: Big Data."),
 ]
 
 CLIP_LABELS = {
     "auto": "Labeling 도구에 띄운 과수원 video. Mask가 다음 frame으로 이어집니다.",
     "strawberry": "CES 2025 부스의 딸기 재배 작업.",
-    "cad": "Gripper와 wrist camera를 단 robot arm이 fixture 위에서 부품을 조립합니다.",
+    "cad": "Gripper를 단 robot arm이 fixture 위에서 부품을 조립하고, 스탠드에 고정한 camera가 이를 봅니다.",
     "bin": "CAD-based bin picking 중인 cobot arm.",
 }
 
@@ -90,11 +90,15 @@ PAGES = {
             ),
             (
                 "업그레이드가 필요했던 이유",
-                "첫 배포 모델은 class name만 보고 학습했고, SigLIP2 text encoder도 고정돼 있었습니다. 업그레이드한 모델은 class name보다 풍부한 text로 학습합니다. Compact text encoder를 object caption과 image caption으로 학습합니다. Caption은 학습 때만 쓰므로 inference 비용이 늘지 않습니다. Occupancy grid에는 instance mask가 필요해서, detector에 mask head를 달아 box와 함께 mask를 내게 했습니다.",
+                "첫 배포 모델은 class name만 보고 학습했고, SigLIP2 text encoder도 고정돼 있었습니다. 업그레이드한 모델은 compact text encoder를 object caption과 image caption으로 학습해, class name보다 풍부한 text를 배웁니다. Occupancy grid에는 instance mask가 필요하므로, 업그레이드한 모델에도 첫 배포 모델처럼 mask head를 달았습니다.",
             ),
             (
                 G2,
-                "업그레이드한 모델은 query-based transformer detector입니다. Frozen DINOv3 backbone 뒤에 multi-scale projector와 three-layer decoder가 붙습니다. 학습 가능한 compact text encoder가 category name을 embedding합니다. Inference 때는 어떤 category name 목록이든 받습니다. 그 embedding으로 decoder query를 고르고 class마다 점수를 매깁니다. Mask head는 가장 해상도가 높은 feature를 decoder query와 함께 읽고, mask를 원본 이미지 해상도로 돌려줍니다. 학습에는 category name, object caption, image caption을 씁니다. 미리 계산해 둔 language teacher가 caption을 matched query, pooled image feature와 정렬하고, 관련 있는 negative의 가중치를 다시 매깁니다. Mask는 matching을 거쳐 BCE/Dice loss로 학습합니다.",
+                "업그레이드한 모델은 query-based transformer detector입니다. Frozen DINOv3 backbone 뒤에 multi-scale projector와 three-layer decoder가 붙습니다. Inference 때는 학습된 compact text encoder가 어떤 category name 목록이든 embedding하고, 그 embedding으로 decoder query를 고르고 class마다 점수를 매깁니다. Mask head는 가장 해상도가 높은 feature를 decoder query와 함께 읽고, mask를 원본 이미지 해상도로 돌려줍니다.",
+            ),
+            (
+                "업그레이드 학습",
+                "학습에는 category name, object caption, image caption을 씁니다. Caption embedding을 offline으로 미리 계산해 둔 frozen language teacher가 caption을 matched query, pooled image feature와 정렬하고, 관련 있는 negative의 가중치를 다시 매깁니다. Mask는 matching을 거쳐 BCE/Dice loss로 학습합니다. Caption은 학습 때만 쓰므로 inference 비용이 늘지 않습니다.",
             ),
             (
                 "Mask를 occupancy grid로",
@@ -106,24 +110,27 @@ PAGES = {
     "auto-labeling": {
         "title": "Prompt 기반 image·video auto-labeling",
         "nav_title": "Auto-labeling pipeline",
-        "result": F("이미지당 labeling 비용이 Prolific 대비 {cost_before}에서 {cost_after}으로 {cost_cut} 줄었습니다."),
+        "result": F("이미지당 labeling 비용은 {cost_after}으로, 비교 기준으로만 삼은 Prolific의 이미지당 {cost_before}보다 {cost_cut} 낮습니다."),
         "role_line": "기존 video segmentation 모델 위에 prompting, serving, post-processing 계층을 만들었습니다.",
-        "desc": F("Daedong AILab에 배포한 image·video용 prompt 기반 auto-labeling pipeline입니다. 이미지당 labeling 비용이 Prolific 대비 {cost_before}에서 {cost_after}으로 {cost_cut} 줄었습니다."),
+        "desc": F("Daedong AILab에 배포한 image·video용 prompt 기반 auto-labeling pipeline입니다. 이미지당 labeling 비용은 {cost_after}으로, 비교 기준으로만 삼은 Prolific의 이미지당 {cost_before}보다 {cost_cut} 낮습니다."),
         "problem": "이 pipeline 전에는 segmentation data와 region-grounded vision-language data를 사람이 직접 label했습니다.",
         "role": "Labeling 도구 밖에서는 label taxonomy를 정하고 annotation guideline을 썼습니다. COCO 형식의 training dataset도 만들었습니다. Labeling 뒤에 이어지는 세 단계 captioning pipeline 역시 제 작업입니다.",
         "method": [
-            "Click과 mask 수정은 frame이 바뀌어도 같은 ID를 유지하는 tracked mask가 됩니다.",
-            "Labeling이 끝나면 open-weight vision-language model이 label된 data에 caption을 답니다.",
+            "정지 image에서는 click과 직전 mask로 object mask 하나를 다듬습니다.",
+            "Video에서는 같은 prompt가 frame이 바뀌어도 같은 ID를 유지하는 tracked mask가 되고, 뒤 frame에서 고쳐도 그 ID가 유지됩니다.",
+            "Cleanup이 겹침과 떨어진 조각을 지우고, label을 COCO polygon과 RLE mask로 저장합니다.",
+            "GPU inference와 CPU post-processing은 별도 service 두 개로 돌고, image 경로와 video 경로가 encoder와 neck 하나를 함께 씁니다.",
+            "Open-weight vision-language model이 label된 object, image 안의 relation, image 전체에 caption을 답니다.",
         ],
         "outcome": "Pipeline은 Daedong AILab에 배포되어 있습니다. 이 label로 open-vocabulary perception model과 그 업그레이드를 학습했습니다.",
     },
     "strawberry-cultivation": {
         "title": "딸기 재배 작업",
-        "result": F("고정된 실험실 환경에서 {cycles} work cycles 동안 측정한 task success는 transplanting {transplant}, flower thinning {thinning}, runner handling {runner}입니다. {ces}에 전시했습니다."),
+        "result": F("고정된 실험실 환경에서 작업별 {cycles} work cycles 동안 측정한 task success는 transplanting {transplant}, flower thinning {thinning}, runner handling {runner}입니다. {ces}에 전시했습니다."),
         "role_line": "세 작업 모두 data pipeline과 Diffusion Policy 학습을 이끌었습니다.",
-        "desc": F("UMI 시연으로 학습한 딸기 재배 작업 세 가지의 Diffusion Policy입니다. 고정된 실험실 환경에서 {cycles} work cycles 동안 측정한 task success는 transplanting {transplant}, flower thinning {thinning}, runner handling {runner}입니다. {ces}에 전시했습니다."),
+        "desc": F("UMI 시연으로 학습한 딸기 재배 작업 세 가지의 Diffusion Policy입니다. 고정된 실험실 환경에서 작업별 {cycles} work cycles 동안 측정한 task success는 transplanting {transplant}, flower thinning {thinning}, runner handling {runner}입니다. {ces}에 전시했습니다."),
         "problem": "딸기 재배 로봇은 모종 이식(transplanting), 꽃 솎기(flower thinning), 런너 정리(runner handling)를 해야 합니다. 작업별 policy는 Universal Manipulation Interface(UMI)로 모은 사람의 시연에서 학습합니다.",
-        "role": "로봇 쪽 post-processing을 뺀 나머지는 모두 제가 만들었습니다.",
+        "role": "Data pipeline과 Diffusion Policy 학습을 이끌었습니다. 아래 흐름에서 로봇 쪽 post-processing을 뺀 모든 단계를 제가 만들었습니다.",
         "method": [],
         "outcome": "세 작업 policy는 재배 로봇에서 돌아갑니다.",
     },
@@ -133,11 +140,26 @@ PAGES = {
         "role_line": "2D camera image에서 목표 6D tool pose를 구하는 pose pipeline을 만들었습니다.",
         "desc": F("부품 CAD model 없이 2D camera로 robot assembly용 6D tool pose를 추정합니다. 사내 시험 {trials}회에서 task success {cad_success}를 기록했고, 한국 특허 {patent}의 기반이 됐습니다."),
         "problem": "CAD model이 없는 부품을 로봇이 조립해야 합니다. 실행 중에는 2D camera만 쓸 수 있으므로, 그 image에서 목표 6D tool pose를 구해야 합니다.",
-        "role": F("이 작업은 한국 특허 {patent}의 기반이며, 저는 이 특허의 공동 발명자입니다."),
+        "role": F("Image matching부터 목표 6D tool pose까지 pose pipeline을 만들었습니다. 이 작업은 한국 특허 {patent}의 기반이며, 저는 이 특허의 공동 발명자입니다."),
         "method": [
-            "LightGlue가 실시간 2D image를 미리 저장한 reference RGB-D capture와 matching합니다. 그래서 match마다 depth가 붙습니다.",
-            "solvePnP와 RANSAC이 3D-2D match에서 camera pose를 복원합니다. 이 pose를 eye-to-hand calibration, 저장된 reference pose와 이어 목표 6D tool pose를 얻습니다.",
+            "Segmentation으로 실시간 2D image에서 대상 ROI를 잡고, 이 ROI를 grayscale로 바꿉니다. LightGlue가 ROI의 keypoint를 미리 저장한 reference RGB-D capture의 image keypoint와 matching합니다.",
+            "Essential-matrix RANSAC을 쓰는 epipolar filter가 two-view geometry에 맞지 않는 match를 지웁니다. 남은 match는 reference capture에서 depth를 가져오고, 유효한 depth가 없는 match는 버립니다.",
+            "solvePnP와 RANSAC이 3D-2D match에서 현재 camera frame 기준 부품 frame O의 metric pose를 구합니다. 이 pose를 eye-to-hand calibration, 저장된 reference tool pose와 이어 목표 6D tool pose를 얻습니다.",
         ],
+        "method_after": (
+            '<div class="pose-math">'
+            + "<p>Frame은 B가 robot base, E가 tool, R이 reference capture의 camera frame, C가 현재 camera frame입니다. "
+            f"Eye-to-hand calibration으로 {tf_html('B', 'R')}, {tf_html('B', 'C')}를 구합니다. "
+            "부품에는 CAD model이 없으므로, 부품에 고정한 frame O를 capture 시점의 R과 같게 둡니다.</p>\n"
+            + "\n".join(CADFREE_EQUATIONS.split("\n")[:2])
+            + "\n<p>d<sub>i</sub>는 keypoint (u<sub>i</sub>, v<sub>i</sub>)의 reference depth이며 단위는 미터입니다. "
+            "(u<sub>i</sub>, v<sub>i</sub>)는 전체 image 기준 pixel 좌표이고, K<sub>R</sub>은 reference camera의 intrinsic matrix입니다.</p>\n"
+            + "\n".join(CADFREE_EQUATIONS.split("\n")[2:])
+            + "\n<p>첫 줄은 reference capture와 함께 한 번만 저장합니다. "
+            "x<sub>i</sub>는 현재 image에서 match된 keypoint입니다. "
+            f"셋째 줄은 현재 camera의 intrinsic matrix K<sub>C</sub>를 써서, 현재 camera frame 기준 부품 frame O의 pose인 {tf_html('C', 'O')}를 구합니다.</p>"
+            + "</div>"
+        ),
         "outcome": "",
     },
     "bin-picking": {
@@ -148,15 +170,29 @@ PAGES = {
         "problem": "로봇이 CAD geometry를 아는 물체를 bin에서 꺼내야 합니다. 그러려면 bin을 찍은 RGB-D image에서 물체마다 pick pose를 구해야 합니다.",
         "role": "",
         "method": [
-            "Instance segmentation model은 가려지지 않은 물체 class와 hole class를 나눠 학습했습니다. Object mask에서 hole mask를 빼고, 남은 instance mask로 point cloud를 나눴습니다.",
-            "Pick pose마다 hidden-point removal로 visible-surface CAD template을 만들었습니다. PCA 초기화와 point-to-point ICP로 이 template을 segment된 point에 정렬했습니다.",
-            "Registration fitness가 낮거나 inlier RMSE가 높은 pose는 버렸습니다. 남은 pose는 순위를 매긴 뒤 camera extrinsics로 robot base frame에 옮겼습니다.",
+            "Instance segmentation model은 가려지지 않은 물체 class와 hole class를 따로 둡니다. Object mask에서 hole mask를 빼고, 남은 instance mask로 point cloud를 나눕니다.",
+            "CAD model 위에 정의한 pick pose마다 hidden-point removal로 visible-surface template을 만들고, 그 pick pose의 tool frame 기준으로 바꿔 둡니다. PCA 초기화와 point-to-point ICP로 이 template을 segment된 point에 정렬합니다.",
+            "Registration fitness가 낮거나 inlier RMSE가 높은 pose는 버립니다. Object마다 점수가 가장 높은 pick pose 하나를 남기고, 남은 pose를 object 사이에서 순위를 매긴 뒤 eye-to-hand calibration으로 robot base frame에 옮깁니다.",
         ],
+        "method_after": (
+            '<div class="pose-math">'
+            + "<p>Frame은 B가 robot base, C가 camera, O가 CAD model, E가 pick pose의 tool frame입니다. "
+            f"E는 CAD model 위에 {tf_html('O', 'E')}로 정의합니다. "
+            f"Eye-to-hand calibration으로 {tf_html('B', 'C')}를 구합니다. "
+            "P<sub>s</sub>와 P<sub>t</sub>는 각각 segment된 scene point와 template의 principal-axis frame입니다.</p>\n"
+            + BINPICK_EQUATIONS
+            + "\n<p>첫 줄은 pick pose마다 offline으로 template을 한 번 만듭니다. "
+            "둘째 줄은 PCA 초기화이고, 셋째 줄은 여기서 시작하는 nearest-neighbour point-to-point ICP입니다. "
+            '<span class="tf"><sup>C</sup>q<sub>j(i)</sub></span>는 template point i에 가장 가까운 segment된 point입니다. '
+            "Segment된 object마다 pick pose별로 ICP를 돌리고, fitness와 RMSE 검사를 통과한 fit 중 점수가 가장 높은 것 하나를 남깁니다. "
+            "넷째 줄은 남긴 pose를 robot base frame으로 옮깁니다. Camera frame 기준 object pose는 여기서 따라 나오며 따로 추정하지 않습니다.</p>"
+            + "</div>"
+        ),
         "outcome": "",
     },
     "ros-6d-vision": {
         "title": "Eye-to-hand calibration 자동화",
-        "result": "ROS trigger로 calibration을 돌리고, capture마다 residual error를 보고합니다. 별도 검증 단계는 robot base frame 기준 marker pose를 출력합니다.",
+        "result": "ROS trigger로 calibration을 돌리고, capture마다 residual error를 보고합니다. 별도 검증 단계는 robot base frame 기준 marker pose를 출력합니다. Calibration 도구는 배포되어 쓰이고 있습니다.",
         "role_line": "Eye-to-hand calibration 자동화와 검증 단계를 만들었습니다.",
         "desc": "로봇 밖에 고정한 Zivid camera의 eye-to-hand calibration 자동화입니다. ArUco board capture, residual error를 보고하는 eye-to-hand solve, 검증 단계로 이뤄집니다.",
         "problem": "로봇 밖에 고정한 camera(eye-to-hand)는 pose를 camera frame 기준으로 측정합니다. 로봇은 robot base frame 기준 pose가 필요하므로, camera와 로봇 사이 transform을 calibration하고 검증해야 합니다.",
@@ -198,11 +234,11 @@ DIAGRAMS = {
 <div class="flow-fork">
 <div>
 <p class="flow-k">{G1}</p>
-<p>Frozen DINOv3와 SigLIP2 encoder. 학습하는 부분은 image adapter와 text adapter, PAN-FPN neck, instance head와 semantic head입니다.</p>
+<p>Frozen DINOv3와 SigLIP2 encoder 위에 adapter, neck, head를 학습합니다.</p>
 </div>
 <div>
 <p class="flow-k">{G2} (첫 배포 모델 대체)</p>
-<p>Frozen DINOv3 backbone, multi-scale projector, three-layer decoder, 학습 가능한 compact text encoder, mask head.</p>
+<p>Frozen DINOv3 backbone, 학습 가능한 compact text encoder, mask head.</p>
 </div>
 </div>
 <div class="flow-step">
@@ -211,11 +247,11 @@ DIAGRAMS = {
 </div>
 <div class="flow-step">
 <p class="flow-k">Voxel에서 mask로</p>
-<p>Image에 투영한 voxel 중심이 자신이 떨어진 mask의 object와 class를 받습니다. 유효한 anchor depth에서 virtual voxel을 더합니다.</p>
+<p>Image에 투영한 voxel 중심이 자신이 떨어진 mask의 label을 받습니다.</p>
 </div>
 <div class="flow-step">
 <p class="flow-k">Occupancy grid</p>
-<p>Label이 붙은 voxel을 decay, hysteresis, cost inflation과 함께 grid에 기록합니다.</p>
+<p>Label이 붙은 voxel을 주행 가능한 grid에 기록합니다.</p>
 </div>
 <div class="flow-step">
 <p class="flow-k">Navigation</p>
@@ -262,7 +298,7 @@ ARCH = {
         "caption": "첫 배포 모델의 구조.",
     },
     ("language-distilled-segmentation", "Upgrade: caption-trained detector"): {
-        "alt": F("업그레이드한 모델(caption으로 학습한 open-vocabulary detector)의 구조도. Frozen image encoder 뒤에 multi-scale projector와 {queries}개 query를 쓰는 three-layer decoder가 붙고, 이 query가 mask head, box head, class head로 이어집니다. Category name은 학습 가능한 text encoder를 거쳐 query를 고르고 class 점수를 매깁니다. 학습 때만 쓰는 branch에서는 object caption과 image caption이 frozen teacher text encoder를 거쳐 matched query, pooled image feature와 정렬됩니다."),
+        "alt": F("업그레이드한 모델(caption으로 학습한 open-vocabulary detector)의 구조도. Frozen image encoder 뒤에 multi-scale projector와 three-layer decoder가 붙고, decoder query가 mask head, box head, class head로 이어집니다. Category name은 학습 가능한 text encoder를 거쳐 query를 고르고 class 점수를 매깁니다. 학습 때만 쓰는 branch에서는 object caption과 image caption이 frozen teacher text encoder를 거쳐 matched query, pooled image feature와 정렬됩니다."),
         "caption": "업그레이드한 모델. Category name(청록색)은 inference에 씁니다. Object caption(자홍색)과 image caption(금색)은 학습 때만 씁니다.",
     },
 }
@@ -270,14 +306,14 @@ ARCH = {
 EXTRA_SECTIONS = {
     "cad-free-assembly": """<section>
 <h2>시스템 구성도</h2>
-<p>Reference RGB-D capture는 한 번만 찍습니다. 실행 중에는 2D camera image를 crop하고 grayscale로 바꾼 뒤 matching합니다.</p>
-<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2040" height="760" alt="CAD-free assembly 시스템. Reference RGB-D capture는 한 번만 찍습니다. 실행 중에는 2D camera image를 crop하고 grayscale로 바꾸며, LightGlue가 그 keypoint를 reference RGB image와 matching합니다. Reference depth가 match를 2D-3D match로 바꾸고, solvePnP와 RANSAC이 camera pose를 구합니다. Eye-to-hand calibration과 저장된 reference tool pose로 이어지는 transform chain이 robot motion에 쓸 목표 6D tool pose를 줍니다."><figcaption>점선 상자는 특허에 적힌 단계입니다.</figcaption></figure>
+<p>Reference RGB-D capture는 한 번만 찍습니다. 실행 중에는 segmentation으로 2D camera image에서 대상 ROI를 잡고, grayscale로 바꾼 뒤 matching합니다.</p>
+<figure class="arch"><img src="/assets/figures/cad-free-system.png" width="2300" height="760" alt="CAD-free assembly 시스템. Reference RGB-D capture는 한 번만 찍습니다. 실행 중에는 segmentation으로 2D camera image에서 대상 ROI를 잡고 grayscale로 바꿉니다. LightGlue가 그 keypoint를 reference image와 matching하고, essential-matrix RANSAC을 쓰는 epipolar filter가 two-view geometry에 맞지 않는 match를 지웁니다. Reference depth가 남은 match를 3D-2D match로 바꾸고, solvePnP와 RANSAC이 현재 camera frame 기준 부품 frame O의 metric pose를 구합니다. Eye-to-hand calibration과 저장된 reference tool pose로 이어지는 transform chain이 robot motion에 쓸 목표 6D tool pose를 줍니다."></figure>
 </section>
 """,
     "bin-picking": """<section>
 <h2>시스템 구성도</h2>
 <p>요청마다 color, point, normal이 담긴 RGB-D frame 하나에서 시작합니다. Mask 안의 point는 downsampling하고 normal 방향으로 거른 뒤 PCA에 넣습니다. Reverse check가 각 fit을 양방향으로 평가합니다. 남긴 pose는 ROS action result로 돌아가고, robot motion은 로봇 쪽에서 처리합니다.</p>
-<figure class="arch"><img src="/assets/figures/bin-picking-system.png" width="1900" height="1090" alt="CAD-based bin picking 시스템. RGB-D frame이 instance segmentation model로 들어가 object와 hole을 segment합니다. Hole mask를 지운 뒤 object마다 mask 안의 point로 PCA 초기 pose를 구합니다. CAD mesh에서 hidden-point removal로 미리 만든 visible-surface template을 point-to-point ICP로 정렬하고, fit check로 pose 순위를 매깁니다. 남긴 pose는 eye-to-hand calibration으로 camera frame에서 robot base로 옮겨, robot motion에 쓸 ROS action result로 돌려줍니다."><figcaption>학습하는 것은 instance segmentation model 하나뿐입니다. Template은 object마다 offline으로 한 번 만듭니다.</figcaption></figure>
+<figure class="arch"><img src="/assets/figures/bin-picking-system.png" width="1900" height="1090" alt="CAD-based bin picking 시스템. RGB-D frame이 instance segmentation model로 들어가 object와 hole을 segment합니다. Hole mask를 object mask에서 뺀 뒤 object마다 mask 안의 point로 PCA 초기 pose를 구합니다. CAD mesh에서 hidden-point removal로 미리 만든 visible-surface template을 point-to-point ICP로 정렬하고, fit check로 pose 순위를 매깁니다. 남긴 pose는 eye-to-hand calibration으로 camera frame에서 robot base로 옮겨, robot motion에 쓸 ROS action result로 돌려줍니다."><figcaption>학습하는 것은 instance segmentation model 하나뿐입니다. Template은 object마다 offline으로 만들며, pick pose당 하나씩입니다.</figcaption></figure>
 </section>
 """,
     "strawberry-cultivation": """<section>
@@ -290,7 +326,7 @@ EXTRA_SECTIONS = {
 <h2>모델 구조</h2>
 <p>Pipeline은 기존 prompt 기반 video segmentation 모델을 씁니다. Image encoder와 neck이 frame마다 feature를 만들고, mask decoder가 point prompt나 mask prompt를 mask logit으로 바꿉니다. Video에서는 memory 경로가 추적 중인 mask를 저장해 이후 frame으로 넘깁니다.</p>
 <figure class="arch"><img src="/assets/figures/auto-labeling-system.png" width="2040" height="1500" alt="Auto-labeling 시스템. 위쪽에서는 image encoder와 neck이 point-prompt decoding과 mask-prompt decoding으로 이어지고, memory bank를 쓰는 memory attention이 frame 사이로 추적 대상을 넘깁니다. Mask logit은 COCO polygon과 RLE mask를 쓰는 CPU service로 갑니다. 아래쪽에서는 완성된 label에 세 단계로 caption을 답니다. Mask마다 object caption, image 안에서 각 mask가 맺는 relation caption, 그리고 image caption입니다. Caption은 검토를 거치고 확신이 낮은 경우는 다시 검토한 뒤 instance annotation에 연결합니다. Object caption과 image caption은 open-vocabulary detector 업그레이드의 학습에 쓰입니다. Relation caption은 label과 함께 저장하고 그 학습에는 쓰지 않습니다."><figcaption>GPU service가 모델을 돌리고, CPU service가 mask logit을 COCO polygon과 RLE mask로 바꿉니다.</figcaption></figure>
-<p>모델은 공개된 기존 open-source TensorRT export 위에서 돌아갑니다. 그 export가 모델을 여러 graph로 나누고 memory attention을 sparse하게 바꿨습니다. 이 변경은 export 작성자의 작업입니다. 제 변경은 model weight를 바꾸지 않습니다.</p>
+<p>모델은 공개된 open-source TensorRT export 위에서 돌아가며, 이 export가 모델을 여러 graph로 나눕니다. Memory attention이 sparse하게 돌도록 token pruning을 다시 구현했고, parity test로 확인했습니다. Model weight는 바꾸지 않습니다.</p>
 </section>
 <section>
 <h2>Image labeling</h2>
@@ -298,11 +334,11 @@ EXTRA_SECTIONS = {
 </section>
 <section>
 <h2>Video labeling</h2>
-<p>첫 frame에 이미 있는 label은 model input 크기로 바꾸고 mask logit으로 만들어 conditioning frame으로 넣습니다. Ground 같은 region class는 먼저 object mask의 합집합만큼 잘라 내므로, 겹친 label에서 tracking이 시작되는 일은 없습니다. Click은 그 위에 point prompt로 얹으며, 새 object는 반드시 positive click으로 시작합니다. Annotator가 한 frame을 아직 click하는 동안에는 중간 mask를 memory에 쓰지 않습니다. 최종 mask만 encoding해 저장합니다. 뒤쪽 frame에서 고친 내용도 같은 방식으로, 같은 track ID를 가진 새 conditioning frame으로 더합니다.</p>
+<p>첫 frame에서는 ground 같은 region class를 먼저 object mask의 합집합만큼 잘라 내므로, 겹친 label에서 tracking이 시작되는 일은 없습니다. 그다음 이미 있는 label을 model input 크기로 바꾸고 mask logit으로 만들어 conditioning frame으로 넣습니다. Click은 그 위에 point prompt로 얹으며, 새 object는 반드시 positive click으로 시작합니다. Annotator가 한 frame을 아직 click하는 동안에는 중간 mask를 memory에 쓰지 않습니다. 최종 mask만 encoding해 저장합니다. 뒤쪽 frame에서 고친 내용도 같은 방식으로, 같은 track ID를 가진 새 conditioning frame으로 더합니다.</p>
 </section>
 <section>
 <h2>출력</h2>
-<p>Mask logit은 낮은 해상도로 채운 뒤 upsampling해 binary mask로 바꿉니다. Cleanup 단계는 object와 region class가 겹치지 않게 하고, region class의 작은 조각은 이웃 영역에 넘깁니다. 같은 object class끼리 겹친 중복도 지웁니다. 어떤 positive click과도 이어지지 않은 조각은 버립니다. Object는 COCO polygon으로, region class는 mask로 저장합니다.</p>
+<p>Mask logit은 낮은 해상도로 채운 뒤 upsampling해 binary mask로 바꿉니다. Cleanup 단계는 object와 region class가 겹치지 않게 하고, region class에서 작게 떨어져 나온 조각은 이웃 영역에 넘깁니다. 같은 object class끼리 겹친 중복도 지웁니다. 어떤 positive click과도 이어지지 않은 조각은 버립니다. Object는 COCO polygon으로, region class는 mask로 저장합니다.</p>
 </section>
 <section>
 <h2>Serving</h2>
@@ -313,11 +349,11 @@ EXTRA_SECTIONS = {
 <p>Caption은 세 단계로 나뉩니다.</p>
 <ul>
 <li>Mask마다 그 mask가 덮는 object의 caption을 달았습니다.</li>
-<li>Mask마다 image와의 관계를 설명하는 caption도 달았습니다.</li>
+<li>Mask마다 image 안의 관계를 설명하는 relation caption도 달았습니다.</li>
 <li>Image 전체에도 따로 caption을 달았습니다.</li>
 </ul>
 <p>Caption은 검토를 거치며, 확신이 낮은 경우는 두 번째 검토로 넘깁니다. 검증된 caption은 instance annotation에 연결합니다.</p>
-<p><a href="/ko/projects/language-distilled-segmentation.html">Open-vocabulary 모델</a>의 caption 학습 업그레이드는 object caption과 image caption으로 학습합니다. Relationship caption은 label과 함께 저장해 두고, 이 학습에는 쓰지 않습니다.</p>
+<p><a href="/ko/projects/language-distilled-segmentation.html">Open-vocabulary 모델</a>의 caption 학습 업그레이드는 object caption과 image caption으로 학습합니다. Relation caption은 label과 함께 저장해 두고, 이 학습에는 쓰지 않습니다.</p>
 </section>
 """,
 }
